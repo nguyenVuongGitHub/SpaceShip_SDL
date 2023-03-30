@@ -14,9 +14,6 @@ void initShip();
 void loadShip();
 void drawShip();
 //========================================================================  
-
-
-
 void initShip(ship *s)
 {
     s->X = 600;
