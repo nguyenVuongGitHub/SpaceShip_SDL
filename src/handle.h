@@ -12,37 +12,38 @@ void gameLoop();
 
 void gameLoop()
 {
-    
+    int cur = 0; // frame hình hiện tại
     int i = -1; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
     while(true){
         SDL_Event event;
         SDL_RenderClear(renderer);
         drawBackGround();
-        drawShip();
+        drawShip(cur);
         
         while(SDL_PollEvent(&event)){
             
-            if(event.type == SDL_QUIT){
-                exit(0);
-            }
             // bắt sự kiện di chuyển
             if(event.type == SDL_MOUSEMOTION){
                 moveShip();
-                // drawShip();
             }
 
-            //bắt sự kiện bắn đạn
-            if(event.type == SDL_MOUSEBUTTONDOWN)
+            //bắt sự kiện bắn đạn bằng chuột trái 
+            if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LMASK)
             {
-                i++;
+                i++; // biến đếm biểu thị vị trí viên đạn trong danh sách
                 addNewBulletToList();
-   
-                SDL_Thread *threadBullet = SDL_CreateThread(moveBullet,"move",(void*)i);
-
+                // luồng khác để xử lí đạn
+                SDL_Thread *threadBullet = SDL_CreateThread(moveBullet,"move",(void*)i);  
             }
-            if(event.key.keysym.sym == SDLK_k)
+            
+            //esc để thoát
+            if(event.key.keysym.sym == SDLK_ESCAPE)
                 exit(0);
         }
+        // tăng khung hình
+        cur++;
+        if(cur >= 8) cur = 0;
+
         SDL_RenderPresent(renderer);
         SDL_Delay(10);  
     } 

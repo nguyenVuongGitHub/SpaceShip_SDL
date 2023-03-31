@@ -27,8 +27,9 @@ void init()
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
+    SDL_ShowCursor(SDL_DISABLE);
     initShip(s);
-    
+    set_clip();
     initBullets();
     loadBackGround();  
 }

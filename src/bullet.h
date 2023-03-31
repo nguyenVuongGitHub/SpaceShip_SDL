@@ -25,10 +25,10 @@ int moveBullet(void *data);
 //=====================================================
 
 void initBullet(bullet *b){
-    b->x_pos = s->X-5;
-    b->y_pos = s->Y-100;
-    b->width= 15;
-    b->height = 15;
+    b->x_pos = s->X-14;
+    b->y_pos = s->Y-50;
+    b->width= 30;
+    b->height = 30;
     b->texture = NULL;
     b->speed = 0;
     // b->active = false;
@@ -39,7 +39,7 @@ void loadBullet(bullet *b)
 {
     SDL_Surface *surface;
     IMG_Init(IMG_INIT_PNG);
-    surface = IMG_Load("image/bullet.png");
+    surface = IMG_Load("image/bulletShip.png");
     if(surface != NULL){
         // Tạo texture từ surface
         b->texture = SDL_CreateTextureFromSurface(renderer, surface);

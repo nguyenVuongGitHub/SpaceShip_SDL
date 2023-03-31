@@ -6,6 +6,7 @@ struct ship{
     int Y ;
     int W ;
     int H ;
+    SDL_Rect frame_clip[8];
     SDL_Texture *texture;
 };
 typedef struct ship ship;
@@ -18,8 +19,8 @@ void initShip(ship *s)
 {
     s->X = 600;
     s->Y = 610;
-    s->W = 200;
-    s->H = 200;
+    s->W = 64;
+    s->H = 64;
     s->texture = NULL;
     loadShip();
 }
@@ -27,7 +28,7 @@ void loadShip()
 {
     SDL_Surface *surface;
     IMG_Init(IMG_INIT_PNG);
-    surface = IMG_Load("image/ship.png");
+    surface = IMG_Load("image/spaceship.png");
     if(surface != NULL){
         // Tạo texture từ surface
         s->texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -47,25 +48,27 @@ void loadShip()
         printf("Khong load duoc anh: %s", IMG_GetError());
     }  
 }
-
+void set_clip()
+{
+    for (int i = 0; i < 8; i++)
+    {
+        s->frame_clip[i].x = i * 64;
+        s->frame_clip[i].y = 0;
+        s->frame_clip[i].w = 64;
+        s->frame_clip[i].h = 64;
+    }
+}
 void moveShip(){
     SDL_GetMouseState(&mouseX,&mouseY);
-    // SDL_RenderClear(renderer);
     s->X = mouseX;
     s->Y = mouseY;
-    // SDL_Rect shipRect = {mouseX-100, mouseY-100, s->W, s->H};
-    
-    // SDL_RenderDrawRect(renderer,&shipRect);
-    // SDL_RenderCopy(renderer, background, NULL, NULL);
-    // SDL_RenderCopy(renderer, s->texture, NULL, &shipRect);
-    // drawShip();
 }
-void drawShip(){
+void drawShip(int cur){
     SDL_Rect rectShip = {
-            s->X-100,
-            s->Y-100,
+            s->X-32,
+            s->Y-32,
             s->W,
             s->H
     };
-    SDL_RenderCopy(renderer,s->texture,NULL,&rectShip);
+    SDL_RenderCopy(renderer,s->texture,&s->frame_clip[cur],&rectShip);
 }
