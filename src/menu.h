@@ -1,17 +1,15 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <stdio.h>
-
+#pragma once
+#include "global.h"
 // Khai báo biến toàn cục
-SDL_Window* window = NULL;
-SDL_Renderer* renderer = NULL;
-SDL_Texture* background = NULL;
-SDL_Texture* startButton = NULL;
-SDL_Texture* helpButton = NULL;
-SDL_Texture* quitButton = NULL;
+int initMenu();
+void cleanUp();
 
+void drawMenu();
+void showMenu();
+void handleMenu(SDL_Event event, bool *quit);
+#include"handle.h"
 // Hàm khởi tạo SDL và tải các tài nguyên
-int init()
+int initMenu()
 {
     // Khởi tạo SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -20,32 +18,11 @@ int init()
         return 1;
     }
 
-    // Tạo cửa sổ
-    int index_window = 0;
-    SDL_DisplayMode displayMode;
-    SDL_GetCurrentDisplayMode(index_window, &displayMode);
-    window = SDL_CreateWindow("Game Menu", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 860, 640, 0);
-    if (!window)
-    {
-        printf("SDL_CreateWindow failed: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    // Tạo renderer
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!renderer)
-    {
-        printf("SDL_CreateRenderer failed: %s\n", SDL_GetError());
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
 
     // Tải tài nguyên
     IMG_Init(IMG_INIT_PNG);
-    background = IMG_LoadTexture(renderer, "img\\menu.png");
-    if (!background)
+    background_menu = IMG_LoadTexture(renderer, "image\\menu.png");
+    if (!background_menu)
     {
         printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
@@ -54,7 +31,7 @@ int init()
         return 1;
     }
     IMG_Init(IMG_INIT_PNG);
-    startButton = IMG_LoadTexture(renderer, "img\\PlayButton.png");
+    startButton = IMG_LoadTexture(renderer, "image\\PlayButton.png");
     if (!startButton)
     {
         printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
@@ -65,7 +42,7 @@ int init()
         return 1;
     }
     IMG_Init(IMG_INIT_PNG);
-    helpButton = IMG_LoadTexture(renderer, "img\\HelpButton.png");
+    helpButton = IMG_LoadTexture(renderer, "image\\HelpButton.png");
     if (!helpButton)
     {
         printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
@@ -77,7 +54,7 @@ int init()
         return 1;
     }
     IMG_Init(IMG_INIT_PNG);
-    quitButton = IMG_LoadTexture(renderer, "img\\ExitButton.png");
+    quitButton = IMG_LoadTexture(renderer, "image\\ExitButton.png");
     if (!quitButton)
     {
         printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
@@ -112,7 +89,7 @@ void drawMenu()
     SDL_RenderClear(renderer);
 
     // Vẽ hình nền
-    SDL_RenderCopy(renderer, background, NULL, NULL);
+    SDL_RenderCopy(renderer, background_menu, NULL, NULL);
 
     // Vẽ nút bắt đầu
     SDL_Rect startRect = { 300, 300, 200, 50 };
@@ -131,18 +108,15 @@ void drawMenu()
 }
 
 // Hàm xử lý sự kiện
-void handleEvent(SDL_Event event, bool& quit)
+void handleMenu(SDL_Event event, bool *quit)
 {
     switch (event.type)
     {
-        case SDL_QUIT:
-            quit = true;
-            break;
         case SDL_MOUSEBUTTONDOWN:
             // Kiểm tra xem người dùng có nhấp vào nút bắt đầu không
             if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 300 && event.button.y <= 350)
             {
-                printf("Start button clicked!\n");
+                gameLoop();
             }
 
             // Kiểm tra xem người dùng có nhấp vào nút help không
@@ -153,38 +127,25 @@ void handleEvent(SDL_Event event, bool& quit)
             // Kiểm tra xem người dùng có nhấp vào nút thoát không
             if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 500 && event.button.y <= 550)
             {
-                quit = true;
+                exit(0);
             }
             break;
     }
 }
-
-// Hàm chính
-int main(int argc, char* argv[])
+void showMenu()
 {
-    bool quit = false;
-    SDL_Event event;
-    // Khởi tạo SDL và tải các tài nguyên
-    if (init() != 0)
+    SDL_RenderClear(renderer);
+    drawMenu();
+    while (gameOver == false)
     {
-        return 1;
-    }
-
-    // Vòng lặp chính
-    while (!quit)
-    {
+        SDL_Event event;
         // Xử lý sự kiện
         while (SDL_PollEvent(&event))
         {
-            handleEvent(event, quit);
+            handleMenu(event, &gameOver);
         }
-
+        
         // Vẽ menu game
         drawMenu();
     }
-
-    // Giải phóng các tài nguyên và thoát SDL
-    cleanUp();
-
-    return 0;
 }

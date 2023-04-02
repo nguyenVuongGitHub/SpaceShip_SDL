@@ -1,19 +1,18 @@
 #pragma once
-#include "game.h"
+#include "global.h"
 #include "ship.h"
 #include "bullet.h"
-// #include "list_bullet.h"
-#include "global.h"
-#include "SDL2/SDL_thread.h"
+#include "game.h"
 
 void gameLoop();
-// bool allBulletsOffScreen(list* l);
+
 //================================
 
 void gameLoop()
 {
     int cur = 0; // frame hình hiện tại
     int i = -1; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
+    
     while(true){
         SDL_Event event;
         SDL_RenderClear(renderer);
@@ -34,11 +33,15 @@ void gameLoop()
                 addNewBulletToList();
                 // luồng khác để xử lí đạn
                 SDL_Thread *threadBullet = SDL_CreateThread(moveBullet,"move",(void*)i);  
+
             }
             
             //esc để thoát
-            if(event.key.keysym.sym == SDLK_ESCAPE)
-                exit(0);
+            if(event.key.keysym.sym == SDLK_ESCAPE){
+                showMenu();
+            }
+                
+
         }
         // tăng khung hình
         cur++;
@@ -48,4 +51,3 @@ void gameLoop()
         SDL_Delay(10);  
     } 
 }
-

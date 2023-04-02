@@ -1,16 +1,6 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_thread.h>
-#include <unistd.h>
-#include "bullet.h"
-#include "ship.h"
-// #include "list_bullet.h"
 #include "global.h"
-
+#include "menu.h"
 void loadBackGround();
 void init();
 void freeAll();
@@ -27,11 +17,15 @@ void init()
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
-    SDL_ShowCursor(SDL_DISABLE);
+    // SDL_ShowCursor(SDL_DISABLE);
     initShip(s);
     set_clip();
     initBullets();
     loadBackGround();  
+    if (initMenu() != 0)
+    {
+        printf("loi!! %s\n",SDL_GetError());
+    }
 }
 
 
@@ -60,8 +54,7 @@ void freeAll()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(s->texture);
     SDL_DestroyTexture(background);
-   // SDL_DestroyTexture(bullet);
-    // SDL_DestroyMutex(bulletMutex);
+    SDL_DestroyMutex(mutex_bullet);
 }
 void drawBackGround()
 {
