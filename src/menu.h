@@ -148,27 +148,27 @@ void drawMenu()
     SDL_RenderCopy(renderer, quitButton, NULL, &quitRect);
 
     SDL_GetMouseState(&mouseX,&mouseY);
-    if ( mouseX >= 300 && mouseX <= 650 && mouseY >= 300 && mouseY <= 350)
+    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 300 && mouseY <= 350)
     {
         // Vẽ nút bắt đầu
-        SDL_Rect startRect = { 450, 300, 200, 50 };
+        SDL_Rect startRect = { 650, 300, 200, 50 };
         SDL_RenderCopy(renderer, startButton2, NULL, &startRect);
         // SDL_RenderPresent(renderer);
     }
 
     // Kiểm tra xem người dùng có nhấp vào nút help không
-    if ( mouseX >= 300 && mouseX <= 650 && mouseY >= 400 && mouseY <= 450)
+    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 400 && mouseY <= 450)
     {
         // Vẽ nút help
-        SDL_Rect helpRect = { 450, 400, 200, 50 };
+        SDL_Rect helpRect = { 650, 400, 200, 50 };
         SDL_RenderCopy(renderer, helpButton2, NULL, &helpRect);
         // SDL_RenderPresent(renderer);
     }
     // Kiểm tra xem người dùng có nhấp vào nút thoát không
-    if ( mouseX >= 300 && mouseX <= 650 && mouseY >= 500 && mouseY <= 550)
+    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 500 && mouseY <= 550)
     {
         // Vẽ nút thoát
-        SDL_Rect quitRect = { 450, 500, 200, 50 };
+        SDL_Rect quitRect = { 650, 500, 200, 50 };
         SDL_RenderCopy(renderer, quitButton2, NULL, &quitRect);
         // SDL_RenderPresent(renderer);
     }
