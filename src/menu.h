@@ -142,7 +142,7 @@ void showMenu()
         // Xử lý sự kiện
         while (SDL_PollEvent(&event))
         {
-            handleMenu(event, &gameOver);
+            handleMenu(event, &gameOver); // xử lí menu
         }
         
         // Vẽ menu game
