@@ -14,7 +14,7 @@ void gameLoop()
     int i = -1; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
     initBullets(); // cấp phát bộ nhớ cho con trỏ
     SDL_Thread *threadBullets[MAX_BULLET];
-
+    SDL_ShowCursor(SDL_DISABLE); // ẩn con trỏ chuột
     while(true){
         SDL_Event event;
         SDL_RenderClear(renderer);
@@ -37,7 +37,7 @@ void gameLoop()
                 threadBullets[i] = SDL_CreateThread(moveBullet,"move",(void*)i);  
 
             }
-                
+
             //esc để thoát
             if(event.key.keysym.sym == SDLK_ESCAPE){
                 for(int j = 0; j <= i; j++) {
