@@ -5,6 +5,8 @@ void loadBackGround();
 void init();
 void freeAll();
 void drawBackGround();
+void set_clip_background();
+SDL_Rect background_clip[8];
 //==========================
 
 void init()
@@ -20,6 +22,7 @@ void init()
     
     initShip(s);
     set_clip();
+    set_clip_background();
     loadBackGround();  
     if (initMenu() != 0)
     {
@@ -27,12 +30,21 @@ void init()
     }
 }
 
-
+void set_clip_background()
+{
+    for (int i = 0; i < 8; i++)
+    {
+        background_clip[i].x = 0;
+        background_clip[i].y = i * 600;
+        background_clip[i].w = 1200;
+        background_clip[i].h = 600;
+    }
+}
 void loadBackGround()
 {
     SDL_Surface *surface;
-    IMG_Init(IMG_INIT_JPG);
-    surface = IMG_Load("image\\background.jpg");
+    IMG_Init(IMG_INIT_PNG);
+    surface = IMG_Load("image\\background2.png");
     if(surface != NULL){
         background = SDL_CreateTextureFromSurface(renderer,surface);
         if(background == NULL){
@@ -47,9 +59,9 @@ void loadBackGround()
     
 }   
 
-void drawBackGround()
+void drawBackGround(int cur)
 {
-    SDL_RenderCopy(renderer,background,NULL,NULL);
+    SDL_RenderCopy(renderer,background,&background_clip[cur],NULL);
 }
 
 // cần sửa

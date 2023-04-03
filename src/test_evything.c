@@ -1,19 +1,33 @@
-#include "player.h"
 
-int main()
-{
-    list *l = (list*)malloc(sizeof(list));
-    initList(l);
-    loadFile(fileIn, l);
-    printList(*l);
-    player *p;
-    inputPlayer(p);
-    node *newNode = createNode(*p);
-    addNode(newNode, l);
 
-    saveFile(fileOut,*l);
-    return 0;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+// #include "player.h"
+
+// int main()
+// {
+//     list *l = (list*)malloc(sizeof(list));
+//     initList(l);
+//     loadFile(fileIn, l);
+//     printList(*l);
+//     player *p;
+//     inputPlayer(p);
+//     node *newNode = createNode(*p);
+//     addNode(newNode, l);
+
+//     saveFile(fileOut,*l);
+//     return 0;
+// }
 
 
 

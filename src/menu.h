@@ -112,6 +112,7 @@ void handleMenu(SDL_Event event, bool *quit)
 {
     switch (event.type)
     {
+        
         case SDL_MOUSEBUTTONDOWN:
             // Kiểm tra xem người dùng có nhấp vào nút bắt đầu không
             if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 300 && event.button.x <= 650 && event.button.y >= 300 && event.button.y <= 350)
