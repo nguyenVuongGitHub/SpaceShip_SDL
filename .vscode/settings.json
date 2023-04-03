@@ -8,6 +8,7 @@
         "menu.h": "c",
         "bullet.h": "c",
         "global.h": "c",
-        "ship.h": "c"
+        "ship.h": "c",
+        "unistd.h": "c"
     }
 }
