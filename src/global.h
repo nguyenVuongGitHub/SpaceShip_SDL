@@ -9,7 +9,8 @@
 
 #define MAX_BULLET 1000
 
-// const int WIDTH = 5000, HEIGHT = 1000;
+int widthScreen;
+int heightScreen;
 
 int mouseX = 0, mouseY = 0;
 bool gameOver;
@@ -24,5 +25,6 @@ SDL_mutex *mutex_bullet;
 SDL_Texture* startButton = NULL;
 SDL_Texture* helpButton = NULL;
 SDL_Texture* quitButton = NULL;
+
 
 

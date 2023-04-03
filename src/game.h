@@ -17,10 +17,9 @@ void init()
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
-    // SDL_ShowCursor(SDL_DISABLE);
+    
     initShip(s);
     set_clip();
-    initBullets();
     loadBackGround();  
     if (initMenu() != 0)
     {
@@ -48,6 +47,12 @@ void loadBackGround()
     
 }   
 
+void drawBackGround()
+{
+    SDL_RenderCopy(renderer,background,NULL,NULL);
+}
+
+// cần sửa
 void freeAll()
 {
     SDL_DestroyWindow(window);
@@ -55,8 +60,4 @@ void freeAll()
     SDL_DestroyTexture(s->texture);
     SDL_DestroyTexture(background);
     SDL_DestroyMutex(mutex_bullet);
-}
-void drawBackGround()
-{
-    SDL_RenderCopy(renderer,background,NULL,NULL);
 }

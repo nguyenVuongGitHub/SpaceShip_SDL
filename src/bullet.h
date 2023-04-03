@@ -68,9 +68,7 @@ int moveBullet(void *data)
         if (bullets[i]->y_pos < 0) {
             break;
         }
-
-        printf("thread i = %d and Y-bullet = %d\n",i,bullets[i]->y_pos);
-
+        printf("thread %d & Y = %d\n",i,bullets[i]->y_pos);
         //vẽ đạn lên render
         SDL_Rect rectBullet = {
             bullets[i]->x_pos,

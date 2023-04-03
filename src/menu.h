@@ -21,7 +21,7 @@ int initMenu()
 
     // Tải tài nguyên
     IMG_Init(IMG_INIT_PNG);
-    background_menu = IMG_LoadTexture(renderer, "image\\menu.png");
+    background_menu = IMG_LoadTexture(renderer, "image\\background_menu.png");
     if (!background_menu)
     {
         printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
@@ -92,15 +92,15 @@ void drawMenu()
     SDL_RenderCopy(renderer, background_menu, NULL, NULL);
 
     // Vẽ nút bắt đầu
-    SDL_Rect startRect = { 300, 300, 200, 50 };
+    SDL_Rect startRect = { 650, 300, 200, 50 };
     SDL_RenderCopy(renderer, startButton, NULL, &startRect);
 
     // Vẽ nút help
-    SDL_Rect helpRect = { 300, 400, 200, 50 };
+    SDL_Rect helpRect = { 650, 400, 200, 50 };
     SDL_RenderCopy(renderer, helpButton, NULL, &helpRect);
 
     // Vẽ nút thoát
-    SDL_Rect quitRect = { 300, 500, 200, 50 };
+    SDL_Rect quitRect = { 650, 500, 200, 50 };
     SDL_RenderCopy(renderer, quitButton, NULL, &quitRect);
 
     // Cập nhật màn hình
@@ -114,18 +114,18 @@ void handleMenu(SDL_Event event, bool *quit)
     {
         case SDL_MOUSEBUTTONDOWN:
             // Kiểm tra xem người dùng có nhấp vào nút bắt đầu không
-            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 300 && event.button.y <= 350)
+            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 300 && event.button.y <= 350)
             {
                 gameLoop();
             }
 
             // Kiểm tra xem người dùng có nhấp vào nút help không
-            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 400 && event.button.y <= 450)
+            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 400 && event.button.y <= 450)
             {
                 printf("Help button clicket!\n");
             }
             // Kiểm tra xem người dùng có nhấp vào nút thoát không
-            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 500 && event.button.y <= 550)
+            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 500 && event.button.y <= 550)
             {
                 exit(0);
             }
@@ -134,6 +134,7 @@ void handleMenu(SDL_Event event, bool *quit)
 }
 void showMenu()
 {
+    SDL_ShowCursor(SDL_ENABLE);
     SDL_RenderClear(renderer);
     drawMenu();
     while (gameOver == false)
@@ -142,7 +143,7 @@ void showMenu()
         // Xử lý sự kiện
         while (SDL_PollEvent(&event))
         {
-            handleMenu(event, &gameOver);
+            handleMenu(event, &gameOver); // xử lí menu
         }
         
         // Vẽ menu game
