@@ -3,12 +3,23 @@
 // Khai báo biến toàn cục
 int initMenu();
 void cleanUp();
-
+void drawPause();
 void drawMenu();
 void showMenu();
 void showHelp();
 void handleMenu(SDL_Event event, bool *quit);
+void drawPause_00();
+void drawPause_01();
+void drawPause_10();
+void drawPause_11();
+void drawPause_20();
+void drawPause_21();
+void drawPause_30();
+void drawPause_31();
+void drawPause_40();
+void drawPause_41();
 #include"handle.h"
+
 // Hàm khởi tạo SDL và tải các tài nguyên
 int initMenu()
 {
@@ -144,7 +155,20 @@ int initMenu()
         SDL_Quit();
         return 1;
     }
+    pause_01 = IMG_LoadTexture(renderer, "image\\0-1.png"); // ảnh khi k có âm thanh
+    pause_00 = IMG_LoadTexture(renderer, "image\\0-0.png"); // ảnh khi có âm thanh
 
+    pause_10 = IMG_LoadTexture(renderer, "image\\1-0.png");
+    pause_11 = IMG_LoadTexture(renderer, "image\\1-1.png");
+
+    pause_21 = IMG_LoadTexture(renderer, "image\\2-1.png");
+    pause_20 = IMG_LoadTexture(renderer, "image\\2-0.png");
+
+    pause_31 = IMG_LoadTexture(renderer, "image\\3-1.png");
+    pause_30 = IMG_LoadTexture(renderer, "image\\3-0.png");
+
+    pause_41 = IMG_LoadTexture(renderer, "image\\4-1.png");
+    pause_40 = IMG_LoadTexture(renderer, "image\\4-0.png");
     return 0;
 }
 
@@ -288,4 +312,45 @@ void showMenu()
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
     }
+}
+
+void drawPause_00()
+{
+    SDL_RenderCopy(renderer,pause_00,NULL,NULL);
+}
+void drawPause_01()
+{
+    SDL_RenderCopy(renderer,pause_01,NULL,NULL);
+}
+void drawPause_10()
+{
+    SDL_RenderCopy(renderer,pause_10,NULL,NULL);
+}
+void drawPause_11()
+{
+    SDL_RenderCopy(renderer,pause_11,NULL,NULL);
+}
+void drawPause_20()
+{
+    SDL_RenderCopy(renderer,pause_20,NULL,NULL);
+}
+void drawPause_21()
+{
+    SDL_RenderCopy(renderer,pause_21,NULL,NULL);
+}
+void drawPause_30()
+{
+    SDL_RenderCopy(renderer,pause_30,NULL,NULL);
+}
+void drawPause_31()
+{
+    SDL_RenderCopy(renderer,pause_31,NULL,NULL);
+}
+void drawPause_40()
+{
+    SDL_RenderCopy(renderer,pause_40,NULL,NULL);
+}
+void drawPause_41()
+{
+    SDL_RenderCopy(renderer,pause_41,NULL,NULL);
 }

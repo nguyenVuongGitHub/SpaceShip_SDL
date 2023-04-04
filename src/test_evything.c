@@ -11,7 +11,7 @@ SDL_Texture* monster = NULL;
 SDL_Texture* bullet_monster = NULL;
 #define PI 3.14159265358979323846
 
-int xMonster = -1;
+int xMonster = -10;
 int yMonster = 200;
 int wMonster = 100;
 int hMonster = 100;
