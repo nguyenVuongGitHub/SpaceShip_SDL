@@ -1,6 +1,7 @@
 #pragma once
 #include "global.h"
 #include "menu.h"
+#include "monster.h"
 void loadBackGround();
 void init();
 void freeAll();
@@ -9,15 +10,17 @@ void drawBackGround();
 
 void init()
 {
+    
     SDL_Init(SDL_INIT_EVERYTHING);
     int index_window = 0;
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(index_window,&displayMode);
-
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
+    // m=(monster*)malloc(sizeof(monster));
     // SDL_ShowCursor(SDL_DISABLE);
+    initMonster();
     initShip(s);
     set_clip();
     initBullets();
@@ -39,13 +42,14 @@ void loadBackGround()
         if(background == NULL){
             printf("Khong tao duoc texture tu surface: %s", SDL_GetError());
         }else{
-            SDL_RenderCopy(renderer,background,NULL,NULL);
-            SDL_FreeSurface(surface);
-        }   
-    }else{
+                SDL_RenderCopy(renderer,background,NULL,NULL);
+                SDL_FreeSurface(surface);
+        
+            } 
+    }
+     else{
         printf("Khong load duoc anh: %s", IMG_GetError());
     }
-    
 }   
 
 void freeAll()

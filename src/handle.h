@@ -3,7 +3,7 @@
 #include "ship.h"
 #include "bullet.h"
 #include "game.h"
-
+#include "monster.h"
 void gameLoop();
 
 //================================
@@ -18,7 +18,7 @@ void gameLoop()
         SDL_RenderClear(renderer);
         drawBackGround();
         drawShip(cur);
-        
+        drawMonster();
         while(SDL_PollEvent(&event)){
             
             // bắt sự kiện di chuyển
