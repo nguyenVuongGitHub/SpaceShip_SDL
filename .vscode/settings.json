@@ -9,6 +9,8 @@
         "bullet.h": "c",
         "global.h": "c",
         "ship.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "sdl_video.h": "c",
+        "sdl_image.h": "c"
     }
 }
