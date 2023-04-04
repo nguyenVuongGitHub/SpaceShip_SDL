@@ -187,7 +187,7 @@ void handleMenu(SDL_Event event, bool *quit)
                 gameLoop();
             }
 
-            // Kiểm tra xem người dùng có nhấp vào nút help không
+            // Kiểm tra xem người dùng có nhấp vào ginút help không
             if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 400 && event.button.y <= 450)
             {
                 printf("Help button clicket!\n");
