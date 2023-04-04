@@ -4,7 +4,7 @@
 #include "ship.h"
 #include "bullet.h"
 #include "game.h"
-
+#include "monster.h"
 void gameLoop();
 
 //================================

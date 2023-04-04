@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     system("cls");
     init();
     showMenu();
-    
+    // gameLoop();
     // printf("cc");
     freeAll();
     return 0;

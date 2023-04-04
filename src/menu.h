@@ -6,6 +6,7 @@ void cleanUp();
 
 void drawMenu();
 void showMenu();
+void showHelp();
 void handleMenu(SDL_Event event, bool *quit);
 #include"handle.h"
 // Hàm khởi tạo SDL và tải các tài nguyên
@@ -65,6 +66,19 @@ int initMenu()
         SDL_Quit();
         return 1;
     }
+    backButton = IMG_LoadTexture(renderer, "image\\backButton.png");
+    if (!backButton)
+    {
+        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
+        SDL_DestroyTexture(background);
+        SDL_DestroyTexture(startButton);
+        SDL_DestroyTexture(helpButton);
+        SDL_DestroyTexture(quitButton);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
     // IMG_Init(IMG_INIT_PNG);
     startButton2 = IMG_LoadTexture(renderer, "image\\PlayButton2.png");
     if (!startButton2)
@@ -74,6 +88,7 @@ int initMenu()
         SDL_DestroyTexture(startButton);
         SDL_DestroyTexture(helpButton);
         SDL_DestroyTexture(quitButton);
+        SDL_DestroyTexture(backButton);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -88,6 +103,7 @@ int initMenu()
         SDL_DestroyTexture(startButton);
         SDL_DestroyTexture(helpButton);
         SDL_DestroyTexture(quitButton);
+        SDL_DestroyTexture(backButton);
         SDL_DestroyTexture(startButton2);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
@@ -103,8 +119,26 @@ int initMenu()
         SDL_DestroyTexture(startButton);
         SDL_DestroyTexture(helpButton);
         SDL_DestroyTexture(quitButton);
+        SDL_DestroyTexture(backButton);
         SDL_DestroyTexture(startButton2);
         SDL_DestroyTexture(helpButton2);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    backButton2 = IMG_LoadTexture(renderer, "image\\backButton2.png");
+    if (!backButton2)
+    {
+        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
+        SDL_DestroyTexture(background);
+        SDL_DestroyTexture(startButton);
+        SDL_DestroyTexture(helpButton);
+        SDL_DestroyTexture(quitButton);
+        SDL_DestroyTexture(backButton);
+        SDL_DestroyTexture(startButton2);
+        SDL_DestroyTexture(helpButton2);
+        SDL_DestroyTexture(quitButton2);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -187,10 +221,11 @@ void handleMenu(SDL_Event event, bool *quit)
                 gameLoop();
             }
 
-            // Kiểm tra xem người dùng có nhấp vào nút help không
+            // Kiểm tra xem người dùng có nhấp vào ginút help không
             if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 400 && event.button.y <= 450)
             {
-                printf("Help button clicket!\n");
+                showHelp();
+                
             }
             // Kiểm tra xem người dùng có nhấp vào nút thoát không
             if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 500 && event.button.y <= 550)
@@ -200,6 +235,34 @@ void handleMenu(SDL_Event event, bool *quit)
             // break;
     }
     
+}
+void showHelp()
+{
+    while(true)
+    {
+        SDL_RenderClear(renderer);
+        SDL_Event event2;
+        drawHelp();
+        drawMouse();
+        while (SDL_PollEvent(&event2))
+        {
+            if(event2.type == SDL_MOUSEBUTTONDOWN)
+            {
+                SDL_GetMouseState(&mouseX,&mouseY);
+                if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
+                {
+                    gameLoop();
+                }
+                if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
+                {
+                    showMenu();
+                }
+            }
+        }
+        
+        SDL_RenderPresent(renderer);
+        SDL_Delay(10);
+    }
 }
 void showMenu()
 {
