@@ -19,6 +19,7 @@ bullet *bullets[MAX_BULLET];
 void loadBullet(bullet *b);
 void initBullet(bullet *b);
 int moveBullet(void *data);
+void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET]);
 //=====================================================
 
 void initBullet(bullet *b){
@@ -59,26 +60,25 @@ void loadBullet(bullet *b)
 
 int moveBullet(void *data)
 {
+    
     SDL_LockMutex(mutex_bullet);
     int i = (int)data;
 
     //active = true -> đang di chuyển
     while(bullets[i]->active == true) {
         bullets[i]->y_pos -= bullets[i]->speed; // di chuyển 
-        if (bullets[i]->y_pos < 0) {
+        if (bullets[i]->y_pos <= 0) {
             break;
         }
-
-        printf("thread i = %d and Y-bullet = %d\n",i,bullets[i]->y_pos);
-
+        printf("thread %d & Y = %d\n",i,bullets[i]->y_pos);
         //vẽ đạn lên render
         SDL_Rect rectBullet = {
             bullets[i]->x_pos,
             bullets[i]->y_pos,  
             bullets[i]->width,
             bullets[i]->height
-        };
-        SDL_RenderCopy(renderer,bullets[i]->texture,NULL,&rectBullet);
+    };
+    SDL_RenderCopy(renderer,bullets[i]->texture,NULL,&rectBullet);
         SDL_Delay(10);
     }
     SDL_UnlockMutex(mutex_bullet);
@@ -106,4 +106,16 @@ void initBullets(){
     for(int i = 0; i < MAX_BULLET; i++){
         bullets[i]->active = false;
     }
+}
+void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET])
+{
+    for (int i = 0; i < MAX_BULLET; i++)
+    {
+        if(bullets[i]->y_pos < 0 && bullets[i] != NULL)
+        {
+            free(bullets[i]);
+        }
+    }
+    
+    
 }
