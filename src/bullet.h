@@ -20,6 +20,7 @@ void loadBullet(bullet *b);
 void initBullet(bullet *b);
 int moveBullet(void *data);
 void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET]);
+void freeBullets();
 //=====================================================
 
 void initBullet(bullet *b){
@@ -107,6 +108,11 @@ void initBullets(){
         bullets[i]->active = false;
     }
 }
+void freeBullets()
+{
+    for(int j = 0; j < MAX_BULLET; j++)
+        free(bullets[j]);
+}
 void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET])
 {
     for (int i = 0; i < MAX_BULLET; i++)
@@ -116,6 +122,4 @@ void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET])
             free(bullets[i]);
         }
     }
-    
-    
 }

@@ -5,7 +5,10 @@
 #include "bullet.h"
 #include "game.h"
 #include "monster.h"
+
+
 void gameLoop();
+void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
 
 //================================
 
@@ -25,7 +28,7 @@ void gameLoop()
         SDL_RenderClear(renderer);
         drawBackGround(cur_background);
         drawShip(cur_ship);
-        
+        drawMonster();
         while(SDL_PollEvent(&event)){
             
             // bắt sự kiện di chuyển
@@ -51,19 +54,15 @@ void gameLoop()
                 }
 
             }
-
-            //esc để thoát
+            
+            ///esc để tạm dừng
             if(event.key.keysym.sym == SDLK_ESCAPE){
-                for(int j = 0; j <= i; j++) {
-                    SDL_WaitThread(threadBullets[j], NULL);
-                }
-                //giải phóng bộ nhớ cho mảng con trỏ
-                for(int j = 0; j < MAX_BULLET; j++)
-                {
-                    free(bullets[j]);
-                }
-                i = -1; // reset biến i
-                showMenu(); // về lại menu
+                // chờ cho đạn đi hết màn hình 
+                // for(int j = 0; j <= i; j++) {
+                //     SDL_WaitThread(threadBullets[j], NULL);
+                // }
+                handlePause();
+
             }
                 
 
@@ -83,4 +82,130 @@ void gameLoop()
         SDL_RenderPresent(renderer);
         SDL_Delay(10);  
     } 
+}
+void handlePause()
+{
+    int last_mouse = 0; // biến thể hiện chuột lần cuối đang ở đâu
+    bool sound = true;
+    SDL_RenderClear(renderer);
+    while(true)
+    {
+        SDL_Event event;
+        SDL_RenderClear(renderer);
+        SDL_GetMouseState(&mouseX,&mouseY);
+
+        while(SDL_PollEvent(&event))
+        {
+            
+            // help khi có sound
+            if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && sound)
+            {
+                drawPause_11();
+                last_mouse = 1;
+            }
+            // tiếp tục - khi có sound
+            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 425 && mouseY <= 450 && sound)
+            {
+                drawPause_21();
+                if(event.type == SDL_MOUSEBUTTONDOWN) return;
+                last_mouse = 2;
+            }
+            // thoát - khi có sound
+            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 490 && mouseY <= 515 && sound)
+            {
+                drawPause_31();
+                if(event.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    freeBullets();
+                    showMenu(); // về lại menu
+                }
+                last_mouse = 3;
+            }
+            // tắt sound
+            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 555 && mouseY <= 580 && sound)
+            {
+                drawPause_41();
+                if(event.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    sound = false;
+
+                }
+                // drawPause_40();
+                last_mouse = 4;
+            }
+            //như tr
+            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && !sound)
+            {
+                drawPause_10();
+                last_mouse = 5;
+            }
+            //như trên
+            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 425 && mouseY <= 450 && !sound)
+            {
+                drawPause_20();
+                if(event.type == SDL_MOUSEBUTTONDOWN) return;
+                last_mouse = 6;
+            }
+            //như trên
+            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 490 && mouseY <= 515 && !sound)
+            {
+                drawPause_30();
+                if(event.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    // //giải phóng bộ nhớ cho mảng con trỏ
+                    freeBullets();
+                    showMenu(); // về lại menu
+                }
+                last_mouse = 7;
+            }
+            // bật sound
+            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 555 && mouseY <= 580 && !sound)
+            {
+                drawPause_40();
+                if(event.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    sound = true;
+                }
+                // drawPause_41();
+                last_mouse = 8;
+            }
+        }
+
+        // hiện ảnh ra màn hình khi con chuột thoát khỏi mục ngắm
+        switch (last_mouse)
+        {   
+        case 0:
+            if(sound)
+                drawPause_01();
+            else drawPause_00(); 
+            break;
+        case 1:
+            drawPause_11();
+            break;
+        case 2:
+            drawPause_21();
+            break;
+        case 3:
+            drawPause_31();
+            break;
+        case 4:
+            drawPause_41();
+            break;
+        case 5:
+            drawPause_10();
+            break;
+        case 6:
+            drawPause_20();
+            break;
+        case 7:
+            drawPause_30();
+            break;
+        case 8:
+            drawPause_40();
+            break;
+        }
+        drawMouse();
+        SDL_Delay(10);
+        SDL_RenderPresent(renderer);
+    }
 }
