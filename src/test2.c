@@ -57,40 +57,42 @@ int main(int argc, char* argv[])
     
     
 
-    init();
-    loadMonster();
-    printf("%d",m->xMonster);
-    SDL_Event event;
-    bool quit = false;
-    int counLoop = 0;
-    while (!quit)
-    {
-        SDL_RenderClear(renderer);
+    // init();
+    // loadMonster();
+    for(int i = 0; i <= 10; i -=~(0))
+        printf("%d\n",i);
 
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-        }
+    // SDL_Event event;
+    // bool quit = false;
+    // int counLoop = 0;
+    // while (!quit)
+    // {
+    //     SDL_RenderClear(renderer);
 
-        printf("%d\n",m->xMonster);
-        drawMonster();
-        GenerateMonster();
+    //     while (SDL_PollEvent(&event))
+    //     {
+    //         if (event.type == SDL_QUIT)
+    //         {
+    //             quit = true;
+    //         }
+    //     }
 
-        // drawBullet();
-        // moveBullet();
-        if(m->xMonster == 250) spawn_bullets_around_enemy(20);
+    //     printf("%d\n",m->xMonster);
+    //     drawMonster();
+    //     GenerateMonster();
+
+    //     // drawBullet();
+    //     // moveBullet();
+    //     if(m->xMonster == 250) spawn_bullets_around_enemy(20);
         
-        SDL_RenderPresent(renderer);
-        SDL_Delay(10);
-    }
-    free(m);
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(monster);
-    SDL_DestroyTexture(bullet_monster);
+    //     SDL_RenderPresent(renderer);
+    //     SDL_Delay(10);
+    // }
+    // free(m);
+    // SDL_DestroyWindow(window);
+    // SDL_DestroyRenderer(renderer);
+    // SDL_DestroyTexture(monster);
+    // SDL_DestroyTexture(bullet_monster);
     return 0;
 }
 

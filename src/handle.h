@@ -43,7 +43,7 @@ void gameLoop()
                 Uint32 time_since_last_shot = current_time - last_shot_time;
 
                 // Kiểm tra xem đã đủ thời gian để bắn đạn tiếp theo chưa
-                if (time_since_last_shot >= 3) {
+                if (time_since_last_shot >= 300) {
                     i++; // biến đếm biểu thị vị trí viên đạn trong danh sách
                     addNewBulletToList();
                     // luồng khác để xử lí đạn
@@ -52,7 +52,6 @@ void gameLoop()
                     // Lưu lại thời gian bắn đạn
                     last_shot_time = current_time;
                 }
-
             }
             
             ///esc để tạm dừng
