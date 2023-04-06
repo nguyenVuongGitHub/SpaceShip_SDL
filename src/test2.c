@@ -24,14 +24,14 @@ double angle = 0;
 
 
 struct monster{
-int xMonster = -1;
-int yMonster = 200;
-int wMonster = 100;
-int hMonster = 100;
-int xBullet = xMonster;
-int yBullet = yMonster;
-double dente_angle = 0.1;
-double bullet_radius = 20;
+    int xMonster;
+    int yMonster;
+    int wMonster;
+    int hMonster;
+    int xBullet;
+    int yBullet;
+    double dente_angle;
+    double bullet_radius;
 };
 typedef struct monster MONSTER;
 
@@ -58,7 +58,8 @@ int main(int argc, char* argv[])
     
 
     init();
-
+    loadMonster();
+    printf("%d",m->xMonster);
     SDL_Event event;
     bool quit = false;
     int counLoop = 0;
@@ -115,8 +116,14 @@ void init()
         
     // }
     // SDL_FreeSurface(bullet_monster_surface);
-   
-        
+    m->xMonster = -1;
+    m->yMonster = 200;
+    m->wMonster = 100;
+    m->hMonster = 100;
+    m->xBullet = m->xMonster;
+    m->yBullet = m->yMonster;
+    m->dente_angle = 0.1;
+    m->bullet_radius = 20;
 
 }
 void loadMonster(){
@@ -150,7 +157,7 @@ void loadMonster(){
         bullet_file_path = "image/BulletThreat.png";
     }
 
-
+    
     SDL_Surface* monster_surface = IMG_Load(monster_file_path); 
     SDL_Surface* bullet_monster_surface = IMG_Load(bullet_file_path);
     if (monster_surface != NULL)
@@ -158,6 +165,7 @@ void loadMonster(){
         monster = SDL_CreateTextureFromSurface(renderer, monster_surface);
         
     }
+    // printf("cc");
     SDL_FreeSurface(monster_surface);
     if (bullet_monster_surface != NULL)
     {
@@ -169,7 +177,7 @@ void loadMonster(){
 
 void drawMonster()
 {
-    m->xMonster+=3;
+    m->xMonster += 3;
     if(m->xMonster >= 250) m->xMonster = 250;
 
     SDL_Rect monster_rect = { m->xMonster, m->yMonster, m->wMonster, m->hMonster };
