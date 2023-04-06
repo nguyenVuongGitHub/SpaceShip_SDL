@@ -23,15 +23,9 @@ void gameLoop()
     while(true){
         SDL_Event event;
         SDL_RenderClear(renderer);
-<<<<<<< HEAD
-        drawBackGround();
-        drawShip(cur);
-        drawMonster();
-=======
         drawBackGround(cur_background);
         drawShip(cur_ship);
-        
->>>>>>> 9cfd6dedc99443721811dff565febbafa42eab31
+        drawMonster();
         while(SDL_PollEvent(&event)){
             
             // bắt sự kiện di chuyển
