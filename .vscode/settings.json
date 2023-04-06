@@ -1,6 +1,14 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "sdl_thread.h": "c"
+        "sdl_thread.h": "c",
+        "game.h": "c",
+        "sdl.h": "c",
+        "handle.h": "c",
+        "menu.h": "c",
+        "bullet.h": "c",
+        "global.h": "c",
+        "ship.h": "c",
+        "unistd.h": "c"
     }
 }
