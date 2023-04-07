@@ -2,6 +2,7 @@
 #include "global.h"
 #include "menu.h"
 #include "monster.h"
+#include "linkedListForMonster.h"
 void loadBackGround();
 void loadMouse();
 void loadHelp(); // tải ảnh phần hướng dẫn
@@ -27,10 +28,11 @@ void init()
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
-    // m=(monster*)malloc(sizeof(monster));
-    // SDL_ShowCursor(SDL_DISABLE);
-    initMonster();
-    initBulletMonster();
+    l = (monsterList*)malloc(sizeof(monsterList));
+    
+    initMonsterList(l);
+    
+    
     initShip(s);
     set_clip();
     set_clip_background();

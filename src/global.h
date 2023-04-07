@@ -8,9 +8,6 @@
 
 #define MAX_BULLET 50
 
-int widthScreen;
-int heightScreen;
-
 int mouseX = 0, mouseY = 0;
 bool gameOver;
 

@@ -5,16 +5,17 @@
 #include "bullet.h"
 #include "game.h"
 #include "monster.h"
+#include "monsterArray.h"
 
-
-void gameLoop();
+void gameLoop(); // vòng lặp chính
 void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
-bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2);
-void collision();
+bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2); // kiểm tra va chạm giữa hai object
+void collision(); // kiểm tra tất cả các trường hợp va chạm
 //================================
 
 void gameLoop()
 {
+    node *head = l->head;
     // Khai báo một biến đếm thời gian cho bắn đạn tiếp theo
     Uint32 last_shot_time = 0;
     int cur_ship = 0; // frame hình hiện tại
@@ -22,21 +23,16 @@ void gameLoop()
     int countLoop = 0;
     int numOfBullet= 0; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
     initBullets(); // cấp phát bộ nhớ cho con trỏ
-    SDL_Thread *threadBullets[MAX_BULLET];
     SDL_ShowCursor(SDL_DISABLE); // ẩn con trỏ chuột
     while(true){
         SDL_Event event;
         SDL_RenderClear(renderer);
-        drawBackGround(cur_background);
-        drawShip(cur_ship);
-        drawMonster();
+        
         while(SDL_PollEvent(&event)){
             
             // bắt sự kiện di chuyển
-            if(event.type == SDL_MOUSEMOTION){
-                moveShip();
-            }
-
+            if(event.type == SDL_MOUSEMOTION) moveShip();
+            
             //bắt sự kiện bắn đạn bằng chuột trái 
             if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LMASK)
             {
@@ -51,13 +47,32 @@ void gameLoop()
                     last_shot_time = current_time;
                 }
                 numOfBullet++; // biến đếm biểu thị số viên đạn trong danh sách
-                
             }
-            
             ///esc để tạm dừng
-            if(event.key.keysym.sym == SDLK_ESCAPE){
-                handlePause();
+            if(event.key.keysym.sym == SDLK_ESCAPE) handlePause();
+            
+        }
+        drawBackGround(cur_background);
+        drawShip(cur_ship);
+
+        // xử lí di chuyển đạn
+        for(int i = 0; i < MAX_BULLET; i++)
+        {
+            if(bullets[i] != NULL && bullets[i]->active)
+            {
+                drawBullet(bullets[i]);
+                moveBullet(bullets[i]);
             }
+        }
+        
+        GenerateMonster(l);
+        
+        // collision();
+        for(int i = 0; i < l->size; i++)
+        {
+            node *n = getNode(l,i);
+            drawMonster(&(n->data));
+            printf("x = %d, y= %d\n",n->data.x_pos,n->data.y_pos);
         }
         // tăng khung hình
         cur_ship++;
@@ -69,18 +84,6 @@ void gameLoop()
         if(cur_background >= 8) cur_background = 0;
         if(cur_ship >= 8) cur_ship = 0;
 
-        // spawn_bullets_around_enemy(10);
-
-        // xử lí di chuyển đạn
-        for(int i = 0; i < MAX_BULLET; i++)
-        {
-            if(bullets[i] != NULL && bullets[i]->active)
-            {
-                drawBullet(bullets[i]);
-                moveBullet(bullets[i]);
-            }
-        }
-        collision();
         // hiển thị lên màn hình
         SDL_RenderPresent(renderer);
         SDL_Delay(10);  
@@ -213,8 +216,11 @@ void handlePause()
     }
 }
 
-void collision()
+void collision(monster *m)
 {
+
+    // kiểm tra danh sách linkedlist
+    
     SDL_Rect rectMonster = {
             m->x_pos,
             m->y_pos,
@@ -235,12 +241,26 @@ void collision()
             if(checkCollision(rectBullet,rectMonster))
             {
                 bullets[i]->active = false;
-                m->x_pos = rand() % 1200;
-                m->y_pos = rand() % 800;
+                m->hp --;
+                if(m->hp == 0)
+                {
+                    m->x_pos = rand() % 1200;
+                    m->y_pos = rand() % 800;
+                } 
+                
             }
         }
-        
     }
+    SDL_Rect rect_ship = {s->X,s->Y,s->W,s->H};
+
+    if(checkCollision(rect_ship,rectMonster))
+    {
+        s->status = DIE;
+        loadShip();
+    }else {
+        s->status = LIVE;
+        loadShip();
+    } 
 }
 bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
 {

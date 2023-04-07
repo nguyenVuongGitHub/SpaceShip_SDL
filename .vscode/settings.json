@@ -11,6 +11,8 @@
         "ship.h": "c",
         "unistd.h": "c",
         "sdl_video.h": "c",
-        "sdl_image.h": "c"
+        "sdl_image.h": "c",
+        "type_traits": "c",
+        "linkedlistformonster.h": "c"
     }
 }
