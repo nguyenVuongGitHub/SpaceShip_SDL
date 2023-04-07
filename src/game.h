@@ -14,6 +14,8 @@ void drawHelp();
 void init();
 void freeAll();
 
+void loadAudio();
+
 void set_clip_background();
 SDL_Rect background_clip[8];
 //==========================
@@ -33,6 +35,10 @@ void init()
     initMonsterList(l);
     
     
+    // m=(monster*)malloc(sizeof(monster));
+    // SDL_ShowCursor(SDL_DISABLE);
+    loadAudio();
+
     initShip(s);
     set_clip();
     set_clip_background();
@@ -156,4 +162,26 @@ void freeAll()
     SDL_DestroyTexture(s->texture);
     SDL_DestroyTexture(background);
     SDL_DestroyMutex(mutex_bullet);
+    Mix_FreeChunk(Menu);
+    Mix_FreeChunk(BGM);
+    Mix_FreeChunk(Boss);
+    Mix_FreeChunk(hit);
+    Mix_FreeChunk(dead);
+    Mix_CloseAudio();
+}
+
+void loadAudio(){
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+    }
+    // Load và phát nhạc nền
+    Menu = Mix_LoadWAV("audio/Menu.wav");
+    BGM = Mix_LoadWAV("audio/bgm.wav");
+    Boss = Mix_LoadWAV("audio/BossMusic2.wav");
+    hit = Mix_LoadWAV("audio/SE_enemy_vanish.wav");
+    dead = Mix_LoadWAV("audio/SE_dead.wav");
+
+    if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL){
+        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
+    }
 }

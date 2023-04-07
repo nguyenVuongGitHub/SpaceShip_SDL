@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <unistd.h>
 
 #define MAX_BULLET 50
@@ -47,4 +48,9 @@ SDL_Texture* pause_41 = NULL;
 SDL_Texture* pause_40 = NULL;
 
 
-
+Mix_Chunk* Menu = NULL;
+Mix_Chunk* BGM = NULL;
+Mix_Chunk* Boss = NULL;
+Mix_Chunk* hit = NULL;
+Mix_Chunk* dead = NULL;
+// Mix_Chunk* eatHp = NULL;
