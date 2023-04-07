@@ -22,7 +22,7 @@ void init()
     
     SDL_Init(SDL_INIT_EVERYTHING);
     int index_window = 0;
-    SDL_DisplayMode displayMode;
+    
     SDL_GetCurrentDisplayMode(index_window,&displayMode);
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
@@ -30,6 +30,7 @@ void init()
     // m=(monster*)malloc(sizeof(monster));
     // SDL_ShowCursor(SDL_DISABLE);
     initMonster();
+
     initShip(s);
     set_clip();
     set_clip_background();
