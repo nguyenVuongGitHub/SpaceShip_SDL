@@ -31,6 +31,8 @@ void drawBullet();
 void spawn_bullets_around_enemy(int num_bullets);
 void spawn_bullets_triangle();
 void spawn_bullets_triangle2();
+void spawn_quadrilateral_bullets();
+
 int main(int argc, char* argv[])
 {
     
@@ -324,3 +326,40 @@ void spawn_bullets_triangle2()
 
 //     // Giải phóng bộ nhớ
 // }
+
+
+
+
+
+
+void spawn_quadrilateral_bullets()
+{   
+    for(int i = 0; i < 4; i++)
+    {
+        if(i == 0){
+            xBullet = xMonster;
+        }
+        else if(i == 1)
+        {
+            xBullet = xMonster+20;
+            yBullet+=15;
+        }
+        else if(i == 2)
+        {
+            // xBullet -=20;
+            yBullet -= 30; 
+        }
+        else if(i == 3)
+        {
+            yBullet+=15;
+            xBullet = xMonster+40;
+        }
+        yBullet+=1;
+        drawBullet();  
+        // SDL_Delay(100); 
+        if(yBullet > 800)
+        {
+            yBullet = yMonster;
+        }
+    }
+} 
