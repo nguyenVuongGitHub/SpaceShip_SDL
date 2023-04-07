@@ -9,7 +9,8 @@
 
 void gameLoop();
 void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
-
+bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2);
+void collision();
 //================================
 
 void gameLoop()
@@ -19,7 +20,7 @@ void gameLoop()
     int cur_ship = 0; // frame hình hiện tại
     int cur_background = 0;
     int countLoop = 0;
-    int i = -1; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
+    int numOfBullet= 0; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
     initBullets(); // cấp phát bộ nhớ cho con trỏ
     SDL_Thread *threadBullets[MAX_BULLET];
     SDL_ShowCursor(SDL_DISABLE); // ẩn con trỏ chuột
@@ -43,28 +44,20 @@ void gameLoop()
                 Uint32 time_since_last_shot = current_time - last_shot_time;
 
                 // Kiểm tra xem đã đủ thời gian để bắn đạn tiếp theo chưa
-                if (time_since_last_shot >= 300) {
-                    i++; // biến đếm biểu thị vị trí viên đạn trong danh sách
-                    addNewBulletToList();
-                    // luồng khác để xử lí đạn
-                    threadBullets[i] = SDL_CreateThread(moveBullet,"move",(void*)i);  
+                if (time_since_last_shot >= 200) {
                     
+                    addNewBulletToList(numOfBullet);
                     // Lưu lại thời gian bắn đạn
                     last_shot_time = current_time;
                 }
+                numOfBullet++; // biến đếm biểu thị số viên đạn trong danh sách
+                
             }
             
             ///esc để tạm dừng
             if(event.key.keysym.sym == SDLK_ESCAPE){
-                // chờ cho đạn đi hết màn hình 
-                // for(int j = 0; j <= i; j++) {
-                //     SDL_WaitThread(threadBullets[j], NULL);
-                // }
                 handlePause();
-
             }
-                
-
         }
         // tăng khung hình
         cur_ship++;
@@ -76,7 +69,18 @@ void gameLoop()
         if(cur_background >= 8) cur_background = 0;
         if(cur_ship >= 8) cur_ship = 0;
 
-        // freeBulletY_posLessZero(bullets);
+        // spawn_bullets_around_enemy(10);
+
+        // xử lí di chuyển đạn
+        for(int i = 0; i < MAX_BULLET; i++)
+        {
+            if(bullets[i] != NULL && bullets[i]->active)
+            {
+                drawBullet(bullets[i]);
+                moveBullet(bullets[i]);
+            }
+        }
+        collision();
         // hiển thị lên màn hình
         SDL_RenderPresent(renderer);
         SDL_Delay(10);  
@@ -207,4 +211,45 @@ void handlePause()
         SDL_Delay(10);
         SDL_RenderPresent(renderer);
     }
+}
+
+void collision()
+{
+    SDL_Rect rectMonster = {
+            m->x_pos,
+            m->y_pos,
+            m->Width,
+            m->height
+    };
+
+    for(int i =0; i < MAX_BULLET; i++)
+    {
+        if(bullets[i]->active)
+        {
+            SDL_Rect rectBullet = {
+            bullets[i]->x_pos,
+            bullets[i]->y_pos,
+            bullets[i]->width,
+            bullets[i]->height
+            };
+            if(checkCollision(rectBullet,rectMonster))
+            {
+                bullets[i]->active = false;
+                m->x_pos = rand() % 1200;
+                m->y_pos = rand() % 800;
+            }
+        }
+        
+    }
+}
+bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
+{
+    
+    if(object1.x+object1.w>=object2.x && object2.x+object2.w>=object1.x
+        && object1.y+object1.h>=object2.y && object2.y+object2.h>=object1.y)
+    {
+        return true;
+    }
+    return false;
+
 }
