@@ -30,6 +30,13 @@ void gameLoop()
         drawBackGround(cur_background);
         drawShip(cur_ship);
         drawMonster();
+        //nhạc nền game
+        Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
+        if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
+            Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
+        }
+        Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
+        
         while(SDL_PollEvent(&event)){
             
             // bắt sự kiện di chuyển
