@@ -30,7 +30,7 @@ void init()
     // m=(monster*)malloc(sizeof(monster));
     // SDL_ShowCursor(SDL_DISABLE);
     initMonster();
-    
+    initBulletMonster();
     initShip(s);
     set_clip();
     set_clip_background();

@@ -1,7 +1,7 @@
 #pragma once
 #include "global.h"
 #include "math.h"
-
+#include "monster.h"
 struct bullet{
     int x_pos;
     int y_pos;
@@ -18,9 +18,13 @@ bullet *bullets[MAX_BULLET];
 //=====================================================
 void loadBullet(bullet *b);
 void initBullet(bullet *b);
-int moveBullet(void *data);
+void moveBullet(bullet *b);
+void drawBullet(bullet *b);
+void addNewBulletToList(int numOfBullet);
 void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET]);
 void freeBullets();
+void collision(int numOfBullet);
+bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2);
 //=====================================================
 
 void initBullet(bullet *b){
@@ -46,59 +50,44 @@ void loadBullet(bullet *b)
         if(b->texture == NULL){
             printf("Khong tao duoc texture tu surface: %s", SDL_GetError());
         }
-        else{
-            // Tạo rect để chứa ảnh
-            SDL_Rect rect = {b->x_pos, b->y_pos, b->width, b->height};
-
-            // Render ảnh vào rect
-            SDL_RenderCopy(renderer, b->texture, NULL, &rect);
-        }
     }
     else{
         printf("Khong load duoc anh: %s", IMG_GetError());
     }
 }
 
-int moveBullet(void *data)
+void moveBullet(bullet *b)
 {
-    
-    SDL_LockMutex(mutex_bullet);
-    int i = (int)data;
-
-    //active = true -> đang di chuyển
-    while(bullets[i]->active == true) {
-        bullets[i]->y_pos -= bullets[i]->speed; // di chuyển 
-        if (bullets[i]->y_pos <= 0) {
-            break;
-        }
-        printf("thread %d & Y = %d\n",i,bullets[i]->y_pos);
-        //vẽ đạn lên render
-        SDL_Rect rectBullet = {
-            bullets[i]->x_pos,
-            bullets[i]->y_pos,  
-            bullets[i]->width,
-            bullets[i]->height
-    };
-    SDL_RenderCopy(renderer,bullets[i]->texture,NULL,&rectBullet);
-        SDL_Delay(10);
+    b->y_pos -= b->speed; // di chuyển 
+    if (b->y_pos <= 0){
+        b->active = false;
     }
-    SDL_UnlockMutex(mutex_bullet);
-    return 0;
 }
 
-void addNewBulletToList()
+void addNewBulletToList(int numOfBullet)
 {
-    bullet *newBullet = (bullet*)malloc(sizeof(bullet));
-    initBullet(newBullet);
-    
+    bullet *newBullet = NULL;
+
+    // Tìm đối tượng viên đạn không active trong danh sách để tái sử dụng
     for (int i = 0; i < MAX_BULLET; i++) {
-        if (bullets[i]->active == false) {
-            bullets[i] = newBullet;
-            bullets[i]->active = true;
-            bullets[i]->speed = 5;
+        if (bullets[i]->active == false){
+            newBullet = bullets[i];
             break;
         }
     }
+
+    // Nếu không có đối tượng nào để tái sử dụng, cấp phát đối tượng mới
+    if (newBullet == NULL) {
+        newBullet = (bullet*)malloc(sizeof(bullet));
+        bullets[numOfBullet] = newBullet;
+    }
+
+    // Khởi tạo đối tượng viên đạn
+    initBullet(newBullet);
+
+    // Cập nhật trạng thái của viên đạn và tốc độ
+    newBullet->active = true;
+    newBullet->speed = 11;
 }
 void initBullets(){
     for(int i = 0; i < MAX_BULLET; i++){    
@@ -113,13 +102,9 @@ void freeBullets()
     for(int j = 0; j < MAX_BULLET; j++)
         free(bullets[j]);
 }
-void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET])
+
+void drawBullet(bullet *b)
 {
-    for (int i = 0; i < MAX_BULLET; i++)
-    {
-        if(bullets[i]->y_pos < 0 && bullets[i] != NULL)
-        {
-            free(bullets[i]);
-        }
-    }
+    SDL_Rect r = {b->x_pos,b->y_pos,b->width,b->height};
+    SDL_RenderCopy(renderer,b->texture,NULL,&r);
 }

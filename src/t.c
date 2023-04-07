@@ -13,8 +13,8 @@ SDL_Texture* bullet_monster = NULL;
 
 int xMonster = -10;
 int yMonster = 200;
-int wMonster = 100;
-int hMonster = 100;
+int wMonster = 64;
+int hMonster = 64;
 int xBullet = xMonster;
 int yBullet = yMonster;
 double angle = 0;
@@ -33,9 +33,6 @@ void spawn_bullets_triangle();
 void spawn_bullets_triangle2();
 int main(int argc, char* argv[])
 {
-    
-    
-
     init();
 
     SDL_Event event;
@@ -51,13 +48,12 @@ int main(int argc, char* argv[])
                 quit = true;
             }
         }
-
-        printf("%d\n",xMonster);
         drawMonster();
-        // drawBullet();
-        // moveBullet();
-        if(xMonster == 250) spawn_bullets_triangle2();
-        
+        if(xMonster == 250) 
+        {
+            spawn_bullets_around_enemy(10);
+            
+        }
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
     }
@@ -97,25 +93,11 @@ void drawMonster()
 void drawBullet()
 {
     SDL_Rect bullet_rect = { xBullet+3,yBullet,wBullet,hBullet};
-    SDL_RendererFlip flip = SDL_FLIP_VERTICAL;
-    SDL_RenderCopyEx(renderer,bullet_monster,NULL,&bullet_rect,angle,NULL,flip);
+    SDL_RenderCopy(renderer,bullet_monster,NULL,&bullet_rect);
 }
 
 void moveBullet()
 {
-    // srand(time(0));
-    // angle=rand()%(120+120+1)-120;
-    // angle = 0;
-    // yBullet+=1;
-    // xBullet=30*sin(PI*yBullet/100)+xMonster;
-    
-    // xBullet+=2*cos(angle*PI/180);
-    // yBullet+=2*sin(angle*PI/180);
-
-    // xBullet+=1;
-    // yBullet=50*sin(PI*xBullet/100)+yMonster;
-
-    // yBullet+=1;
     int R = 500;
     xBullet = xMonster + R * cos(angle);
     yBullet = yMonster + R * sin(angle);
@@ -129,15 +111,12 @@ void spawn_bullets_around_enemy(int num_bullets) {
     float angle_between_bullets = 2 * PI / num_bullets; // Góc giữa các viên đạn
     for (int i = 0; i < num_bullets; i++) {
         // Tính toán tọa độ của viên đạn thứ i trên đường tròn
-        xBullet = xMonster + bullet_radius * cos(i * angle_between_bullets);
-        yBullet = yMonster + bullet_radius * sin(i * angle_between_bullets);
+        xBullet = xMonster + bullet_radius  * cos(i * angle_between_bullets);
+        yBullet = yMonster + bullet_radius  * sin(i * angle_between_bullets);
         // Tạo ra viên đạn tại tọa độ này
         drawBullet();
-        bullet_radius+=0.3; // tăng bán kính
-        if(bullet_radius >= 1000)
-        {
-            bullet_radius = 20;
-        }
+        bullet_radius+=0.4;
+        if(bullet_radius >= 500) bullet_radius = 20;
     }
 }
 
