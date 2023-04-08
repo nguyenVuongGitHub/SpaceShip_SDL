@@ -158,7 +158,8 @@ void GenerateMonster(monsterList *l)
         wave+=1;
         if(wave%10!=0)
         {
-            int random=rand()%8 + 1;
+            // int random=rand()%8 + 1;
+            int random = 1;
             if(random==1)
             {
                 monsterType_1();
