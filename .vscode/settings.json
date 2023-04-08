@@ -13,6 +13,7 @@
         "sdl_video.h": "c",
         "sdl_image.h": "c",
         "type_traits": "c",
-        "linkedlistformonster.h": "c"
+        "linkedlistformonster.h": "c",
+        "sdl_mixer.h": "c"
     }
 }
