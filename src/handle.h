@@ -59,7 +59,7 @@ void gameLoop()
             if(event.key.keysym.sym == SDLK_ESCAPE) handlePause();
             
         }
-        drawBackGround(cur_background);
+        moveBackground();
         drawShip(cur_ship);
 
         // xử lí di chuyển đạn
@@ -85,11 +85,11 @@ void gameLoop()
         // tăng khung hình
         cur_ship++;
         countLoop++;
-        //4 vòng lặp thì tăng background
-        if(countLoop % 4 == 0)
-            cur_background++;
+        // //4 vòng lặp thì tăng background
+        // if(countLoop % 4 == 0)
+        //     cur_background++;
 
-        if(cur_background >= 8) cur_background = 0;
+        // if(cur_background >= 8) cur_background = 0;
         if(cur_ship >= 8) cur_ship = 0;
 
         // hiển thị lên màn hình

@@ -7,7 +7,6 @@ void loadBackGround();
 void loadMouse();
 void loadHelp(); // tải ảnh phần hướng dẫn
 
-void drawBackGround();
 void drawMouse();
 void drawHelp();
 
@@ -16,8 +15,8 @@ void freeAll();
 
 void loadAudio();
 
-void set_clip_background();
-SDL_Rect background_clip[8];
+void moveBackground();
+SDL_Rect background_clip = {0,0,2360,1544};
 //==========================
 
 void init()
@@ -41,8 +40,6 @@ void init()
 
     initShip(s);
     set_clip();
-    set_clip_background();
-
     loadBackGround();  
     loadMouse();
     loadHelp();
@@ -52,14 +49,17 @@ void init()
     }
 }
 
-void set_clip_background()
+void moveBackground()
 {
-    for (int i = 0; i < 8; i++)
+    SDL_Rect renderquad1={background_clip.x,background_clip.y,background_clip.w,background_clip.h};
+    SDL_RenderCopy(renderer,background,NULL,&renderquad1);
+
+    SDL_Rect renderquad2={background_clip.x,background_clip.y-displayMode.h,background_clip.w,background_clip.h};
+    SDL_RenderCopy(renderer,background,NULL,&renderquad2);
+    background_clip.y+=1;
+    if(background_clip.y>=displayMode.h)
     {
-        background_clip[i].x = 0;
-        background_clip[i].y = i * 600;
-        background_clip[i].w = 1200;
-        background_clip[i].h = 600;
+        background_clip.y=0;
     }
 }
 void loadMouse()
@@ -117,10 +117,10 @@ void loadHelp()
     }
 }
 
-void drawBackGround(int cur)
-{
-    SDL_RenderCopy(renderer,background,&background_clip[cur],NULL);
-}
+// void drawBackGround(int cur)
+// {
+//     SDL_RenderCopy(renderer,background,&background_clip[cur],NULL);
+// }
 void drawHelp()
 {
     SDL_RenderCopy(renderer,background_help,NULL,NULL);\
@@ -157,6 +157,8 @@ void drawMouse()
 // cần viết thêm
 void freeAll()
 {
+    freeBullets();
+    freeList(l);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(s->texture);
