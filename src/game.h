@@ -29,9 +29,9 @@ void init()
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
-    l = (monsterList*)malloc(sizeof(monsterList));
+    lm = (monsterList*)malloc(sizeof(monsterList));
     
-    initMonsterList(l);
+    initMonsterList(lm);
     
     
     // m=(monster*)malloc(sizeof(monster));
@@ -158,7 +158,7 @@ void drawMouse()
 void freeAll()
 {
     freeBullets();
-    freeList(l);
+    freeList(lm);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(s->texture);

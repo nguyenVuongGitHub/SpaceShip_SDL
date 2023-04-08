@@ -33,8 +33,8 @@ void monsterType_1()
         monster1->y_limit = 200;
         monster1->speed = 2;
         loadMonster(monster1);
-        node* newNode = createNode(*monster1);
-        push_back(l,newNode);
+        node_M* newNode = createNode(*monster1);
+        push_back(lm,newNode);
     }
     for(int i = 0; i < Num_of_MonsterArray1; i++)
     {
@@ -47,8 +47,8 @@ void monsterType_1()
         monster2->y_limit = 300;
         monster2->speed = 2;
         loadMonster(monster2);
-        node* newNode = createNode(*monster2);
-        push_back(l,newNode);
+        node_M* newNode = createNode(*monster2);
+        push_back(lm,newNode);
     }
 }
 void monsterType_2()
@@ -65,8 +65,8 @@ void monsterType_2()
         monster1->y_limit = 300;
         monster1->speed = 2;
         loadMonster(monster1);
-        node* newNode = createNode(*monster1);
-        push_back(l,newNode);
+        node_M* newNode = createNode(*monster1);
+        push_back(lm,newNode);
     }
     for(int i = 0; i < Num_of_MonsterArray2; i++)
     {
@@ -79,8 +79,8 @@ void monsterType_2()
         monster2->y_limit = 300;
         monster2->speed = 2;
         loadMonster(monster2);
-        node* newNode = createNode(*monster2);
-        push_back(l,newNode);
+        node_M* newNode = createNode(*monster2);
+        push_back(lm,newNode);
     }
 }
 void monsterType_3()
@@ -97,8 +97,8 @@ void monsterType_3()
         monster1->speed = 1;
         monster1->y_limit = 150;
         loadMonster(monster1);
-        node* newNode = createNode(*monster1);
-        push_back(l,newNode);
+        node_M* newNode = createNode(*monster1);
+        push_back(lm,newNode);
     }
 }
 void monsterType_4()
@@ -115,8 +115,8 @@ void monsterType_4()
         monster_->y_limit = 250;
         monster_->speed = 2;
         loadMonster(monster_);
-        node* newNode = createNode(*monster_);
-        push_back(l,newNode);
+        node_M* newNode = createNode(*monster_);
+        push_back(lm,newNode);
     }
 }
 void monsterType_5()
@@ -134,8 +134,8 @@ void monsterType_5()
             monster_->speed = 2;
             monster_->y_limit = (100+100*i);
             loadMonster(monster_);
-            node* newNode = createNode(*monster_);
-            push_back(l,newNode);
+            node_M* newNode = createNode(*monster_);
+            push_back(lm,newNode);
         }
     }
 }
@@ -165,8 +165,8 @@ void monsterType_6()
                 monster_->speed = 2;
             }
             loadMonster(monster_);
-            node* newNode = createNode(*monster_);
-            push_back(l,newNode);
+            node_M* newNode = createNode(*monster_);
+            push_back(lm,newNode);
         }
     }
 }
@@ -184,8 +184,8 @@ void boss()
     boss_->y_limit = 50;
     boss_->speed = 2;
     loadMonster(boss_);
-    node* newNode = createNode(*boss_);
-    push_back(l,newNode); 
+    node_M* newNode = createNode(*boss_);
+    push_back(lm,newNode); 
 }
 void GenerateMonster(monsterList *l)
 {

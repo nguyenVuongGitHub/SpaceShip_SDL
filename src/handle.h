@@ -15,13 +15,11 @@ void collision(monsterList *l); // kiểm tra tất cả các trường hợp va
 
 void gameLoop()
 {
-    node *head = l->head;
     // Khai báo một biến đếm thời gian cho bắn đạn tiếp theo
     Uint32 last_shot_time = 0;
     int cur_ship = 0; // frame hình hiện tại
-    int cur_background = 0;
-    int countLoop = 0;
     int numOfBullet= 0; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
+    bool holdMouse = false; // kiểm tra giữ chuột
     initBullets(); // cấp phát bộ nhớ cho con trỏ
     SDL_ShowCursor(SDL_DISABLE); // ẩn con trỏ chuột
     while(true){
@@ -40,27 +38,38 @@ void gameLoop()
             // bắt sự kiện di chuyển
             if(event.type == SDL_MOUSEMOTION) moveShip();
             
-            //bắt sự kiện bắn đạn bằng chuột trái 
+            //bắt sự kiện giữ chuột
             if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LMASK)
             {
-                Uint32 current_time = SDL_GetTicks();
-                Uint32 time_since_last_shot = current_time - last_shot_time;
-
-                // Kiểm tra xem đã đủ thời gian để bắn đạn tiếp theo chưa
-                if (time_since_last_shot >= 200) {
-                    
-                    addNewBulletToList(numOfBullet);
-                    // Lưu lại thời gian bắn đạn
-                    last_shot_time = current_time;
-                }
-                numOfBullet++; // biến đếm biểu thị số viên đạn trong danh sách
+                holdMouse = true;
+            }
+            if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LMASK)
+            {
+                holdMouse = false;
             }
             ///esc để tạm dừng
             if(event.key.keysym.sym == SDLK_ESCAPE) handlePause();
             
         }
+
         moveBackground();
         drawShip(cur_ship);
+        
+
+        if(holdMouse)
+        {
+            Uint32 current_time = SDL_GetTicks();  
+            Uint32 time_since_last_shot = current_time - last_shot_time; 
+
+            // Kiểm tra xem đã đủ thời gian để bắn đạn tiếp theo chưa
+            if (time_since_last_shot >= 200) {
+                
+                addNewBulletToList(numOfBullet);
+                // Lưu lại thời gian bắn đạn
+                last_shot_time = current_time;
+            }
+            numOfBullet++; // biến đếm biểu thị số viên đạn trong danh sách
+        }
 
         // xử lí di chuyển đạn
         for(int i = 0; i < MAX_BULLET; i++)
@@ -72,24 +81,22 @@ void gameLoop()
             }
         }
         
-        GenerateMonster(l);
+        // tạo ra quái nếu danh sách rỗng
+        GenerateMonster(lm);
         
-        collision(l);
-        for(int i = 0; i < l->size; i++)
+        // xử lí va chạm
+        collision(lm);
+
+        // vẽ quái vật trong danh sách.
+        for(int i = 0; i < lm->size; i++)
         {
-            node *n = getNode(l,i);
+            node *n = getNode(lm,i);
             moveMonster(&(n->data));
             drawMonster(&(n->data));
-            // printf("x = %d, y= %d\n",n->data.x_pos,n->data.y_pos);
         }
         // tăng khung hình
         cur_ship++;
-        countLoop++;
-        // //4 vòng lặp thì tăng background
-        // if(countLoop % 4 == 0)
-        //     cur_background++;
 
-        // if(cur_background >= 8) cur_background = 0;
         if(cur_ship >= 8) cur_ship = 0;
 
         // hiển thị lên màn hình
@@ -131,9 +138,9 @@ void handlePause()
                 if(event.type == SDL_MOUSEBUTTONDOWN)
                 {
                     freeBullets(); // giải phóng đạn 
-                    freeList(l); // giải phóng danh sách quái vật
-                    l = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-                    initMonsterList(l);
+                    freeList(lm); // giải phóng danh sách quái vật
+                    lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+                    initMonsterList(lm);
                     showMenu(); // về lại menu
                 }
                 last_mouse = 3;
@@ -230,10 +237,7 @@ void handlePause()
 void collision(monsterList *l)
 {
 
-    // kiểm tra danh sách linkedlist
-    
-    
-
+    // kiểm tra đạn tàu va chạm quái
     for(int i =0; i < MAX_BULLET; i++)
     {
         if(bullets[i]->active)
@@ -244,6 +248,7 @@ void collision(monsterList *l)
             bullets[i]->width,
             bullets[i]->height
             };
+            
             for(node *k = l->head; k != NULL; k = k->next)
             {
                 SDL_Rect rectMonster = {
@@ -258,7 +263,7 @@ void collision(monsterList *l)
                     k->data.hp --;
                     if(k->data.hp == 0)
                     {
-                        node *mr = k;
+                        node_M *mr = k;
                         removeNode(l,mr);
                     } 
                     
@@ -266,6 +271,12 @@ void collision(monsterList *l)
             }
         }
     }
+
+    // kiểm tra tàu va chạm quái
+
+
+    // kiểm tra đạn quái va chạm tàu
+    
 }
 bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
 {
@@ -276,5 +287,4 @@ bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
         return true;
     }
     return false;
-
 }

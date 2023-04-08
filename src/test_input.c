@@ -62,7 +62,6 @@ int main() {
     // Hiển thị nội dung lên màn hình
     SDL_RenderPresent(renderer);
 }
-
 // Dừng nhập văn bản
 SDL_StopTextInput();
 
@@ -71,3 +70,6 @@ SDL_DestroyRenderer(renderer);
 SDL_DestroyWindow(window);
 SDL_Quit();
 return 0;
+}
+
+
