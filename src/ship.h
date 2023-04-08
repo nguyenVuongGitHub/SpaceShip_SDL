@@ -17,9 +17,9 @@ struct ship{
 };
 typedef struct ship ship;
 ship *s = NULL;
-void initShip();
+void initShip(ship *s);
 void loadShip();
-void drawShip();
+void drawShip(int cur);
 //========================================================================  
 void initShip(ship *s)
 {

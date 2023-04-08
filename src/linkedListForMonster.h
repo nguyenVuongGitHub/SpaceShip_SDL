@@ -8,23 +8,23 @@ struct node
     monster data;
     struct node *next;
 };
-typedef struct node node;
+typedef struct node node_M;
 
 struct MonsterList{
-    node *head;
-    node *tail;
+    node_M *head;
+    node_M *tail;
     int size;
     
 };
 typedef struct MonsterList monsterList;
 
-monsterList *l = NULL;
+monsterList *lm = NULL;
 
 void initMonsterList(monsterList *l);
-node *createNode(monster data);
-void push_back(monsterList *l, node *newNode);
-node *getNode(monsterList *l, int index); // lấy node tại index thứ bao nhiêu giống như a[i]
-void removeNode(monsterList *l,node *target);
+node_M *createNode(monster data);
+void push_back(monsterList *l, node_M *newNode);
+node_M *getNode(monsterList *l, int index); // lấy node tại index thứ bao nhiêu giống như a[i]
+void removeNode(monsterList *l,node_M *target);
 int getSize(monsterList l);
 
 //===================================
@@ -35,14 +35,14 @@ void initMonsterList(monsterList *l) {
     l->size = 0;
 }
 
-node *createNode(monster data) {
-    node *newNode = (node*) malloc(sizeof(node));
+node_M *createNode(monster data) {
+    node_M *newNode = (node_M*) malloc(sizeof(node_M));
     newNode->data = data;
     newNode->next = NULL;
     return newNode;
 }
 
-void push_back(monsterList *l, node *newNode) {
+void push_back(monsterList *l, node_M *newNode) {
     if (l->head == NULL) {
         l->head = newNode;
         l->tail = newNode;
@@ -53,13 +53,13 @@ void push_back(monsterList *l, node *newNode) {
     l->size++;
 }
 
-node *getNode(monsterList *l, int index) {
+node_M *getNode(monsterList *l, int index) {
     int i = 0;
     if(index == 0)
     {
         return l->head;
     }
-    node *currentNode = l->head;
+    node_M *currentNode = l->head;
     while (currentNode != NULL) {
         if (i == index) {
             return currentNode;
@@ -70,8 +70,8 @@ node *getNode(monsterList *l, int index) {
     return NULL;
 }
 
-void removeNode(monsterList *l, node *target) {
-    node *currentNode = l->head;
+void removeNode(monsterList *l, node_M *target) {
+    node_M *currentNode = l->head;
     if (target == l->head) {
         l->head = l->head->next;
         free(target);
@@ -93,10 +93,10 @@ int getSize(monsterList l) {
 }
 void freeList(monsterList *l)
 {
-    node *head = l->head;
+    node_M *head = l->head;
     while(head != NULL)
     {
-        node *temp = l->head;
+        node_M *temp = l->head;
         head = head->next;
         l->head = head;
         free(temp);
