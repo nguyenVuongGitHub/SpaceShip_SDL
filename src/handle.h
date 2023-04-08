@@ -30,10 +30,18 @@ void gameLoop()
 
         //nhạc nền game
         Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
-        if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
-            Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
+        if(wave % 10 == 0 && wave != 0){
+            if(!Mix_Playing(3)){  //kiểm tra xem kênh số 3 có được phát chưa, nếu chưa thì ! sẽ trả về true
+                Mix_PlayChannel(3, Boss, -1); //phát kênh số 3 (nhạc boss)
+            }
+            Mix_HaltChannel(2); //dừng kênh số 2 (nhạc nền game)
         }
-        Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
+        else{
+            if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
+                Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
+            }
+            Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
+        }
         
         while(SDL_PollEvent(&event)){
             
@@ -145,7 +153,7 @@ void handlePause()
                 if(event.type == SDL_MOUSEBUTTONDOWN)
                 {
                     sound = false;
-
+                    Mix_Pause(-1);  // dừng phát nhạc tạm thời, -1 tức là tắt tất cả kênh âm thanh
                 }
                 // drawPause_40();
                 last_mouse = 4;
@@ -182,6 +190,7 @@ void handlePause()
                 if(event.type == SDL_MOUSEBUTTONDOWN)
                 {
                     sound = true;
+                    Mix_Resume(-1);  // Bật lại nhạc đã tạm dừng trước đó, -1 tức là bật tất cả các kênh âm thanh
                 }
                 // drawPause_41();
                 last_mouse = 8;
@@ -257,7 +266,8 @@ void collision(monsterList *l)
                     bullets[i]->active = false;
                     k->data.hp --;
                     if(k->data.hp == 0)
-                    {
+                    {   
+                        Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
                         node *mr = k;
                         removeNode(l,mr);
                     } 

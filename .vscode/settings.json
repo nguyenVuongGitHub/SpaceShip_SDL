@@ -14,6 +14,7 @@
         "sdl_image.h": "c",
         "type_traits": "c",
         "linkedlistformonster.h": "c",
-        "sdl_mixer.h": "c"
+        "sdl_mixer.h": "c",
+        "*.rh": "c"
     }
 }
