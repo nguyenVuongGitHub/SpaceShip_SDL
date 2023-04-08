@@ -6,15 +6,18 @@
 #define PI 3.141592653589793
 
 int wave = 0; // đợt quái 
+int angleMove = 0;
 struct monster
 {
     int x_pos;
     int y_pos;
-    int y_limit;
+    int y_limit; // giới hạn 
+    int speed;
     int Width;
     int height;
     int type;
     int hp;
+    int score;
     SDL_Texture *texture;
 };
 typedef struct monster monster;
@@ -48,8 +51,10 @@ void initMonster(monster *m)
     m->y_pos = 100;
     m->Width = 64;
     m->height = 64;
+    m->y_limit = 0;
+    m->speed = 0;
     m->hp = 0;
-    m->type =1;
+    m->type = 0;
     m->texture = NULL;
 }
 void initBulletMonster(monster *m)
@@ -72,7 +77,7 @@ void loadMonster(monster *m)
     if (m->type == 1) {
         monster_file_path = "image/SpaceThreat1.png";
         // bullet_file_path = "image/BulletThreat.png";
-    } else if(m->type == 2) {
+    } else if(m->type == 2 || m->type == 7) {
         monster_file_path = "image/SpaceThreat6.png";
         // bullet_file_path = "image/BulletThreat6.png";
     }
@@ -91,6 +96,10 @@ void loadMonster(monster *m)
     else if(m->type == 6) {
         monster_file_path = "image/SpaceThreat3.png";
         // bullet_file_path = "image/BulletThreat.png";
+    }
+    else if(m->type == 10)
+    {
+        monster_file_path = "image/SpaceBoss.png";
     }
     SDL_Surface* monster_surface = IMG_Load(monster_file_path); 
     // SDL_Surface* bullet_monster_surface = IMG_Load(bullet_file_path);
@@ -125,7 +134,47 @@ void drawBulletMonster(bullet_monster *b_m)
     };
     SDL_RenderCopy(renderer,b_m->texture,NULL, &rect);
 }
-
+void moveMonster(monster *m)
+{
+    if(m->type == 1 || m->type == 4 || m->type == 3 || m->type == 5 || m->type == 6)
+    {
+        if(m->y_pos >= m->y_limit)
+        {
+            m->y_pos = m->y_limit;
+        }
+        m->y_pos += m->speed;
+    }else if(m->type == 2)
+    {
+        if(m->x_pos >= 100)
+        {
+            m->x_pos = 100;
+        }
+        m->x_pos += m->speed;
+    }else if(m->type == 7)
+    {
+        if(m->x_pos <= displayMode.w -150)
+        {
+            m->x_pos = displayMode.w -150;
+        }
+        m->x_pos -= m->speed;
+    }else if(m->type == 10) // boss 
+    {
+        if(m->y_pos >= m->y_limit) 
+        {
+            m->y_pos = m->y_limit; 
+            if(m->x_pos >= displayMode.w-m->Width-150)  
+            {
+                angleMove = 180;
+            }
+            else if(m->x_pos <= 150) 
+            {
+                angleMove = 0;
+            }
+            m->x_pos += m->speed * cos(angleMove*PI/180);
+        }
+        m->y_pos+=m->speed;
+    }
+}
 // bool canSpawnBullets(monster *m)
 // {
 //     Uint8 CurrentTime = SDL_GetTicks();

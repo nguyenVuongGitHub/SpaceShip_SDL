@@ -23,8 +23,8 @@ monsterList *l = NULL;
 void initMonsterList(monsterList *l);
 node *createNode(monster data);
 void push_back(monsterList *l, node *newNode);
-node *getNode(monsterList *l, int index);
-void remove(monsterList *l,node *target);
+node *getNode(monsterList *l, int index); // lấy node tại index thứ bao nhiêu giống như a[i]
+void removeNode(monsterList *l,node *target);
 int getSize(monsterList l);
 
 //===================================
@@ -70,7 +70,7 @@ node *getNode(monsterList *l, int index) {
     return NULL;
 }
 
-void remove(monsterList *l, node *target) {
+void removeNode(monsterList *l, node *target) {
     node *currentNode = l->head;
     if (target == l->head) {
         l->head = l->head->next;
@@ -90,4 +90,16 @@ void remove(monsterList *l, node *target) {
 
 int getSize(monsterList l) {
     return l.size;
+}
+void freeList(monsterList *l)
+{
+    node *head = l->head;
+    while(head != NULL)
+    {
+        node *temp = l->head;
+        head = head->next;
+        l->head = head;
+        free(temp);
+
+    }
 }

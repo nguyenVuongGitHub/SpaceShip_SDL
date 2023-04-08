@@ -23,8 +23,6 @@ void drawBullet(bullet *b);
 void addNewBulletToList(int numOfBullet);
 void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET]);
 void freeBullets();
-void collision(int numOfBullet);
-bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2);
 //=====================================================
 
 void initBullet(bullet *b){
