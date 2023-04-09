@@ -6,7 +6,7 @@
 #define PI 3.141592653589793
 
 int wave = 0; // đợt quái 
-int angleMove = 0;
+int angleMove = 0; // góc di chuyển
 struct monster
 {
     int x_pos;
@@ -136,7 +136,7 @@ void drawBulletMonster(bullet_monster *b_m)
 }
 void moveMonster(monster *m)
 {
-    if(m->type == 1 || m->type == 4 || m->type == 3 || m->type == 5 || m->type == 6)
+    if(m->type == 1 || m->type == 3 || m->type == 5 || m->type == 6)
     {
         if(m->y_pos >= m->y_limit)
         {
@@ -145,19 +145,36 @@ void moveMonster(monster *m)
         m->y_pos += m->speed;
     }else if(m->type == 2)
     {
-        if(m->x_pos >= 100)
+        if(m->x_pos >= 200)
         {
-            m->x_pos = 100;
+            m->x_pos = 200;
         }
         m->x_pos += m->speed;
     }else if(m->type == 7)
     {
-        if(m->x_pos <= displayMode.w -150)
+        if(m->x_pos <= displayMode.w -250)
         {
-            m->x_pos = displayMode.w -150;
+            m->x_pos = displayMode.w -250;
         }
         m->x_pos -= m->speed;
-    }else if(m->type == 10) // boss 
+    }else if(m->type == 4)
+    {
+        if(m->y_pos >= m->y_limit)
+        {
+            m->y_pos = m->y_limit;
+            if(m->x_pos >= displayMode.w-m->Width-150)  
+            {
+                angleMove = 180;
+            }
+            else if(m->x_pos <= 150) 
+            {
+                angleMove = 0;
+            }
+            m->x_pos += m->speed * cos(angleMove*PI/180);
+        }
+        m->y_pos+= m->speed;
+    }
+    else if(m->type == 10) // boss 
     {
         if(m->y_pos >= m->y_limit) 
         {

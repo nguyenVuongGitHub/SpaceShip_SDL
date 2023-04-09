@@ -1,10 +1,16 @@
 #pragma once
 #include "global.h"
+#include "text.h"
+#include "player.h"
 // Khai báo biến toàn cục
+text textRank;
+
 int initMenu();
 void cleanUp();
+void showRank();
 void drawPause();
 void drawMenu();
+void drawHeart();
 void showMenu();
 void showHelp();
 void handleMenu(SDL_Event event, bool *quit);
@@ -32,6 +38,21 @@ int initMenu()
 
     // Tải tài nguyên
     IMG_Init(IMG_INIT_PNG);
+    // tạo mảng heart hằng NULL
+    for(int i = 0; i < 3; i++)
+    {
+        heart[i] = NULL;
+    }
+    for(int i = 0; i < 3; i ++)
+    {
+        heart[i] = IMG_LoadTexture(renderer,"image\\heart.png");
+    }
+
+    initText(&textRank);
+    setText("RANK",&textRank);
+    loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(662,490,&textRank);
+
     background_menu = IMG_LoadTexture(renderer, "image\\background_menu.png");
     if (!background_menu)
     {
@@ -189,7 +210,7 @@ void cleanUp()
 
 // Hàm vẽ menu game
 void drawMenu()
-{
+{   
     // Vẽ hình nền
     SDL_RenderCopy(renderer, background_menu, NULL, NULL);
 
@@ -201,8 +222,9 @@ void drawMenu()
     SDL_Rect helpRect = { 650, 400, 200, 50 };
     SDL_RenderCopy(renderer, helpButton, NULL, &helpRect);
 
+    drawText(&textRank);
     // Vẽ nút thoát
-    SDL_Rect quitRect = { 650, 500, 200, 50 };
+    SDL_Rect quitRect = { 650, 600, 200, 50 };
     SDL_RenderCopy(renderer, quitButton, NULL, &quitRect);
 
     SDL_GetMouseState(&mouseX,&mouseY);
@@ -222,11 +244,22 @@ void drawMenu()
         SDL_RenderCopy(renderer, helpButton2, NULL, &helpRect);
         // SDL_RenderPresent(renderer);
     }
-    // Kiểm tra xem người dùng có nhấp vào nút thoát không
-    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 500 && mouseY <= 550)
+    // kiểm tra có di vào rank không
+    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 490 && mouseY <= 540)
     {
         // Vẽ nút thoát
-        SDL_Rect quitRect = { 650, 500, 200, 50 };
+        loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
+        // SDL_RenderPresent(renderer);
+    }
+    else{
+        loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    }
+
+    // Kiểm tra xem người dùng có nhấp vào nút thoát không
+    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 600 && mouseY <= 650)
+    {
+        // Vẽ nút thoát
+        SDL_Rect quitRect = { 650, 600, 200, 50 };
         SDL_RenderCopy(renderer, quitButton2, NULL, &quitRect);
         // SDL_RenderPresent(renderer);
     }
@@ -251,9 +284,14 @@ void handleMenu(SDL_Event event, bool *quit)
                 showHelp();
                 
             }
-            // Kiểm tra xem người dùng có nhấp vào nút thoát không
-            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 500 && event.button.y <= 550)
+            if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 490 && event.button.y <= 540)
             {
+                showRank();
+            }
+            // Kiểm tra xem người dùng có nhấp vào nút thoát không
+            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 600 && event.button.y <= 650)
+            {
+                saveFile(fileOut,*lpr);
                 exit(0);
             }
             // break;
@@ -272,11 +310,13 @@ void showHelp()
         {
             if(event2.type == SDL_MOUSEBUTTONDOWN)
             {
+                // game
                 SDL_GetMouseState(&mouseX,&mouseY);
                 if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
                 {
                     gameLoop();
                 }
+                // back
                 if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
                 {
                     showMenu();
@@ -365,3 +405,94 @@ void drawPause_41()
 {
     SDL_RenderCopy(renderer,pause_41,NULL,NULL);
 }
+void drawHeart()
+{
+    for(int i = 0; i < playerer.hp; i++)
+    {
+        SDL_Rect r = {displayMode.w-110 - i*50 ,80,50,50};
+        SDL_RenderCopy(renderer,heart[i],NULL,&r);
+    }
+        
+}
+
+void showRank()
+{
+    sortList(lpr);
+    SDL_Texture *rank = NULL;
+    IMG_Init(IMG_INIT_PNG);
+    rank = IMG_LoadTexture(renderer,"image/broadRank.png");
+    bool check = true;
+    text title;
+    initText(&title);
+    setText("RANKING",&title);
+    loadText(70,&title,pathFont,getColor(RED));
+    setPosText(displayMode.w/2 - 150,20,&title);
+
+    text name;
+    initText(&name);
+    setText("NAME",&name);
+    loadText(35,&name,pathFont,getColor(RED));
+    setPosText(540,160,&name);
+
+
+    text score;
+    initText(&score);
+    setText("SCORE",&score);
+    loadText(35,&score,pathFont,getColor(RED));
+    setPosText(880,160,&score);
+
+    text esc;
+    initText(&esc);
+    setText("ESC TO BACK",&esc);
+    loadText(35,&esc,pathFont,getColor(RED));
+    setPosText(displayMode.w/2 - 125,760,&esc);
+
+
+    text pl[10]; // mảng gồm 10 cái tên :v
+    int i = 0;
+    for(node_pr *k = lpr->head ; i < 10 && k!= NULL;i ++ ,k = k->next)
+    {
+        initText(&pl[i]);
+        setText(k->data.name,&pl[i]);
+        loadText(30,&pl[i],pathFont,getColor(BLACK));
+        setPosText(450,200 + i*30,&pl[i]);
+    }
+    text pl2[10]; // mảng gồm 10 số điểm
+    char score_[20];
+    i = 0;
+    for(node_pr *j = lpr->head ; i < 10 && j!= NULL;i ++ ,j = j->next)
+    {
+        initText(&pl2[i]);
+        sprintf(score_,"%d",j->data.score);
+        setText(score_,&pl2[i]);       
+        loadText(30,&pl2[i],pathFont,getColor(BLACK));
+        setPosText(840,200 + i*30,&pl2[i]);
+        printf("fix");
+    }
+    
+    while(check)
+    {
+        SDL_RenderClear(renderer);
+        
+        SDL_Event event;
+        while(SDL_PollEvent(&event))
+        {
+            if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+        }
+        moveBackground();
+        SDL_RenderCopy(renderer,rank,NULL,NULL);
+        drawText(&title);
+        drawText(&score);
+        drawText(&name);
+        drawText(&esc);
+        for(int i = 0; i < 10; i++)
+        {
+            drawText(&pl[i]);
+            drawText(&pl2[i]);
+        }
+        drawMouse();
+        SDL_RenderPresent(renderer);
+        SDL_Delay(10);
+    }
+}
+

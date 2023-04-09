@@ -3,6 +3,15 @@
 #include "menu.h"
 #include "monster.h"
 #include "linkedListForMonster.h"
+#include "player.h"
+#include <SDL2/SDL_ttf.h>
+FILE *fileOut = NULL;
+FILE *fileIn  = NULL;
+
+player playerer; // biến lưu thông tin người chơi
+list_pr *lpr = NULL; // danh sách người chơi để lấy xếp hạng
+
+
 void loadBackGround();
 void loadMouse();
 void loadHelp(); // tải ảnh phần hướng dẫn
@@ -23,6 +32,7 @@ void init()
 {
     
     SDL_Init(SDL_INIT_EVERYTHING);
+    TTF_Init();
     int index_window = 0;
     
     SDL_GetCurrentDisplayMode(index_window,&displayMode);
@@ -30,12 +40,19 @@ void init()
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
     lm = (monsterList*)malloc(sizeof(monsterList));
+    lpr = (list_pr*)malloc(sizeof(list_pr));
     
+    initListPr(lpr);
+    //tên người chơi :
+    
+    playerer.score = 0;
+    playerer.hp = 3; // khởi tạo mặc định :)) quên làm initPlayer
+
+    loadFile(fileIn,lpr);
+    sortList(lpr);
+
     initMonsterList(lm);
-    
-    
-    // m=(monster*)malloc(sizeof(monster));
-    // SDL_ShowCursor(SDL_DISABLE);
+
     loadAudio();
     Mix_VolumeChunk(hit, MIX_MAX_VOLUME/2);  //chỉnh âm luọng của hit
 
@@ -124,7 +141,7 @@ void loadHelp()
 // }
 void drawHelp()
 {
-    SDL_RenderCopy(renderer,background_help,NULL,NULL);\
+    SDL_RenderCopy(renderer,background_help,NULL,NULL);
 
     // Vẽ nút bắt đầu
     SDL_Rect startRect = { 1200, 750, 200, 50 };
@@ -164,7 +181,6 @@ void freeAll()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(s->texture);
     SDL_DestroyTexture(background);
-    SDL_DestroyMutex(mutex_bullet);
     Mix_FreeChunk(Menu);
     Mix_FreeChunk(BGM);
     Mix_FreeChunk(Boss);

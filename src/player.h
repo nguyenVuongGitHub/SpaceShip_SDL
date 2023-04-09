@@ -1,36 +1,43 @@
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 struct player
 {
     int score;
-    char name[100];
+    short hp;
+    char name[50];
 };
 typedef struct player player;
-struct node{
+struct nodeP{
     player data;
-    struct node *next;
+    struct nodeP *next;
 };
-typedef struct node node;
+typedef struct nodeP node_pr;
 struct list{
-    node *head;
-    node *tail;
+    node_pr *head;
+    node_pr *tail;
 };
-typedef struct list list;
-FILE *fileOut;
-FILE *fileIn;
+typedef struct list list_pr;
 
+void initPlayer(player p);
 void inputPlayer(player *p);
-void initList(list *l); 
-node *createNode(player data);
-void addNode(node *node, list *l);
-void printList(list l);
-void loadFile(FILE *fileIn,list *l);
-void saveFile(FILE *fileOut, list l);
-
+void initListPr(list_pr *l); 
+node_pr *createNode(player data);
+void addNode(node_pr *node, list_pr *l);
+void printList(list_pr l);
+void loadFile(FILE *fileIn,list_pr *l);
+void saveFile(FILE *fileOut, list_pr l);
+void sortList(list_pr *l);
 
 //================================================================
 
+void initPlayer(player p)
+{
+    p.hp = 3;
+    strcpy(p.name,"");
+    p.score = 0;
+}
 void inputPlayer(player *player)
 {
     fflush(stdin);
@@ -39,18 +46,19 @@ void inputPlayer(player *player)
     printf("nhap diem :");
     scanf("%d", &player->score);
 }
-void initList(list *l){
+void initListPr(list_pr *l){
     l->head = NULL;
     l->tail = NULL;
 }
-node *createNode(player data)
+node_pr *createNode(player data)
 {
-    node *newNode = (node*) malloc(sizeof(node));
+    node_pr *newNode = (node_pr*) malloc(sizeof(node_pr));
     newNode->data = data;
     newNode->next = NULL;
     return newNode;
 }
-void addNode(node *node, list *l)
+// thêm vào cuối danh sách
+void addNode(node_pr *node, list_pr *l)
 {
     if(l->head == NULL){
         l->head = l->tail = node;
@@ -59,11 +67,9 @@ void addNode(node *node, list *l)
         l->tail = node;
     }
 }
-void printList(list l)
+void printList(list_pr l)
 {
-    
-
-    node *head = l.head;
+    node_pr *head = l.head;
     while(head != NULL){
         
         printf("\nTen:");
@@ -72,33 +78,55 @@ void printList(list l)
         head = head->next;
     }
 }
-void loadFile(FILE *fileIn,list *l)
+void loadFile(FILE *fileIn,list_pr *l)
 {
     char line[100];
     fileIn = fopen("src/data.txt", "r");
+    
     if (fileIn == NULL) {
+        
         printf("Khong mo duoc file\n");
         return;
     }
+    
     while (fgets(line, 100, fileIn) != NULL) {
         char *token = strtok(line, ";");
         player pl;
-        strncpy(pl.name, token, 50);
+        
+        strcpy(pl.name, token);
+        printf("fix bug");
         pl.score = atoi(strtok(NULL, ";"));
-        node *newNode = createNode(pl);
+        
+        node_pr *newNode = createNode(pl);
+        
         addNode(newNode, l);
     }
     fclose(fileIn);
 }
-void saveFile(FILE *fileOut, list l)
+void saveFile(FILE *fileOut, list_pr l)
 {
     fileOut = fopen("src/data.txt", "w+");
-    node *head = l.head;
+    node_pr *head = l.head;
     while(head != NULL){
         
         fputs(head->data.name, fileOut);
         fprintf(fileOut, ";%d\n", head->data.score);
         head = head->next;
-        
+    }
+}
+void sortList(list_pr *l)
+{
+    for(node_pr *i = l->head; i != NULL;i = i->next)
+    {
+        for(node_pr *j = i; j != NULL; j = j->next)
+        {
+            if(j->data.score > i->data.score)
+            {
+                player temp = i->data;
+                i->data = j->data;
+                j->data = temp;
+                temp = i->data;
+            }
+        }
     }
 }

@@ -3,14 +3,12 @@
 #include "handle.h"
 // // ======================================================================================
 
-
 int main(int argc, char *argv[])
 {
-    system("cls");
     init();
+    system("cls");
+    
     showMenu();
-    // gameLoop();
-    // printf("cc");
     freeAll();
     return 0;
 }

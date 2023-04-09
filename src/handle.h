@@ -1,11 +1,19 @@
 #pragma once
 #include <time.h>
+#include <stdlib.h>
 #include "global.h"
 #include "ship.h"
 #include "bullet.h"
 #include "game.h"
 #include "monster.h"
 #include "monsterArray.h"
+#include "text.h"
+
+
+text textScore;
+text textHeart;
+text textCurentScore;
+char curentScore[20];
 
 void gameLoop(); // vòng lặp chính
 void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
@@ -14,7 +22,23 @@ void collision(monsterList *l); // kiểm tra tất cả các trường hợp va
 //================================
 
 void gameLoop()
-{
+{   
+    initText(&textScore);
+    setText("SCORE : ",&textScore);
+    loadText(36,&textScore,pathFont,getColor(RED));
+    setPosText(100,50,&textScore);
+    
+    initText(&textHeart);
+    setText("HEART",&textHeart);
+    loadText(36,&textHeart,pathFont,getColor(RED));
+    setPosText(displayMode.w-200,50,&textHeart);
+
+    initText(&textCurentScore);
+    sprintf(curentScore,"%d",playerer.score);
+    setText(curentScore,&textCurentScore);
+    loadText(36,&textCurentScore,pathFont,getColor(WHITE));
+    setPosText(300,50,&textCurentScore);
+    
     // Khai báo một biến đếm thời gian cho bắn đạn tiếp theo
     Uint32 last_shot_time = 0;
     int cur_ship = 0; // frame hình hiện tại
@@ -25,7 +49,7 @@ void gameLoop()
     while(true){
         SDL_Event event;
         SDL_RenderClear(renderer);
-
+        
         //nhạc nền game
         Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
         if(wave % 10 == 0 && wave != 0){
@@ -70,7 +94,7 @@ void gameLoop()
             Uint32 time_since_last_shot = current_time - last_shot_time; 
 
             // Kiểm tra xem đã đủ thời gian để bắn đạn tiếp theo chưa
-            if (time_since_last_shot >= 200) {
+            if (time_since_last_shot >= 150) {
                 
                 addNewBulletToList(numOfBullet);
                 // Lưu lại thời gian bắn đạn
@@ -104,9 +128,13 @@ void gameLoop()
         }
         // tăng khung hình
         cur_ship++;
-
         if(cur_ship >= 8) cur_ship = 0;
 
+
+        drawHeart();
+        drawText(&textHeart);
+        drawText(&textScore);
+        drawText(&textCurentScore);
         // hiển thị lên màn hình
         SDL_RenderPresent(renderer);
         SDL_Delay(10);  
@@ -115,7 +143,7 @@ void gameLoop()
 void handlePause()
 {
     int last_mouse = 0; // biến thể hiện chuột lần cuối đang ở đâu
-    bool sound = true;
+
     SDL_RenderClear(renderer);
     while(true)
     {
@@ -130,6 +158,18 @@ void handlePause()
             if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && sound)
             {
                 drawPause_11();
+                if(event.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    bool check = true;
+                    while(check)
+                    {
+                        SDL_RenderCopy(renderer,background_help,NULL,NULL);
+                        SDL_RenderPresent(renderer);
+                        while(SDL_PollEvent(&event))
+                            if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+                        SDL_Delay(10);
+                    }
+                }
                 last_mouse = 1;
             }
             // tiếp tục - khi có sound
@@ -145,10 +185,17 @@ void handlePause()
                 drawPause_31();
                 if(event.type == SDL_MOUSEBUTTONDOWN)
                 {
+                    // tạo node mới để thêm vào danh sách người chơi
+                    node_pr *nodepr = createNode(playerer);
+                    addNode(nodepr,lpr);
+                    saveFile(fileOut,*lpr); // lưu file
                     freeBullets(); // giải phóng đạn 
                     freeList(lm); // giải phóng danh sách quái vật
                     lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
                     initMonsterList(lm);
+                    playerer.hp = 3;
+                    wave = 0;
+                    playerer.score = 0;
                     showMenu(); // về lại menu
                 }
                 last_mouse = 3;
@@ -165,10 +212,22 @@ void handlePause()
                 // drawPause_40();
                 last_mouse = 4;
             }
-            //như tr
+            //help - tắt sound
             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && !sound)
             {
                 drawPause_10();
+                if(event.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    bool check = true;
+                    while(check)
+                    {
+                        SDL_RenderCopy(renderer,background_help,NULL,NULL);
+                        SDL_RenderPresent(renderer);
+                        while(SDL_PollEvent(&event))
+                            if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+                        SDL_Delay(10);
+                    }
+                }
                 last_mouse = 5;
             }
             //như trên
@@ -184,8 +243,17 @@ void handlePause()
                 drawPause_30();
                 if(event.type == SDL_MOUSEBUTTONDOWN)
                 {
-                    // //giải phóng bộ nhớ cho mảng con trỏ
-                    freeBullets();
+                    // tạo node mới để thêm vào danh sách người chơi
+                    node_pr *nodepr = createNode(playerer);
+                    addNode(nodepr,lpr);
+                    saveFile(fileOut,*lpr); // lưu file
+                    freeBullets(); // giải phóng đạn 
+                    freeList(lm); // giải phóng danh sách quái vật
+                    lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+                    initMonsterList(lm);
+                    playerer.hp = 3;
+                    wave = 0;
+                    playerer.score = 0;
                     showMenu(); // về lại menu
                 }
                 last_mouse = 7;
@@ -272,9 +340,15 @@ void collision(monsterList *l)
                     k->data.hp --;
                     if(k->data.hp == 0)
                     {   
+                        playerer.score += k->data.score;
                         Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
                         node *mr = k;
-                        removeNode(l,mr);
+                        removeNode(l,mr); // xóa quái khỏi danh sách -> xóa khỏi màn hình
+                        mr = NULL; 
+                        sprintf(curentScore,"%d",playerer.score); // cập nhật lại điểm và chuyển thành kiểu char[]
+                        setText(curentScore,&textCurentScore); // thay đổi giá trị của text
+                        loadText(36,&textCurentScore,pathFont,getColor(WHITE));
+                        printf("\n score : %d", playerer.score);
                     } 
                     
                 }
@@ -283,10 +357,47 @@ void collision(monsterList *l)
     }
 
     // kiểm tra tàu va chạm quái
-
+    SDL_Rect r_ship = 
+    {
+        s->X,s->Y,s->W,s->H
+    };
+    for(node *i = l->head; i != NULL; i = i->next)
+    {
+        SDL_Rect rectMonster = {
+            i->data.x_pos,
+            i->data.y_pos,
+            i->data.Width,
+            i->data.height
+        };
+        if(checkCollision(r_ship,rectMonster))
+        {
+            s->status = DIE;
+            playerer.hp--;
+            set_clip();
+            s->status = LIVE;
+        }
+    }
 
     // kiểm tra đạn quái va chạm tàu
-    
+
+    // kiểm tra máu người chơi, nếu hp == 0 thì về lại menu 
+    if(playerer.hp <= 0)
+    {
+        printf("game over\n");
+        // tạo node mới để thêm vào danh sách người chơi
+        node_pr *nodepr = createNode(playerer);
+        addNode(nodepr,lpr);
+
+        saveFile(fileOut,*lpr); // lưu file
+        freeBullets(); // giải phóng đạn 
+        freeList(lm); // giải phóng danh sách quái vật
+        lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+        initMonsterList(lm);
+        playerer.hp = 3; // reset hp
+        playerer.score = 0;
+        wave = 0;
+        showMenu();
+    }
 }
 bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
 {

@@ -1,8 +1,13 @@
-vuong;100
-thoa;200
-dr;432
-hello m?i ngu?i;123456987
+hello he;123456987
 huhuhehe;2111544
 koko;1928
+hoho;1300
+dr;432
+;400
+;400
+thoa;200
+;100
+vuong;100
 fji;2
-
+9280
+;0
