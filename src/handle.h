@@ -66,6 +66,7 @@ void gameLoop()
 
         if(holdMouse)
         {
+            Mix_PlayChannel(5, shot, 0);
             Uint32 current_time = SDL_GetTicks();  
             Uint32 time_since_last_shot = current_time - last_shot_time; 
 
@@ -115,7 +116,6 @@ void gameLoop()
 void handlePause()
 {
     int last_mouse = 0; // biến thể hiện chuột lần cuối đang ở đâu
-    bool sound = true;
     SDL_RenderClear(renderer);
     while(true)
     {

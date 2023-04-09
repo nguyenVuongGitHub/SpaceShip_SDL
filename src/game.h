@@ -38,6 +38,7 @@ void init()
     // SDL_ShowCursor(SDL_DISABLE);
     loadAudio();
     Mix_VolumeChunk(hit, MIX_MAX_VOLUME/2);  //chỉnh âm luọng của hit
+    Mix_VolumeChunk(shot, MIX_MAX_VOLUME/3);  //chỉnh âm luọng của shot
 
     initShip(s);
     set_clip();
@@ -170,6 +171,7 @@ void freeAll()
     Mix_FreeChunk(Boss);
     Mix_FreeChunk(hit);
     Mix_FreeChunk(dead);
+    Mix_FreeChunk(shot);
     Mix_CloseAudio();
 }
 
@@ -183,6 +185,7 @@ void loadAudio(){
     Boss = Mix_LoadWAV("audio/BossMusic2.wav");
     hit = Mix_LoadWAV("audio/SE_enemy_vanish.wav");
     dead = Mix_LoadWAV("audio/SE_dead.wav");
+    shot = Mix_LoadWAV("audio/SE_shot.wav");
 
     if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL){
         printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());

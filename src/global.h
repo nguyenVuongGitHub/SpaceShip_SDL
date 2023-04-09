@@ -47,10 +47,12 @@ SDL_Texture* pause_30 = NULL;
 SDL_Texture* pause_41 = NULL;
 SDL_Texture* pause_40 = NULL;
 
+bool sound = true;
 
 Mix_Chunk* Menu = NULL;
 Mix_Chunk* BGM = NULL;
 Mix_Chunk* Boss = NULL;
 Mix_Chunk* hit = NULL;
 Mix_Chunk* dead = NULL;
+Mix_Chunk* shot = NULL;
 // Mix_Chunk* eatHp = NULL;
