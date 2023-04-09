@@ -52,7 +52,7 @@ void gameLoop()
         
         //nhạc nền game
         Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
-        if(wave % 10 == 0 && wave != 0){
+        if(wave % 10 == 0 && wave != 0 && sound){
             if(!Mix_Playing(3)){  //kiểm tra xem kênh số 3 có được phát chưa, nếu chưa thì ! sẽ trả về true
                 Mix_PlayChannel(3, Boss, -1); //phát kênh số 3 (nhạc boss)
             }
@@ -90,6 +90,7 @@ void gameLoop()
 
         if(holdMouse)
         {
+            Mix_PlayChannel(5, shot, 0);
             Uint32 current_time = SDL_GetTicks();  
             Uint32 time_since_last_shot = current_time - last_shot_time; 
 
