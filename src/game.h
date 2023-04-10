@@ -2,11 +2,20 @@
 #include "global.h"
 #include "menu.h"
 #include "monster.h"
+#include "linkedListForMonster.h"
+#include "player.h"
+#include <SDL2/SDL_ttf.h>
+FILE *fileOut = NULL;
+FILE *fileIn  = NULL;
+
+player playerer; // biến lưu thông tin người chơi
+list_pr *lpr = NULL; // danh sách người chơi để lấy xếp hạng
+
+
 void loadBackGround();
 void loadMouse();
 void loadHelp(); // tải ảnh phần hướng dẫn
 
-void drawBackGround();
 void drawMouse();
 void drawHelp();
 
@@ -15,29 +24,45 @@ void freeAll();
 
 void loadAudio();
 
-void set_clip_background();
-SDL_Rect background_clip[8];
+void moveBackground();
+SDL_Rect background_clip = {0,0,2360,1544};
 //==========================
 
 void init()
 {
     
     SDL_Init(SDL_INIT_EVERYTHING);
+    TTF_Init();
     int index_window = 0;
     
     SDL_GetCurrentDisplayMode(index_window,&displayMode);
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
     s = (ship*)malloc(sizeof(ship));
-    // m=(monster*)malloc(sizeof(monster));
-    // SDL_ShowCursor(SDL_DISABLE);
+    lm = (monsterList*)malloc(sizeof(monsterList));
+    lpr = (list_pr*)malloc(sizeof(list_pr));
+    
+    initListPr(lpr);
+    //tên người chơi :
+    
+    playerer.score = 0;
+    playerer.hp = 3; // khởi tạo mặc định :)) quên làm initPlayer
+
+    loadFile(fileIn,lpr);
+    sortList(lpr);
+
+    initMonsterList(lm);
+
     loadAudio();
+<<<<<<< HEAD
     initMonster();
+=======
+    Mix_VolumeChunk(hit, MIX_MAX_VOLUME/2);  //chỉnh âm luọng của hit
+    Mix_VolumeChunk(shot, MIX_MAX_VOLUME/3);  //chỉnh âm luọng của shot
+>>>>>>> c58dcade014b8b46e49848d1e49e242c035d7856
 
     initShip(s);
     set_clip();
-    set_clip_background();
-
     loadBackGround();  
     loadMouse();
     loadHelp();
@@ -47,14 +72,17 @@ void init()
     }
 }
 
-void set_clip_background()
+void moveBackground()
 {
-    for (int i = 0; i < 8; i++)
+    SDL_Rect renderquad1={background_clip.x,background_clip.y,background_clip.w,background_clip.h};
+    SDL_RenderCopy(renderer,background,NULL,&renderquad1);
+
+    SDL_Rect renderquad2={background_clip.x,background_clip.y-displayMode.h,background_clip.w,background_clip.h};
+    SDL_RenderCopy(renderer,background,NULL,&renderquad2);
+    background_clip.y+=1;
+    if(background_clip.y>=displayMode.h)
     {
-        background_clip[i].x = 0;
-        background_clip[i].y = i * 600;
-        background_clip[i].w = 1200;
-        background_clip[i].h = 600;
+        background_clip.y=0;
     }
 }
 void loadMouse()
@@ -112,13 +140,13 @@ void loadHelp()
     }
 }
 
-void drawBackGround(int cur)
-{
-    SDL_RenderCopy(renderer,background,&background_clip[cur],NULL);
-}
+// void drawBackGround(int cur)
+// {
+//     SDL_RenderCopy(renderer,background,&background_clip[cur],NULL);
+// }
 void drawHelp()
 {
-    SDL_RenderCopy(renderer,background_help,NULL,NULL);\
+    SDL_RenderCopy(renderer,background_help,NULL,NULL);
 
     // Vẽ nút bắt đầu
     SDL_Rect startRect = { 1200, 750, 200, 50 };
@@ -152,16 +180,18 @@ void drawMouse()
 // cần viết thêm
 void freeAll()
 {
+    freeBullets();
+    freeList(lm);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(s->texture);
     SDL_DestroyTexture(background);
-    SDL_DestroyMutex(mutex_bullet);
     Mix_FreeChunk(Menu);
     Mix_FreeChunk(BGM);
     Mix_FreeChunk(Boss);
     Mix_FreeChunk(hit);
     Mix_FreeChunk(dead);
+    Mix_FreeChunk(shot);
     Mix_CloseAudio();
 }
 
@@ -175,6 +205,7 @@ void loadAudio(){
     Boss = Mix_LoadWAV("audio/BossMusic2.wav");
     hit = Mix_LoadWAV("audio/SE_enemy_vanish.wav");
     dead = Mix_LoadWAV("audio/SE_dead.wav");
+    shot = Mix_LoadWAV("audio/SE_shot.wav");
 
     if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL){
         printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
