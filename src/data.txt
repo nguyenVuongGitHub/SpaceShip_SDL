@@ -1,4 +1,4 @@
-vuong;1000000000000
-nam;1000230
-hoang;123423
-thay tai;99384
+vuong dep trai vcl;999999999
+thay tai;3
+hoang;2
+nam;1
