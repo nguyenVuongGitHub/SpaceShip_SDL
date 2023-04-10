@@ -297,6 +297,11 @@ void showMenu()
     SDL_ShowCursor(SDL_DISABLE);
     while (gameOver == false)
     {
+        //nhạc nền menu
+        if(!Mix_Playing(1))
+        {
+            Mix_PlayChannel(1,Menu,-1);
+        }
         // Xóa màn hình
         SDL_RenderClear(renderer);
         SDL_Event event;
@@ -307,6 +312,12 @@ void showMenu()
         }
         
         // Vẽ menu game
+        Mix_HaltChannel(2);  //dunnưgf nhạc ở kênh 2
+        Mix_HaltChannel(3);  //dừng nhạc ở kênh 3
+        if(!Mix_Playing(1))
+        {
+            Mix_PlayChannel(1,Menu,-1);
+        }
         drawMenu();
         drawMouse();
         SDL_RenderPresent(renderer);
