@@ -33,12 +33,8 @@ typedef struct bullet_monster bullet_monster;
 
 bullet_monster *b_m = NULL;
 void initMonster(monster *m);
-void loadMonsterAndbullet(monster *m,bullet_monster *b_m);
 void drawMonster(monster *m);
 void moveMonster(monster *m);
-void drawBulletMonster(bullet_monster *b_m);
-void initBulletMonster(bullet_monster *b_m);
-void loadBulletMonster(monster *m);
 bool canSpawnBullets(monster *m);
 void makeBullet(monster *m);
 void spawn_bullets_around_enemy(int num_bullets,monster *m,bullet_monster *b_m);
@@ -57,64 +53,49 @@ void initMonster(monster *m)
     m->type = 0;
     m->texture = NULL;
 }
-void initBulletMonster(monster *m)
-{
-    b_m = (bullet_monster*)malloc(sizeof(bullet_monster));
-    b_m->h = 30;
-    b_m->w = 30;
-    b_m->x = m->x_pos;
-    b_m->y = m->y_pos;
-    b_m->radius = 20;
-    b_m->texture = NULL;
-}
+
 void loadMonster(monster *m)
 {
     IMG_Init(IMG_INIT_PNG);
 
     const char* monster_file_path;
-    // const char* bullet_file_path;
+
 
     if (m->type == 1) {
         monster_file_path = "image/SpaceThreat1.png";
-        // bullet_file_path = "image/BulletThreat.png";
+
     } else if(m->type == 2 || m->type == 7) {
         monster_file_path = "image/SpaceThreat6.png";
-        // bullet_file_path = "image/BulletThreat6.png";
+
     }
     else if(m->type == 3) {
         monster_file_path = "image/SpaceThreat2.png";
-        // bullet_file_path = "image/BulletThreat.png";
+
     }
     else if(m->type == 4) {
         monster_file_path = "image/SpaceThreat5.png";
-        // bullet_file_path = "image/BulletThreat2.png";
+
     }
     else if(m->type == 5) {
         monster_file_path = "image/SpaceThreat4.png";
-        // bullet_file_path = "image/BulletThreat5.png";
+
     }
     else if(m->type == 6) {
         monster_file_path = "image/SpaceThreat3.png";
-        // bullet_file_path = "image/BulletThreat.png";
+
     }
     else if(m->type == 10)
     {
         monster_file_path = "image/SpaceBoss.png";
     }
     SDL_Surface* monster_surface = IMG_Load(monster_file_path); 
-    // SDL_Surface* bullet_monster_surface = IMG_Load(bullet_file_path);
     if (monster_surface != NULL)
     {
         m->texture = SDL_CreateTextureFromSurface(renderer, monster_surface);
         
     }
     SDL_FreeSurface(monster_surface);
-    // if (bullet_monster_surface != NULL)
-    // {
-    //     b_m->texture = SDL_CreateTextureFromSurface(renderer, bullet_monster_surface);
-        
-    // }
-    // SDL_FreeSurface(bullet_monster_surface);
+
 }
 void drawMonster(monster *m)
 {
@@ -126,13 +107,6 @@ void drawMonster(monster *m)
         m->height
     };
     SDL_RenderCopy(renderer, m->texture, NULL, &rectMonster);
-}
-void drawBulletMonster(bullet_monster *b_m)
-{
-    SDL_Rect rect = {
-        b_m->x,b_m->y,b_m->w,b_m->h
-    };
-    SDL_RenderCopy(renderer,b_m->texture,NULL, &rect);
 }
 void moveMonster(monster *m)
 {
