@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
             // cách tạo đạn tùy theo loại quái cần spam như thế nào
             addBulletToList(i);      
         }
-        
+
         //xuất đạn ra 
         for(int i = 0; i < MAX_BULLET_MONSTER; i++)
         {
@@ -159,7 +159,7 @@ void addBulletToList(int num)
     if(bullet == NULL)
     {
         bullet = (bullet_monster*)malloc(sizeof(bullet_monster));
-        listBulletMonster[i] = bullet;
+        listBulletMonster[num] = bullet;
     }
 
     initBulletMonster(bullet);
