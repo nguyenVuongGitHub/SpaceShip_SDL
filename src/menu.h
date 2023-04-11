@@ -3,7 +3,11 @@
 #include "text.h"
 #include "player.h"
 // Khai báo biến toàn cục
+text battleSky;
+text play;
+text help;
 text textRank;
+text exitMenu;
 
 int initMenu();
 void cleanUp();
@@ -49,11 +53,30 @@ int initMenu()
     {
         heart[i] = IMG_LoadTexture(renderer,"image\\heart.png");
     }
+    initText(&battleSky);
+    setText("BATTLE SKY",&battleSky);
+    loadText(100,&battleSky,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(displayMode.w/2 - 300,100,&battleSky);
+
+    initText(&play);
+    setText("PLAY",&play);
+    loadText(75,&play,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(662,310,&play);
+
+    initText(&help);
+    setText("HELP",&help);
+    loadText(75,&help,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(662,400,&help);
 
     initText(&textRank);
     setText("RANK",&textRank);
     loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     setPosText(662,490,&textRank);
+
+    initText(&exitMenu);
+    setText("EXIT",&exitMenu);
+    loadText(75,&exitMenu,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(662,580,&exitMenu);
 
     background_menu = IMG_LoadTexture(renderer, "image\\background_menu.png");
     if (!background_menu)
@@ -214,57 +237,89 @@ void cleanUp()
 void drawMenu()
 {   
     // Vẽ hình nền
-    SDL_RenderCopy(renderer, background_menu, NULL, NULL);
+    // SDL_RenderCopy(renderer, background_menu, NULL, NULL);
+    moveBackground();
+
 
     // Vẽ nút bắt đầu
-    SDL_Rect startRect = { 650, 300, 200, 50 };
-    SDL_RenderCopy(renderer, startButton, NULL, &startRect);
+    // SDL_Rect startRect = { 650, 300, 200, 50 };
+    // SDL_RenderCopy(renderer, startButton, NULL, &startRect);
 
-    // Vẽ nút help
-    SDL_Rect helpRect = { 650, 400, 200, 50 };
-    SDL_RenderCopy(renderer, helpButton, NULL, &helpRect);
-
+    // // Vẽ nút help
+    // SDL_Rect helpRect = { 650, 400, 200, 50 };
+    // SDL_RenderCopy(renderer, helpButton, NULL, &helpRect);
+    drawText(&battleSky);
+    drawText(&play);
+    drawText(&help);
     drawText(&textRank);
+    drawText(&exitMenu);
     // Vẽ nút thoát
-    SDL_Rect quitRect = { 650, 600, 200, 50 };
-    SDL_RenderCopy(renderer, quitButton, NULL, &quitRect);
+    // SDL_Rect quitRect = { 650, 600, 200, 50 };
+    // SDL_RenderCopy(renderer, quitButton, NULL, &quitRect);
 
     SDL_GetMouseState(&mouseX,&mouseY);
-    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 300 && mouseY <= 350)
+    // if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 300 && mouseY <= 350)
+    // {
+    //     // Vẽ nút bắt đầu
+    //     SDL_Rect startRect = { 650, 300, 200, 50 };
+    //     SDL_RenderCopy(renderer, startButton2, NULL, &startRect);
+    //     // SDL_RenderPresent(renderer);
+    // }
+
+    // // Kiểm tra xem người dùng có nhấp vào nút help không
+    // if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 400 && mouseY <= 450)
+    // {
+    //     // Vẽ nút help
+    //     SDL_Rect helpRect = { 650, 400, 200, 50 };
+    //     SDL_RenderCopy(renderer, helpButton2, NULL, &helpRect);
+    //     // SDL_RenderPresent(renderer);
+    // }
+    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 310 && mouseY <= 360)
     {
-        // Vẽ nút bắt đầu
-        SDL_Rect startRect = { 650, 300, 200, 50 };
-        SDL_RenderCopy(renderer, startButton2, NULL, &startRect);
+        // Vẽ nút play
+        loadText(75,&play,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
         // SDL_RenderPresent(renderer);
     }
-
-    // Kiểm tra xem người dùng có nhấp vào nút help không
+    else{
+        loadText(75,&play,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    }
     if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 400 && mouseY <= 450)
     {
         // Vẽ nút help
-        SDL_Rect helpRect = { 650, 400, 200, 50 };
-        SDL_RenderCopy(renderer, helpButton2, NULL, &helpRect);
+        loadText(75,&help,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
         // SDL_RenderPresent(renderer);
     }
-    // kiểm tra có di vào rank không
+    else{
+        loadText(75,&help,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    }
     if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 490 && mouseY <= 540)
     {
-        // Vẽ nút thoát
+        // Vẽ nút rank
         loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
         // SDL_RenderPresent(renderer);
     }
     else{
         loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     }
-
-    // Kiểm tra xem người dùng có nhấp vào nút thoát không
-    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 600 && mouseY <= 650)
+    // kiểm tra có di vào rank không
+    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 580 && mouseY <= 630)
     {
         // Vẽ nút thoát
-        SDL_Rect quitRect = { 650, 600, 200, 50 };
-        SDL_RenderCopy(renderer, quitButton2, NULL, &quitRect);
+        loadText(75,&exitMenu,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
         // SDL_RenderPresent(renderer);
     }
+    else{
+        loadText(75,&exitMenu,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    }
+
+    // // Kiểm tra xem người dùng có nhấp vào nút thoát không
+    // if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 600 && mouseY <= 650)
+    // {
+    //     // Vẽ nút thoát
+    //     SDL_Rect quitRect = { 650, 600, 200, 50 };
+    //     SDL_RenderCopy(renderer, quitButton2, NULL, &quitRect);
+    //     // SDL_RenderPresent(renderer);
+    // }
 }
 
 // Hàm xử lý sự kiện
