@@ -4,7 +4,7 @@
 #include <string.h>
 struct player
 {
-    int score;
+    long long score;
     short hp;
     char name[50];
 };
@@ -17,6 +17,7 @@ typedef struct nodeP node_pr;
 struct list{
     node_pr *head;
     node_pr *tail;
+    int size;
 };
 typedef struct list list_pr;
 
@@ -49,6 +50,7 @@ void inputPlayer(player *player)
 void initListPr(list_pr *l){
     l->head = NULL;
     l->tail = NULL;
+    l->size = 0;
 }
 node_pr *createNode(player data)
 {
@@ -66,13 +68,14 @@ void addNode(node_pr *node, list_pr *l)
         l->tail->next = node;
         l->tail = node;
     }
+    l->size++;
 }
 void printList(list_pr l)
 {
     node_pr *head = l.head;
     while(head != NULL){
         
-        printf("\nTen:");
+        printf("\nTen: ");
         puts(head->data.name);
         printf("Diem: %d", head->data.score);
         head = head->next;
@@ -94,7 +97,6 @@ void loadFile(FILE *fileIn,list_pr *l)
         player pl;
         
         strcpy(pl.name, token);
-        printf("fix bug");
         pl.score = atoi(strtok(NULL, ";"));
         
         node_pr *newNode = createNode(pl);

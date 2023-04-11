@@ -423,7 +423,8 @@ void showRank()
     SDL_Texture *rank = NULL;
     IMG_Init(IMG_INIT_PNG);
     rank = IMG_LoadTexture(renderer,"image/broadRank.png");
-    bool check = true;
+
+    
     text title;
     initText(&title);
     setText("RANKING",&title);
@@ -449,29 +450,32 @@ void showRank()
     loadText(35,&esc,pathFont,getColor(RED));
     setPosText(displayMode.w/2 - 125,760,&esc);
 
-
-    text pl[10]; // mảng gồm 10 cái tên :v
+    int size = lpr->size;
+    text pl[size]; // mảng gồm size cái tên :v
     int i = 0;
-    for(node_pr *k = lpr->head ; i < 10 && k!= NULL;i ++ ,k = k->next)
+    for(node_pr *k = lpr->head ; i < size && k!= NULL;i ++ ,k = k->next)
     {
+
         initText(&pl[i]);
         setText(k->data.name,&pl[i]);
         loadText(30,&pl[i],pathFont,getColor(BLACK));
         setPosText(450,200 + i*30,&pl[i]);
+
     }
-    text pl2[10]; // mảng gồm 10 số điểm
+    text pl2[size]; // mảng gồm size số điểm
     char score_[20];
     i = 0;
-    for(node_pr *j = lpr->head ; i < 10 && j!= NULL;i ++ ,j = j->next)
+    
+    for(node_pr *j = lpr->head ; i < size && j!= NULL;i ++ ,j = j->next)
     {
         initText(&pl2[i]);
         sprintf(score_,"%d",j->data.score);
-        setText(score_,&pl2[i]);       
+        setText(score_,&pl2[i]);   
         loadText(30,&pl2[i],pathFont,getColor(BLACK));
         setPosText(840,200 + i*30,&pl2[i]);
-        printf("fix");
     }
-    
+    // printList(*lpr);
+    bool check = true;
     while(check)
     {
         SDL_RenderClear(renderer);
@@ -487,7 +491,7 @@ void showRank()
         drawText(&score);
         drawText(&name);
         drawText(&esc);
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < size; i++)
         {
             drawText(&pl[i]);
             drawText(&pl2[i]);
