@@ -1,0 +1,5 @@
+vuong dep trai vcl;999999999
+thay tai;3
+hoang;2
+nam;1
+750

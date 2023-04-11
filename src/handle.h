@@ -452,18 +452,22 @@ void collision(monsterList *l)
     {
         printf("game over\n");
         // tạo node mới để thêm vào danh sách người chơi
-        node_pr *nodepr = createNode(playerer);
-        addNode(nodepr,lpr);
+        // node_pr *nodepr = createNode(playerer);
+        // addNode(nodepr,lpr);
 
-        saveFile(fileOut,*lpr); // lưu file
-        freeBullets(); // giải phóng đạn 
-        freeList(lm); // giải phóng danh sách quái vật
-        lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-        initMonsterList(lm);
-        playerer.hp = 3; // reset hp
-        playerer.score = 0;
-        wave = 0;
-        showMenu();
+        // saveFile(fileOut,*lpr); // lưu file
+        // freeBullets(); // giải phóng đạn 
+        // freeList(lm); // giải phóng danh sách quái vật
+        // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+        // initMonsterList(lm);
+        
+        //show gameover 
+        showGameOver();
+        
+        // playerer.hp = 3; // reset hp
+        // playerer.score = 0;
+        // wave = 0;
+        // showMenu();
     }
 }
 bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
