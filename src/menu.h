@@ -324,7 +324,7 @@ void drawMenu()
 }
 
 // Hàm xử lý sự kiện
-void handleMenu(SDL_Event event, bool *quit)
+void handleMenu(SDL_Event event)
 {
     if(event.type == SDL_MOUSEBUTTONDOWN)
     {
@@ -349,10 +349,7 @@ void handleMenu(SDL_Event event, bool *quit)
         // Kiểm tra xem người dùng có nhấp vào nút thoát không
         if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 600 && event.button.y <= 650)
         {
-            printList(*lpr);
-            saveFile(fileOut,*lpr);
-            // exit(0);
-            *quit = false;
+            gameOver = false;
         }
         // break;
     }
@@ -379,7 +376,7 @@ void showHelp()
                 // back
                 if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
                 {
-                    showMenu();
+                    return;
                 }
             }
         }
@@ -390,11 +387,9 @@ void showHelp()
 }
 void showMenu()
 {
-    SDL_ShowCursor(SDL_ENABLE);
     SDL_RenderClear(renderer);
     drawMenu();
     drawMouse();
-    SDL_ShowCursor(SDL_DISABLE);
     while (gameOver)
     {
         //nhạc nền menu
@@ -408,7 +403,8 @@ void showMenu()
         // Xử lý sự kiện
         while (SDL_PollEvent(&event))
         {
-            handleMenu(event, &gameOver); // xử lí menu
+            handleMenu(event);
+             // xử lí menu
         }
         
         // Vẽ menu game
@@ -561,12 +557,12 @@ void showRank()
 }
 
 void showGameOver(){
-    bool check = true;
-    text gameOver;
-    initText(&gameOver);
-    setText("GAME OVER", &gameOver);
-    loadText(70, &gameOver, pathFont, getColor(WHITE));
-    setPosText(displayMode.w/2 - 200, 100, &gameOver);
+    // bool check = true;
+    text gameOverText;
+    initText(&gameOverText);
+    setText("GAME OVER", &gameOverText);
+    loadText(70, &gameOverText, pathFont, getColor(WHITE));
+    setPosText(displayMode.w/2 - 200, 100, &gameOverText);
 
     text playerGame;
     initText(&playerGame);
@@ -620,7 +616,10 @@ void showGameOver(){
     loadText(50, &exitGame, pathFont, getColor(WHITE));
     setPosText(1350, 750, &exitGame);
 
-    while(check){
+    playerer.hp = 3; // reset hp
+    playerer.score = 0;
+    wave = 0;
+    while(gameOver){
         SDL_Event event;
         while(SDL_PollEvent(&event)){
             switch(event.type){
@@ -649,34 +648,21 @@ void showGameOver(){
 
                     if(mouseX >= restartGame.x && mouseX <= restartGame.x + restartGame.w
                     && mouseY >= restartGame.y && mouseY <= restartGame.y + restartGame.h){
-                        // tạo node mới để thêm vào danh sách người chơi
-                        node_pr *nodepr = createNode(playerer);
-                        addNode(nodepr,lpr);
-                        saveFile(fileOut,*lpr); // lưu file
                         freeBullets(); // giải phóng đạn 
                         freeList(lm); // giải phóng danh sách quái vật
-                        lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-                        initMonsterList(lm);
-                        playerer.hp = 3; // reset hp
-                        playerer.score = 0;
-                        wave = 0;
+                        freeBulletMonster(); // giải phóng đạn quái vật
                         gameLoop();
                     }
                     
                     if(mouseX >= exitGame.x && mouseX <= exitGame.x + exitGame.w
                     && mouseY >= exitGame.y && mouseY <= exitGame.y + exitGame.h){
                         // tạo node mới để thêm vào danh sách người chơi
-                        node_pr *nodepr = createNode(playerer);
-                        addNode(nodepr,lpr);
-                        saveFile(fileOut,*lpr); // lưu file
-                        freeBullets(); // giải phóng đạn 
-                        freeList(lm); // giải phóng danh sách quái vật
-                        lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-                        initMonsterList(lm);
-                        playerer.hp = 3;
-                        wave = 0;
-                        playerer.score = 0;
-                        showMenu(); // về lại menu
+                        // freeBullets(); // giải phóng đạn 
+                        // freeList(lm); // giải phóng danh sách quái vật
+                        // freeBulletMonster();// giải phóng đạn quái vật
+                        // showMenu(); // về lại menu
+                        gameOver = false;
+                        if(!gameOver) return; //thoát khỏi hàm tránh bị delay
                     }
                     break;
             }       
@@ -684,7 +670,7 @@ void showGameOver(){
         moveBackground();
         drawMouse();
 
-        drawText(&gameOver);
+        drawText(&gameOverText);
         drawText(&playerGame);
         drawText(&scoreGame);
         drawText(&waveGame);

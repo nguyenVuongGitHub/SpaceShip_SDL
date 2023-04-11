@@ -22,6 +22,7 @@ void initBulletMonster(bullet_monster *bullet);
 void loadBulletMonster(bullet_monster *bullet, int type_bullet);
 void drawBulletMonster(bullet_monster *bullet);
 void moveBulletMonster(bullet_monster *bullet);
+void freeBulletMonster();
 // void addBulletToList(int num);
 #define MAX_BULLET_MONSTER 5000
 
@@ -121,4 +122,9 @@ void moveBulletMonster(bullet_monster *bullet)
     {
         bullet->active = false;
     }
+}
+void freeBulletMonster()
+{
+    for(int i = 0; i < MAX_BULLET_MONSTER; i++)
+        free(listBulletMonster[i]);
 }

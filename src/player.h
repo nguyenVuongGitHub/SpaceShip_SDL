@@ -17,7 +17,7 @@ typedef struct nodeP node_pr;
 struct list{
     node_pr *head;
     node_pr *tail;
-    int size;
+    short size;
 };
 typedef struct list list_pr;
 
@@ -27,10 +27,10 @@ void initListPr(list_pr *l);
 node_pr *createNode(player data);
 void addNode(node_pr *node, list_pr *l);
 void printList(list_pr l);
-void loadFile(FILE *fileIn,list_pr *l);
-void saveFile(FILE *fileOut, list_pr l);
+void loadFile(list_pr *l);
+void saveFile(list_pr *l);
 void sortList(list_pr *l);
-
+void freeListPr(list_pr *l);
 //================================================================
 
 void initPlayer(player p)
@@ -81,8 +81,9 @@ void printList(list_pr l)
         head = head->next;
     }
 }
-void loadFile(FILE *fileIn,list_pr *l)
+void loadFile(list_pr *l)
 {
+    FILE *fileIn;
     char line[100];
     fileIn = fopen("src/data.txt", "r");
     
@@ -105,16 +106,17 @@ void loadFile(FILE *fileIn,list_pr *l)
     }
     fclose(fileIn);
 }
-void saveFile(FILE *fileOut, list_pr l)
+void saveFile(list_pr *l)
 {
-    fileOut = fopen("src/data.txt", "w");
-    node_pr *head = l.head;
+    FILE *fileOut;
+    fileOut = fopen("src/data.txt", "w+");
+    node_pr *head = l->head;
     while(head != NULL){
-        
         fputs(head->data.name, fileOut);
         fprintf(fileOut, ";%d\n", head->data.score);
         head = head->next;
     }
+    fclose(fileOut);
 }
 void sortList(list_pr *l)
 {
@@ -130,5 +132,16 @@ void sortList(list_pr *l)
                 temp = i->data;
             }
         }
+    }
+}
+void freeListPr(list_pr *l)
+{
+    node_pr *head = l->head;
+    while(head != NULL)
+    {
+        head = l->head->next;
+        free(l->head);
+        l->head = head;
+        l->head = NULL;
     }
 }

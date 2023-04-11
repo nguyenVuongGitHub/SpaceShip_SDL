@@ -5,8 +5,7 @@
 #include "linkedListForMonster.h"
 #include "player.h"
 #include <SDL2/SDL_ttf.h>
-FILE *fileOut = NULL;
-FILE *fileIn  = NULL;
+
 
 player playerer; // biến lưu thông tin người chơi
 list_pr *lpr = NULL; // danh sách người chơi để lấy xếp hạng
@@ -33,26 +32,24 @@ void init()
     
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
-    
-    int index_window = 0;
+    SDL_ShowCursor(SDL_DISABLE);
+    short index_window = 0;
     
     SDL_GetCurrentDisplayMode(index_window,&displayMode);
     window = SDL_CreateWindow("game",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,displayMode.w,displayMode.h,SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC);
+    
     s = (ship*)malloc(sizeof(ship));
-    lm = (monsterList*)malloc(sizeof(monsterList));
     lpr = (list_pr*)malloc(sizeof(list_pr));
     
     initListPr(lpr);
     //tên người chơi :
-    
+    strcpy(playerer.name,"con cet 30 cm");
+    // playerer.name = "con cet 30 cm";
     playerer.score = 0;
     playerer.hp = 3; // khởi tạo mặc định :)) quên làm initPlayer
 
-    loadFile(fileIn,lpr);
-    // sortList(lpr);
-    printf("load thanh cong!!!");
-    initMonsterList(lm);
+    loadFile(lpr);
 
     loadAudio();
     Mix_VolumeChunk(hit, MIX_MAX_VOLUME/2);  //chỉnh âm luọng của hit
@@ -180,6 +177,8 @@ void freeAll()
 {
     freeBullets(); //giải phóng danh sách đạn người chơi
     freeList(lm); // giải phóng list quái vật
+    freeBulletMonster();
+    freeListPr(lpr); // giải phóng list người chơi
     SDL_DestroyWindow(window); // giải phóng window
     SDL_DestroyRenderer(renderer); // giải phóng renderer
     SDL_DestroyTexture(s->texture); // giải phóng texture tàu

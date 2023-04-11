@@ -18,6 +18,8 @@
         "*.rh": "c",
         "cmath": "c",
         "cstdlib": "c",
-        "bulletmonster.h": "c"
+        "bulletmonster.h": "c",
+        "sdl_ttf.h": "c",
+        "monster.h": "c"
     }
 }

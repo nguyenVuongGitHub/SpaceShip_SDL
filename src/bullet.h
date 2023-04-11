@@ -20,7 +20,7 @@ void loadBullet(bullet *b);
 void initBullet(bullet *b);
 void moveBullet(bullet *b);
 void drawBullet(bullet *b);
-void addNewBulletToList(int numOfBullet);
+void addNewBulletToList();
 void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET]);
 void freeBullets();
 //=====================================================
@@ -62,7 +62,7 @@ void moveBullet(bullet *b)
     }
 }
 
-void addNewBulletToList(int numOfBullet)
+void addNewBulletToList()
 {
     bullet *newBullet = NULL;
 
@@ -72,12 +72,6 @@ void addNewBulletToList(int numOfBullet)
             newBullet = bullets[i];
             break;
         }
-    }
-
-    // Nếu không có đối tượng nào để tái sử dụng, cấp phát đối tượng mới
-    if (newBullet == NULL) {
-        newBullet = (bullet*)malloc(sizeof(bullet));
-        bullets[numOfBullet] = newBullet;
     }
 
     // Khởi tạo đối tượng viên đạn

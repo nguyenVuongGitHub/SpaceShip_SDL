@@ -3,12 +3,12 @@
 #include "global.h"
 #include "linkedListForMonster.h"
 // #include <time.h>
-const int Num_of_MonsterArray1=5;
-const int Num_of_MonsterArray2=5;
-const int Num_of_MonsterArray3=2;
-const int Num_of_MonsterArray4=1;
-const int Num_of_MonsterArray5=3;
-const int Num_of_MonsterArray6=4;
+const short Num_of_MonsterArray1=5;
+const short Num_of_MonsterArray2=5;
+const short Num_of_MonsterArray3=2;
+const short Num_of_MonsterArray4=1;
+const short Num_of_MonsterArray5=3;
+const short Num_of_MonsterArray6=4;
 
 void initArrayMonster();
 void monsterType_1();

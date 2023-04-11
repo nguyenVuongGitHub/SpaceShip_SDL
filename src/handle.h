@@ -15,7 +15,7 @@ text textHeart;
 text textCurentScore;
 char curentScore[20];
 
-int random = 100; // random_buff
+short random = 100; // random_buff
 bool buff_is_run = false;
 int x_buff;
 int y_buff;
@@ -47,13 +47,20 @@ void gameLoop()
 
     // Khai báo một biến đếm thời gian cho bắn đạn tiếp theo
     Uint32 last_shot_time = 0;
-    long long countLoop = 0;
-    long long timeShip = 0; // tạo biến này để đếm thời gian tàu 
-    int cur_ship = 0; // frame hình hiện tại
-    int numOfBullet= 0; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
+    short countLoop = 0;
+    short timeShip = 0; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử
+    short cur_ship = 0; // frame tàu hiện tại
     bool holdMouse = false; // kiểm tra giữ chuột
+
+    /**
+     * cấp phát và khởi tạo các thống số cần thiết cho game
+    */
+    lm = (monsterList*)malloc(sizeof(monsterList));
+    initMonsterList(lm);
     initListBulletMonster();
-    initBullets(); // cấp phát bộ nhớ cho con trỏ
+    initBullets(); 
+
+
     while(gameOver){
         SDL_Event event;
         SDL_RenderClear(renderer);
@@ -91,13 +98,14 @@ void gameLoop()
             if(event.key.keysym.sym == SDLK_ESCAPE)
             {
                 handlePause();
+                
                 s->status = DIE;
                 timeShip = 1;
                 loadShip();
             } 
             
         }
-
+        
         moveBackground();
         drawShip(cur_ship);
         
@@ -111,13 +119,12 @@ void gameLoop()
             // Kiểm tra xem đã đủ thời gian để bắn đạn tiếp theo chưa
             if (time_since_last_shot >= 150) {
                 
-                addNewBulletToList(numOfBullet);
+                addNewBulletToList();
                 // Lưu lại thời gian bắn đạn
                 last_shot_time = current_time;
             }
-            numOfBullet++; // biến đếm biểu thị số viên đạn trong danh sách
         }
-
+        
         // xử lí di chuyển đạn
         for(int i = 0; i < MAX_BULLET; i++)
         {
@@ -130,10 +137,10 @@ void gameLoop()
         
         // tạo ra quái nếu danh sách rỗng
         GenerateMonster(lm);
-
+        
         // tạo ra buff
         generateBuff();
-
+        
         //quái tạo đạn
         for(node_M *k = lm->head; k != NULL; k= k->next)
         {
@@ -153,9 +160,9 @@ void gameLoop()
                 moveBulletMonster(listBulletMonster[i]);
             }
         }
+
         // xử lí va chạm
         collision(lm);
-
 
         // vẽ quái vật trong danh sách.
         for(int i = 0; i < lm->size; i++)
@@ -169,7 +176,7 @@ void gameLoop()
         if(cur_ship >= 8) cur_ship = 0;
 
         countLoop++;
-
+        if(countLoop == 100) countLoop = 0;
         // kiểm tra nếu vòng lặp chạy đc 300 lần thì chuyển trạng thái
         if(timeShip % 300 == 0 && s->status == DIE)
         {
@@ -178,6 +185,7 @@ void gameLoop()
             timeShip = 0;
         }
         timeShip++;
+
         drawHeart();
         drawText(&textHeart);
         drawText(&textScore);
@@ -185,7 +193,9 @@ void gameLoop()
         // hiển thị lên màn hình
         SDL_RenderPresent(renderer);
         SDL_Delay(10); 
+        
     } 
+    gameOver = true;
 }
 void handlePause()
 {
@@ -235,16 +245,17 @@ void handlePause()
                     // tạo node mới để thêm vào danh sách người chơi
                     node_pr *nodepr = createNode(playerer);
                     addNode(nodepr,lpr);
-                    saveFile(fileOut,*lpr); // lưu file
-                    freeBullets(); // giải phóng đạn 
-                    freeList(lm); // giải phóng danh sách quái vật
-                    lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-                    initMonsterList(lm);
+                    // freeBullets(); // giải phóng đạn 
+                    // freeList(lm); // giải phóng danh sách quái vật
+                    // freeBulletMonster();
+                    // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+                    // initMonsterList(lm);
                     playerer.hp = 3;
                     wave = 0;
                     playerer.score = 0;
-                    showMenu(); // về lại menu
-                    if(gameOver == false) return;
+                    // showMenu(); // về lại menu
+                    gameOver = false;
+                    // if(gameOver == false) return;
                 }
                 last_mouse = 3;
             }
@@ -294,15 +305,17 @@ void handlePause()
                     // tạo node mới để thêm vào danh sách người chơi
                     node_pr *nodepr = createNode(playerer);
                     addNode(nodepr,lpr);
-                    saveFile(fileOut,*lpr); // lưu file
-                    freeBullets(); // giải phóng đạn 
-                    freeList(lm); // giải phóng danh sách quái vật
-                    lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-                    initMonsterList(lm);
+                    // freeBullets(); // giải phóng đạn 
+                    // freeList(lm); // giải phóng danh sách quái vật
+                    // freeBulletMonster();
+                    // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+                    // initMonsterList(lm);
                     playerer.hp = 3;
                     wave = 0;
                     playerer.score = 0;
-                    showMenu(); // về lại menu
+                    // showMenu(); // về lại menu
+                    gameOver = false;
+                    return;
                 }
                 last_mouse = 7;
             }
@@ -397,7 +410,6 @@ void collision(monsterList *l)
                         sprintf(curentScore,"%d",playerer.score); // cập nhật lại điểm và chuyển thành kiểu char[]
                         setText(curentScore,&textCurentScore); // thay đổi giá trị của text
                         loadText(36,&textCurentScore,pathFont,getColor(WHITE));
-                        // printf("\n score : %d", playerer.score);
                     } 
                     
                 }
@@ -450,24 +462,11 @@ void collision(monsterList *l)
     // kiểm tra máu người chơi, nếu hp == 0 thì về lại menu 
     if(playerer.hp <= 0)
     {
-        printf("game over\n");
         // tạo node mới để thêm vào danh sách người chơi
-        // node_pr *nodepr = createNode(playerer);
-        // addNode(nodepr,lpr);
-
-        // saveFile(fileOut,*lpr); // lưu file
-        // freeBullets(); // giải phóng đạn 
-        // freeList(lm); // giải phóng danh sách quái vật
-        // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-        // initMonsterList(lm);
-        
-        //show gameover 
+        node_pr *nodepr = createNode(playerer);
+        addNode(nodepr,lpr);
         showGameOver();
         
-        // playerer.hp = 3; // reset hp
-        // playerer.score = 0;
-        // wave = 0;
-        // showMenu();
     }
 }
 bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
@@ -511,7 +510,7 @@ void generateBuff()
             {
                 playerer.hp++;
             }
-            y_buff = -80;
+            y_buff = -80; // reset buff
             buff_is_run = false;
         }
         // Khoi tao lai trai tim neu het

@@ -13,7 +13,7 @@ typedef struct node node_M;
 struct MonsterList{
     node_M *head;
     node_M *tail;
-    int size;
+    short size;
     
 };
 typedef struct MonsterList monsterList;
@@ -25,7 +25,7 @@ node_M *createNode(monster data);
 void push_back(monsterList *l, node_M *newNode);
 node_M *getNode(monsterList *l, int index); // lấy node tại index thứ bao nhiêu giống như a[i]
 void removeNode(monsterList *l,node_M *target);
-int getSize(monsterList l);
+short getSize(monsterList l);
 
 //===================================
 void initMonsterList(monsterList *l) {
@@ -88,7 +88,7 @@ void removeNode(monsterList *l, node_M *target) {
     }
 }
 
-int getSize(monsterList l) {
+short getSize(monsterList l) {
     return l.size;
 }
 void freeList(monsterList *l)

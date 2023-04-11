@@ -3,23 +3,21 @@
 #include <stdlib.h>
 #include "bulletMonster.h"
 #include <math.h>
-#define MAX_MONSTER 100
-#define PI 3.141592653589793
 
-int wave = 0; // đợt quái 
-int angleMove = 0; // góc di chuyển
+short wave = 0; // đợt quái 
+short angleMove = 0;
 struct monster
 {
     int x_pos;
     int y_pos;
     int y_limit; // giới hạn 
     int x_limit;
-    int speed;
+    short speed;
     int Width;
     int height;
     int type;
-    int hp;
-    int score;
+    short hp;
+    unsigned short score;
     SDL_Texture *texture;
 };
 typedef struct monster monster;
@@ -27,15 +25,13 @@ typedef struct monster monster;
 void initMonster(monster *m);
 void drawMonster(monster *m);
 void moveMonster(monster *m);
-bool canSpawnBullets(monster *m);
-void makeBullet(monster *m);
-void monsterDie(monster *m);
-// void spawn_bullets_around_enemy(int num_bullets,monster *m,bullet_monster *b_m);
+void makeBullet(monster *m); // tạo đạn
+void monsterDie(monster *m); // hàm xử lí bắn đạn tỏa ra khi quái vật chết
+
 //==================================================
 
 void initMonster(monster *m)
 {
-    // m = (monster*)malloc(sizeof(monster));
     m->x_pos = 600;
     m->y_pos = 100;
     m->Width = 64;
@@ -138,7 +134,7 @@ void moveMonster(monster *m)
             {
                 angleMove = 0;
             }
-            m->x_pos += m->speed * cos(angleMove*PI/180);
+            m->x_pos += m->speed * cos(angleMove*M_PI/180);
         }
         m->y_pos+= m->speed;
     }
@@ -155,7 +151,7 @@ void moveMonster(monster *m)
             {
                 angleMove = 0;
             }
-            m->x_pos += m->speed * cos(angleMove*PI/180);
+            m->x_pos += m->speed * cos(angleMove*M_PI/180);
         }
         m->y_pos+=m->speed;
     }

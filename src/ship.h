@@ -1,7 +1,9 @@
 #pragma once
 #include <SDL2/SDL.h>
 
-
+// trạng thái của tàu 
+// live là còn sống
+// die là đã chết -> bất tử
 enum Status {
         LIVE,DIE
 };
