@@ -24,6 +24,8 @@ void drawPause_30();
 void drawPause_31();
 void drawPause_40();
 void drawPause_41();
+
+void showGameOver();
 #include"handle.h"
 
 // Hàm khởi tạo SDL và tải các tài nguyên
@@ -335,7 +337,7 @@ void showMenu()
     drawMenu();
     drawMouse();
     SDL_ShowCursor(SDL_DISABLE);
-    while (gameOver == false)
+    while (gameOver == true)
     {
         //nhạc nền menu
         if(!Mix_Playing(1))
@@ -496,3 +498,142 @@ void showRank()
     }
 }
 
+void showGameOver(){
+    bool check = true;
+    text gameOver;
+    initText(&gameOver);
+    setText("GAME OVER", &gameOver);
+    loadText(70, &gameOver, pathFont, getColor(WHITE));
+    setPosText(displayMode.w/2 - 200, 100, &gameOver);
+
+    text playerGame;
+    initText(&playerGame);
+    setText("NAME: ", &playerGame);
+    loadText(50, &playerGame, pathFont, getColor(WHITE));
+    setPosText(200, 250, &playerGame);
+
+    text scoreGame;
+    initText(&scoreGame);
+    setText("SCORE: ", &scoreGame);
+    loadText(50, &scoreGame, pathFont, getColor(WHITE));
+    setPosText(200, 400, &scoreGame);
+
+    text waveGame;
+    initText(&waveGame);
+    setText("WAVE: ", &waveGame);
+    loadText(50, &waveGame, pathFont, getColor(WHITE));
+    setPosText(200, 550, &waveGame);
+
+    text playerOver;
+    char temp[20];
+    initText(&playerOver);
+    // sprintf(temp, "%c", playerer.name);
+    setText(playerer.name, &playerOver);
+    loadText(50, &playerOver, pathFont, getColor(WHITE));
+    setPosText(500, 250, &playerOver);
+
+    text scoreOver;
+    initText(&scoreOver);
+    sprintf(temp, "%d", playerer.score);
+    setText(temp, &scoreOver);
+    loadText(50, &scoreOver, pathFont, getColor(WHITE));
+    setPosText(500, 400, &scoreOver);
+
+    text waveOver;
+    initText(&waveOver);
+    sprintf(temp, "%d", wave);
+    setText(temp, &waveOver);
+    loadText(50, &waveOver, pathFont, getColor(WHITE));
+    setPosText(500, 550, &waveOver);
+
+    text restartGame;
+    initText(&restartGame);
+    setText("RESTART", &restartGame);
+    loadText(50, &restartGame, pathFont, getColor(WHITE));
+    setPosText(70, 750, &restartGame);
+
+    text exitGame;
+    initText(&exitGame);
+    setText("EXIT", &exitGame);
+    loadText(50, &exitGame, pathFont, getColor(WHITE));
+    setPosText(1350, 750, &exitGame);
+
+    while(check){
+        SDL_Event event;
+        while(SDL_PollEvent(&event)){
+            switch(event.type){
+                case SDL_MOUSEMOTION:
+
+                    if(mouseX >= restartGame.x && mouseX <= restartGame.x + restartGame.w
+                    && mouseY >= restartGame.y && mouseY <= restartGame.y + restartGame.h){
+
+                        loadText(50, &restartGame, pathFont, getColor(RED));
+                    }
+                    else{
+                        loadText(50, &restartGame, pathFont, getColor(WHITE));
+
+                    }
+
+                    if(mouseX >= exitGame.x && mouseX <= exitGame.x + exitGame.w
+                    && mouseY >= exitGame.y && mouseY <= exitGame.y + exitGame.h){
+                        loadText(50, &exitGame, pathFont, getColor(RED));
+                    }
+                    else{
+                        loadText(50, &exitGame, pathFont, getColor(WHITE));
+
+                    }
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+
+                    if(mouseX >= restartGame.x && mouseX <= restartGame.x + restartGame.w
+                    && mouseY >= restartGame.y && mouseY <= restartGame.y + restartGame.h){
+                        // tạo node mới để thêm vào danh sách người chơi
+                        node_pr *nodepr = createNode(playerer);
+                        addNode(nodepr,lpr);
+                        saveFile(fileOut,*lpr); // lưu file
+                        freeBullets(); // giải phóng đạn 
+                        freeList(lm); // giải phóng danh sách quái vật
+                        lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+                        initMonsterList(lm);
+                        playerer.hp = 3; // reset hp
+                        playerer.score = 0;
+                        wave = 0;
+                        gameLoop();
+                    }
+                    
+                    if(mouseX >= exitGame.x && mouseX <= exitGame.x + exitGame.w
+                    && mouseY >= exitGame.y && mouseY <= exitGame.y + exitGame.h){
+                        // tạo node mới để thêm vào danh sách người chơi
+                        node_pr *nodepr = createNode(playerer);
+                        addNode(nodepr,lpr);
+                        saveFile(fileOut,*lpr); // lưu file
+                        freeBullets(); // giải phóng đạn 
+                        freeList(lm); // giải phóng danh sách quái vật
+                        lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+                        initMonsterList(lm);
+                        playerer.hp = 3;
+                        wave = 0;
+                        playerer.score = 0;
+                        showMenu(); // về lại menu
+                    }
+                    break;
+            }       
+        }
+        moveBackground();
+        drawMouse();
+
+        drawText(&gameOver);
+        drawText(&playerGame);
+        drawText(&scoreGame);
+        drawText(&waveGame);
+
+        drawText(&playerOver);
+        drawText(&scoreOver);
+        drawText(&waveOver);
+
+        drawText(&restartGame);
+        drawText(&exitGame);
+        SDL_RenderPresent(renderer);
+
+    }
+}

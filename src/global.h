@@ -10,7 +10,7 @@
 #define MAX_BULLET 50
 
 int mouseX = 0, mouseY = 0;
-bool gameOver;
+bool gameOver = true;
 bool sound = true;
 const char *pathFont = "fonts/Minecraft.ttf";
 
