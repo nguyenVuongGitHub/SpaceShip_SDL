@@ -29,7 +29,7 @@ void addBulletToList(int num);
 #define MAX_BULLET_MONSTER 1000
 bullet_monster *listBulletMonster[MAX_BULLET_MONSTER]; // giới hạn đạn trên màn hình là 5000
 //
-
+SDL_Rect rectMonster = {500,400,100,100};
 int main(int argc, char *argv[])
 {
     system("cls");
@@ -38,17 +38,11 @@ int main(int argc, char *argv[])
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 
 
-    // cấp phát bộ nhớ cho mảng các viên đạn
-    for(int i = 0; i < MAX_BULLET_MONSTER; i ++)
-        listBulletMonster[i] = (bullet_monster*)malloc(sizeof(bullet_monster));
     
-    // cho trạng thái của các viên đạn là false - ko di chuyển
-    for(int i = 0; i < MAX_BULLET_MONSTER; i++)
-        listBulletMonster[i]->active = false;
 
     IMG_Init(IMG_INIT_PNG);
     SDL_Texture* monster = IMG_LoadTexture(renderer,"image/SpaceThreat1.png");
-    SDL_Rect r = {500,400,100,100};
+    
     int countLoop = 0;
     bool isRunning = true;
     int i = -1;
@@ -80,14 +74,14 @@ int main(int argc, char *argv[])
             if(listBulletMonster[i] != NULL && listBulletMonster[i]->active)
             {
                 printf("\n i = %d",i);
-                drawBulletMonster(listBulletMonster[i]); 
+                // drawBulletMonster(listBulletMonster[i]); 
                 moveBulletMonster(listBulletMonster[i]);
             }
         }
 
 
         countLoop++;
-        SDL_RenderCopy(renderer,monster,NULL,&r); // vẽ quái
+        SDL_RenderCopy(renderer,monster,NULL,&rectMonster); // vẽ quái
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
     }
@@ -137,11 +131,23 @@ void drawBulletMonster(bullet_monster *bullet)
 
 void moveBulletMonster(bullet_monster *bullet)
 {
-
-        bullet->y += bullet->speed;
-    if(bullet->y >= 800){
-        bullet->active = false;
+    // bắn hình tròn
+    float angle_between_bullets = 2 * M_PI / 10; // Góc giữa các viên đạn
+    
+    for (int i = 0; i < 10; i++) {
+        bullet->x = rectMonster.x + bullet->radius  * cos(i * angle_between_bullets);
+        bullet->y = rectMonster.y + bullet->radius  * sin(i * angle_between_bullets);
+        bullet->radius+=0.4;
+        drawBulletMonster(bullet);
+        if(bullet->radius >= 500) 
+        {
+            bullet->active = false;
+            // bullet->radius = 20;
+        }
     }
+    // bắn hình thoi di theo
+    // bắn hình tam giác dí theo
+    
 }
 void addBulletToList(int num)
 {
@@ -172,6 +178,7 @@ void addBulletToList(int num)
     bullet->w = 15;
     bullet->h = 15;
     bullet->speed = 2;
+    bullet->radius = 20;
     bullet->active = true;
 }
 

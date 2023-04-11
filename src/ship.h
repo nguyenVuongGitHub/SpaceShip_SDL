@@ -72,13 +72,16 @@ void set_clip()
 }
 void moveShip(){
     SDL_GetMouseState(&mouseX,&mouseY);
-    s->X = mouseX;
+    s->X = mouseX-32;
     s->Y = mouseY;
 }
 void drawShip(int cur){
+    SDL_GetMouseState(&mouseX,&mouseY);
+    s->X = mouseX-32;
+    s->Y = mouseY;
     SDL_Rect rectShip = {
-            s->X-32,
-            s->Y-32,
+            s->X,
+            s->Y,
             s->W,
             s->H
     };

@@ -10,7 +10,7 @@
 #define MAX_BULLET 50
 
 int mouseX = 0, mouseY = 0;
-bool gameOver;
+bool gameOver = true;
 bool sound = true;
 const char *pathFont = "fonts/Minecraft.ttf";
 
@@ -18,14 +18,14 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_DisplayMode displayMode;
 
-SDL_Renderer *renderer_bullet;
 
 SDL_Texture *background = NULL;
 SDL_Texture *background_menu = NULL;
 SDL_Texture *background_help = NULL;
 
 SDL_Texture* mouse = NULL;
-SDL_Texture* heart[3];
+SDL_Texture* heart[5];
+SDL_Texture* buff = NULL;
 SDL_Texture* startButton = NULL;
 SDL_Texture* helpButton = NULL;
 SDL_Texture* quitButton = NULL;

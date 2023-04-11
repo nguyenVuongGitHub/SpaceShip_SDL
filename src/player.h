@@ -107,7 +107,7 @@ void loadFile(FILE *fileIn,list_pr *l)
 }
 void saveFile(FILE *fileOut, list_pr l)
 {
-    fileOut = fopen("src/data.txt", "w+");
+    fileOut = fopen("src/data.txt", "w");
     node_pr *head = l.head;
     while(head != NULL){
         

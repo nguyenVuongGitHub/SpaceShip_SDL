@@ -65,6 +65,7 @@ void monsterType_2()
         monster1->x_pos = -85;
         monster1->y_pos = displayMode.w/5-(monster1->height)/2+100*(i-1.5);
         monster1->y_limit = 300;
+        monster1->x_limit = 200;
         monster1->speed = 2;
         monster1->score = 150;
         loadMonster(monster1);
@@ -80,6 +81,7 @@ void monsterType_2()
         monster2->x_pos = displayMode.w+85;
         monster2->y_pos = displayMode.w/5-(monster2->height)/2+100*(i-1.5);
         monster2->y_limit = 300;
+        monster2->x_limit = 200;
         monster2->speed = 2;
         monster2->score = 150;
         loadMonster(monster2);
@@ -206,7 +208,7 @@ void GenerateMonster(monsterList *l)
         {
             srand(time(0));
             int random=rand() % 8 +1;
-            // int random = 6;
+            // int random = 1;
             if(random==1)
             {
                 monsterType_1();

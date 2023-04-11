@@ -1,7 +1,8 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <stdlib.h>
-
+#include "bulletMonster.h"
+#include <math.h>
 #define MAX_MONSTER 100
 #define PI 3.141592653589793
 
@@ -12,6 +13,7 @@ struct monster
     int x_pos;
     int y_pos;
     int y_limit; // giới hạn 
+    int x_limit;
     int speed;
     int Width;
     int height;
@@ -21,23 +23,14 @@ struct monster
     SDL_Texture *texture;
 };
 typedef struct monster monster;
-struct bullet_monster{
-    int x;
-    int y;
-    int h;
-    int w;
-    float radius;
-    SDL_Texture *texture;
-};
-typedef struct bullet_monster bullet_monster;
 
-bullet_monster *b_m = NULL;
 void initMonster(monster *m);
 void drawMonster(monster *m);
 void moveMonster(monster *m);
 bool canSpawnBullets(monster *m);
 void makeBullet(monster *m);
-void spawn_bullets_around_enemy(int num_bullets,monster *m,bullet_monster *b_m);
+void monsterDie(monster *m);
+// void spawn_bullets_around_enemy(int num_bullets,monster *m,bullet_monster *b_m);
 //==================================================
 
 void initMonster(monster *m)
@@ -48,6 +41,7 @@ void initMonster(monster *m)
     m->Width = 64;
     m->height = 64;
     m->y_limit = 0;
+    m->x_limit = 0;
     m->speed = 0;
     m->hp = 0;
     m->type = 0;
@@ -110,7 +104,7 @@ void drawMonster(monster *m)
 }
 void moveMonster(monster *m)
 {
-    if(m->type == 1 || m->type == 3 || m->type == 5 || m->type == 6)
+    if(m->type == 1 || m->type == 5 || m->type == 6)
     {
         if(m->y_pos >= m->y_limit)
         {
@@ -119,19 +113,19 @@ void moveMonster(monster *m)
         m->y_pos += m->speed;
     }else if(m->type == 2)
     {
-        if(m->x_pos >= 200)
+        if(m->x_pos >= m->x_limit)
         {
-            m->x_pos = 200;
+            m->x_pos = m->x_limit;
         }
         m->x_pos += m->speed;
     }else if(m->type == 7)
     {
-        if(m->x_pos <= displayMode.w -250)
+        if(m->x_pos <= displayMode.w -m->x_limit+50)
         {
-            m->x_pos = displayMode.w -250;
+            m->x_pos = displayMode.w -m->x_limit+50;
         }
         m->x_pos -= m->speed;
-    }else if(m->type == 4)
+    }else if(m->type == 4 || m->type == 3)
     {
         if(m->y_pos >= m->y_limit)
         {
@@ -166,67 +160,365 @@ void moveMonster(monster *m)
         m->y_pos+=m->speed;
     }
 }
-// bool canSpawnBullets(monster *m)
-// {
-//     Uint8 CurrentTime = SDL_GetTicks();
-//     int LastTime = 0;
-//     bool check_can_spawn=0; 
-//     int delay_shoot_time = 300;
-//     if(m->type == 1 || m->type == 2 || m->type == 3 || m->type == 5 || m->type == 6 || m->type == 7)
-//     {
-//         if(CurrentTime>LastTime+delay_shoot_time && m->y_pos >=500)
-//         {
-//             LastTime=CurrentTime;
-//             check_can_spawn=1;
-//         }
-//     }
-//     else if(m->type == 4)
-//     {
-//         if(CurrentTime>LastTime+400)
-//         {
-//             LastTime=CurrentTime;
-//             check_can_spawn=1;
-//         }
-//     }
-//     return check_can_spawn;
-// }
-// void makeBullet(monster *m)
-// {
-//     if(m->type == 1)
-//     {
-//         spawn_bullets_around_enemy(10,m,b_m);
-//     }
-//     if(m->type == 2)
-//     {
-        
-//     }
-//     if(m->type == 3)
-//     {
-        
-//     }
-//     if(m->type == 4)
-//     {
-        
-//     }
-//     if(m->type == 5)
-//     {
-        
-//     }
-//     if(m->type == 6)
-//     {
-        
-//     }
-// }
-// void spawn_bullets_around_enemy(int num_bullets,monster *m,bullet_monster *b_m) {
 
-//     float angle_between_bullets = 2 * PI / num_bullets; // Góc giữa các viên đạn
-//     for (int i = 0; i < num_bullets; i++) {
-//         // Tính toán tọa độ của viên đạn thứ i trên đường tròn
-//         b_m->x = m->x_pos + b_m->radius  * cos(i * angle_between_bullets);
-//         b_m->y = m->y_pos + b_m->radius  * sin(i * angle_between_bullets);
-//         // Tạo ra viên đạn tại tọa độ này
-//         drawBulletMonster();
-//         b_m->radius+=0.4;
-//         if(b_m->radius >= 500) b_m->radius = 20;
-//     }
-// }
+void makeBullet(monster *m)
+{
+    if(m->type == 1)
+    {
+        bullet_monster *b = NULL;
+        // tận dụng lại bộ nhớ
+        for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+        {
+            if(listBulletMonster[j]->active == false)
+            {
+                b = listBulletMonster[j];
+                break;
+            }
+        }
+        initBulletMonster(b);
+        loadBulletMonster(b,m->type);
+        b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+        b->y = m->y_pos + m->height; // yMonster + hMonster
+        b->w = 15;
+        b->h = 15;
+        b->speed = 5;
+        b->active = true;
+        
+        SDL_GetMouseState(&mouseX,&mouseY);
+        s->X = mouseX;
+        s->Y = mouseY;
+        b->angle = atan2(s->Y - b->y, s->X - b->x); // tính góc giữa tàu và đạn
+    }
+    else if(m->type == 2 && m->x_pos >= m->x_limit) // đây là khi quái đạt vị trí giới hạn (không còn di chuyển nữa)
+    {
+        for(int i = 1; i <= 3; i+=2) // chỉ lấy i = 1 và 3 để tính góc
+        {
+            bullet_monster *b = NULL;
+            // tận dụng lại bộ nhớ
+            for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+            {
+                if(listBulletMonster[j]->active == false)
+                {
+                    b = listBulletMonster[j];
+                    break;
+                }
+            }
+            initBulletMonster(b);
+            loadBulletMonster(b,m->type);
+            b->x = m->x_pos + m->Width/2; 
+            b->y = m->y_pos + m->height/2; 
+            b->w = 15;
+            b->h = 15;
+            b->speed = 2;
+            b->active = true;
+            b->angle = (i*120); //nhân 120 để bè ra
+        }
+        
+        
+    }
+    // loại 7 giống loại 2, nó đối xứng
+    else if(m->type == 7 && m->x_pos <= displayMode.w -m->x_limit+50)
+    {
+        for(int i = 1; i <= 3; i+=2)
+        {
+            bullet_monster *b = NULL;
+            // tận dụng lại bộ nhớ
+            for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+            {
+                if(listBulletMonster[j]->active == false)
+                {
+                    b = listBulletMonster[j];
+                    break;
+                }
+            }
+            initBulletMonster(b);
+            loadBulletMonster(b,m->type);
+            b->x = m->x_pos + m->Width/2; 
+            b->y = m->y_pos + m->height/2; 
+            b->w = 15;
+            b->h = 15;
+            b->speed = 2;
+            b->active = true;
+            b->angle = (i*120); 
+        }
+    }
+    else if(m->type == 3)
+    {
+        bullet_monster *b = NULL;
+        // tận dụng lại bộ nhớ
+        for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+        {
+            if(listBulletMonster[j]->active == false)
+            {
+                b = listBulletMonster[j];
+                break;
+            }
+        }
+        initBulletMonster(b);
+        loadBulletMonster(b,m->type);
+        b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+        b->y = m->y_pos + m->height; // yMonster + hMonster
+        b->w = 15;
+        b->h = 15;
+        b->speed = 10;
+        b->active = true;       
+    }
+    else if(m->type == 4)
+    {
+        bullet_monster *b = NULL;
+        // tận dụng lại bộ nhớ
+        for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+        {
+            if(listBulletMonster[j]->active == false)
+            {
+                b = listBulletMonster[j];
+                break;
+            }
+        }
+        initBulletMonster(b);
+        loadBulletMonster(b,m->type);
+        b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+        b->y = m->y_pos + m->height; // yMonster + hMonster
+        b->w = 15;
+        b->h = 15;
+        b->speed = 13;
+        b->active = true;
+    }
+    else if(m->type == 6)
+    {
+        bullet_monster *b = NULL;
+        // tận dụng lại bộ nhớ
+        for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+        {
+            if(listBulletMonster[j]->active == false)
+            {
+                b = listBulletMonster[j];
+                break;
+            }
+        }
+        initBulletMonster(b);
+        loadBulletMonster(b,m->type);
+        b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+        b->y = m->y_pos + m->height; // yMonster + hMonster
+        b->w = 15;
+        b->h = 15;
+        b->speed = 12;
+        b->active = true;
+        
+        SDL_GetMouseState(&mouseX,&mouseY);
+        s->X = mouseX;
+        s->Y = mouseY;
+        b->angle = atan2(s->Y - b->y, s->X - b->x);
+    }
+    else if(m->type == 5)
+    {
+        for(int i = 1; i <= 5; i ++)
+        {
+            bullet_monster *b = NULL;
+            // tận dụng lại bộ nhớ
+            for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+            {
+                if(listBulletMonster[j]->active == false)
+                {
+                    b = listBulletMonster[j];
+                    break;
+                }
+            }
+            initBulletMonster(b);
+            loadBulletMonster(b,m->type);
+            b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+            b->y = m->y_pos + m->height; // yMonster + hMonster
+            b->w = 15;
+            b->h = 15;
+            b->speed = i*2;
+            b->active = true;
+            srand(time(0));
+            b->angle = rand() % 360 + 0;
+        }
+    }
+//==========================================================================================================
+    else if(m->type == 10) //boss sẽ có các loại đnạ của quái trước
+    {
+        for(int i = 1; i <= 7; i++)
+        {
+            if(i == 1)
+            {
+                bullet_monster *b = NULL;
+                // tận dụng lại bộ nhớ
+                for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+                {
+                    if(listBulletMonster[j]->active == false)
+                    {
+                        b = listBulletMonster[j];
+                        break;
+                    }
+                }
+                initBulletMonster(b);
+                loadBulletMonster(b,i);
+                
+                b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+                b->y = m->y_pos + m->height; // yMonster + hMonster
+                b->w = 15;
+                b->h = 15;
+                b->speed = 5;
+                b->active = true;
+                printf("cc %d\n",i);
+                SDL_GetMouseState(&mouseX,&mouseY);
+                s->X = mouseX;
+                s->Y = mouseY;
+                b->angle = atan2(s->Y - b->y, s->X - b->x); // tính góc giữa tàu và đạn
+            }
+            if(i == 2 || i == 7) 
+            {
+
+                for(int k = 1; k <= 3; k+=2) // chỉ lấy i = 1 và 3 để tính góc
+                {
+                    bullet_monster *b = NULL;
+                    // tận dụng lại bộ nhớ
+                    for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+                    {
+                        if(listBulletMonster[j]->active == false)
+                        {
+                            b = listBulletMonster[j];
+                            break;
+                        }
+                    }
+                    initBulletMonster(b);
+                    loadBulletMonster(b,i);
+                    b->x = m->x_pos + m->Width/2; 
+                    b->y = m->y_pos + m->height/2; 
+                    b->w = 15;
+                    b->h = 15;
+                    b->speed = 6;
+                    b->active = true;
+                    b->angle = (k*120); //nhân 120 để bè ra
+                }      
+            }
+            if(i == 3)
+            {
+                bullet_monster *b = NULL;
+                // tận dụng lại bộ nhớ
+                for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+                {
+                    if(listBulletMonster[j]->active == false)
+                    {
+                        b = listBulletMonster[j];
+                        break;
+                    }
+                }
+                printf("cc %d\n",i);
+                initBulletMonster(b);
+                loadBulletMonster(b,i);
+                b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+                b->y = m->y_pos + m->height; // yMonster + hMonster
+                b->w = 15;
+                b->h = 15;
+                b->speed = 10;
+                b->active = true;       
+            }
+            if(i == 4)
+            {
+                bullet_monster *b = NULL;
+                // tận dụng lại bộ nhớ
+                for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+                {
+                    if(listBulletMonster[j]->active == false)
+                    {
+                        b = listBulletMonster[j];
+                        break;
+                    }
+                }
+                printf("cc %d\n",i);
+                initBulletMonster(b);
+                loadBulletMonster(b,i);
+                b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+                b->y = m->y_pos + m->height; // yMonster + hMonster
+                b->w = 15;
+                b->h = 15;
+                b->speed = 13;
+                b->active = true;
+            }
+            if(i == 6)
+            {
+                bullet_monster *b = NULL;
+                // tận dụng lại bộ nhớ
+                for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+                {
+                    if(listBulletMonster[j]->active == false)
+                    {
+                        b = listBulletMonster[j];
+                        break;
+                    }
+                }
+                printf("cc %d\n",i);
+                initBulletMonster(b);
+                loadBulletMonster(b,i);
+                b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+                b->y = m->y_pos + m->height; // yMonster + hMonster
+                b->w = 15;
+                b->h = 15;
+                b->speed = 5;
+                b->active = true;
+                
+                SDL_GetMouseState(&mouseX,&mouseY);
+                s->X = mouseX;
+                s->Y = mouseY;
+                b->angle = atan2(s->Y - b->y, s->X - b->x);
+            }
+            if( i == 5)
+            {
+                for(int k = 1; k <= 5; k ++)
+                {
+                    bullet_monster *b = NULL;
+                    // tận dụng lại bộ nhớ
+                    for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+                    {
+                        if(listBulletMonster[j]->active == false)
+                        {
+                            b = listBulletMonster[j];
+                            break;
+                        }
+                    }
+                    printf("cc %d\n",i);
+                    initBulletMonster(b);
+                    loadBulletMonster(b,i);
+                    b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
+                    b->y = m->y_pos + m->height; // yMonster + hMonster
+                    b->w = 15;
+                    b->h = 15;
+                    b->speed = k*2;
+                    b->active = true;
+                    srand(time(0));
+                    b->angle = rand() % 360 + 0;
+                }
+            }
+        }
+        
+    }
+}
+void monsterDie(monster *m)
+{
+    for(int i = 0; i < 12; i++)
+    {
+        bullet_monster *b = NULL;
+        // tận dụng lại bộ nhớ
+        for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+        {
+            if(listBulletMonster[j]->active == false)
+            {
+                b = listBulletMonster[j];
+                break;
+            }
+        }
+        initBulletMonster(b);
+        loadBulletMonster(b,m->type);
+        b->x = m->x_pos + m->Width/2;
+        b->y = m->y_pos + m->height/2;
+
+        b->w = 15;
+        b->h = 15;
+        b->angle = (0+i*30);
+        b->speed = 4;
+        b->active = true;
+    }
+}

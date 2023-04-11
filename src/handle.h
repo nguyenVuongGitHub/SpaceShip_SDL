@@ -15,6 +15,12 @@ text textHeart;
 text textCurentScore;
 char curentScore[20];
 
+int random = 100; // random_buff
+bool buff_is_run = false;
+int x_buff;
+int y_buff;
+
+void generateBuff();
 void gameLoop(); // vòng lặp chính
 void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
 bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2); // kiểm tra va chạm giữa hai object
@@ -38,15 +44,17 @@ void gameLoop()
     setText(curentScore,&textCurentScore);
     loadText(36,&textCurentScore,pathFont,getColor(WHITE));
     setPosText(300,50,&textCurentScore);
-    
+
     // Khai báo một biến đếm thời gian cho bắn đạn tiếp theo
     Uint32 last_shot_time = 0;
+    long long countLoop = 0;
+    long long timeShip = 0; // tạo biến này để đếm thời gian tàu 
     int cur_ship = 0; // frame hình hiện tại
     int numOfBullet= 0; // biến đếm biểu thị cho viên đạn thứ i trong danh sách đạn
     bool holdMouse = false; // kiểm tra giữ chuột
+    initListBulletMonster();
     initBullets(); // cấp phát bộ nhớ cho con trỏ
-    SDL_ShowCursor(SDL_DISABLE); // ẩn con trỏ chuột
-    while(true){
+    while(gameOver){
         SDL_Event event;
         SDL_RenderClear(renderer);
         
@@ -80,14 +88,20 @@ void gameLoop()
                 holdMouse = false;
             }
             ///esc để tạm dừng
-            if(event.key.keysym.sym == SDLK_ESCAPE) handlePause();
+            if(event.key.keysym.sym == SDLK_ESCAPE)
+            {
+                handlePause();
+                s->status = DIE;
+                timeShip = 1;
+                loadShip();
+            } 
             
         }
 
         moveBackground();
         drawShip(cur_ship);
         
-
+        // kiểm tra bắn đạn
         if(holdMouse)
         {
             Mix_PlayChannel(5, shot, 0);
@@ -116,14 +130,37 @@ void gameLoop()
         
         // tạo ra quái nếu danh sách rỗng
         GenerateMonster(lm);
-        
+
+        // tạo ra buff
+        generateBuff();
+
+        //quái tạo đạn
+        for(node_M *k = lm->head; k != NULL; k= k->next)
+        {
+            if(k->data.hp > 0 && countLoop % 50 == 0)
+            {
+                makeBullet(&(k->data));
+            }
+            
+        }
+        //  vẽ đạn lên màn hình
+        for(int i = 0; i < MAX_BULLET_MONSTER; i++)
+        {
+            if(listBulletMonster[i] != NULL && listBulletMonster[i]->active)
+            {
+                // printf("i = %d\n",i);
+                drawBulletMonster(listBulletMonster[i]); 
+                moveBulletMonster(listBulletMonster[i]);
+            }
+        }
         // xử lí va chạm
         collision(lm);
+
 
         // vẽ quái vật trong danh sách.
         for(int i = 0; i < lm->size; i++)
         {
-            node *n = getNode(lm,i);
+            node_M *n = getNode(lm,i);
             moveMonster(&(n->data));
             drawMonster(&(n->data));
         }
@@ -131,14 +168,23 @@ void gameLoop()
         cur_ship++;
         if(cur_ship >= 8) cur_ship = 0;
 
+        countLoop++;
 
+        // kiểm tra nếu vòng lặp chạy đc 300 lần thì chuyển trạng thái
+        if(timeShip % 300 == 0 && s->status == DIE)
+        {
+            s->status = LIVE;
+            loadShip();
+            timeShip = 0;
+        }
+        timeShip++;
         drawHeart();
         drawText(&textHeart);
         drawText(&textScore);
         drawText(&textCurentScore);
         // hiển thị lên màn hình
         SDL_RenderPresent(renderer);
-        SDL_Delay(10);  
+        SDL_Delay(10); 
     } 
 }
 void handlePause()
@@ -146,7 +192,7 @@ void handlePause()
     int last_mouse = 0; // biến thể hiện chuột lần cuối đang ở đâu
 
     SDL_RenderClear(renderer);
-    while(true)
+    while(gameOver)
     {
         SDL_Event event;
         SDL_RenderClear(renderer);
@@ -198,6 +244,7 @@ void handlePause()
                     wave = 0;
                     playerer.score = 0;
                     showMenu(); // về lại menu
+                    if(gameOver == false) return;
                 }
                 last_mouse = 3;
             }
@@ -327,7 +374,7 @@ void collision(monsterList *l)
             bullets[i]->height
             };
             
-            for(node *k = l->head; k != NULL; k = k->next)
+            for(node_M *k = l->head; k != NULL; k = k->next)
             {
                 SDL_Rect rectMonster = {
                         k->data.x_pos,
@@ -341,6 +388,7 @@ void collision(monsterList *l)
                     k->data.hp --;
                     if(k->data.hp == 0)
                     {   
+                        monsterDie(&(k->data));
                         playerer.score += k->data.score;
                         Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
                         node *mr = k;
@@ -349,7 +397,7 @@ void collision(monsterList *l)
                         sprintf(curentScore,"%d",playerer.score); // cập nhật lại điểm và chuyển thành kiểu char[]
                         setText(curentScore,&textCurentScore); // thay đổi giá trị của text
                         loadText(36,&textCurentScore,pathFont,getColor(WHITE));
-                        printf("\n score : %d", playerer.score);
+                        // printf("\n score : %d", playerer.score);
                     } 
                     
                 }
@@ -358,11 +406,8 @@ void collision(monsterList *l)
     }
 
     // kiểm tra tàu va chạm quái
-    SDL_Rect r_ship = 
-    {
-        s->X,s->Y,s->W,s->H
-    };
-    for(node *i = l->head; i != NULL; i = i->next)
+    SDL_Rect r_ship = {s->X,s->Y,s->W,s->H};
+    for(node_M *i = l->head; i != NULL; i = i->next)
     {
         SDL_Rect rectMonster = {
             i->data.x_pos,
@@ -370,16 +415,37 @@ void collision(monsterList *l)
             i->data.Width,
             i->data.height
         };
-        if(checkCollision(r_ship,rectMonster))
+
+        if(checkCollision(r_ship,rectMonster) && s->status == LIVE)
         {
+            // không phải boss thì k xóa
+            if(i->data.type != 10)
+                removeNode(lm,i);
+            
             s->status = DIE;
             playerer.hp--;
-            set_clip();
-            s->status = LIVE;
+            loadShip();
+            // set_clip();
         }
     }
 
     // kiểm tra đạn quái va chạm tàu
+    for(int i = 0; i < MAX_BULLET_MONSTER;i++)
+    {
+        if(listBulletMonster[i]->active == true)
+        {
+            SDL_Rect rectShip = {s->X,s->Y,s->W,s->H};
+            SDL_Rect bulletMonster = {listBulletMonster[i]->x,listBulletMonster[i]->y-2,listBulletMonster[i]->w-2,listBulletMonster[i]->h-2};
+            
+            if(checkCollision(rectShip,bulletMonster) && s->status == LIVE)
+            {
+                listBulletMonster[i]->active = false;
+                s->status = DIE;
+                loadShip();
+                playerer.hp--;
+            }
+        }
+    }
 
     // kiểm tra máu người chơi, nếu hp == 0 thì về lại menu 
     if(playerer.hp <= 0)
@@ -409,4 +475,46 @@ bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
         return true;
     }
     return false;
+}
+void generateBuff()
+{
+    srand(time(0));
+
+    // nếu nó không chạy thì mới random mới
+    if(!buff_is_run)
+        random = rand()%15 - 0;
+    
+    if(random == 0 || random == 15 || random == 7) // nếu biến random từ 0 đến 15 random ra 0 thì sẽ tạo ra x và y 
+    {
+        x_buff = rand() % (displayMode.w - 10 + 1) + 10;
+        y_buff = -30;
+        buff_is_run = true; // đổi biến run thành true để bắt đầu di chuyển
+    }
+    if(buff_is_run == true) // di chuyển
+    {
+        SDL_Rect heart_rect = { x_buff, y_buff, 30, 30};
+        SDL_RenderCopy(renderer, buff, NULL, &heart_rect);
+
+        // Cap nhat vi tri cua trai tim
+        y_buff += 3;
+        SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
+
+        //kiểm tra va chạm tàu với quái
+        if(checkCollision(heart_rect,rectShip))
+        {
+            // tức là hp người chơi mà >= 5 sẽ không tăng lên nữa
+            if(playerer.hp < 5)
+            {
+                playerer.hp++;
+            }
+            y_buff = -80;
+            buff_is_run = false;
+        }
+        // Khoi tao lai trai tim neu het
+        if (y_buff >= 1000) {
+            
+            buff_is_run = false;
+        }
+        random = 100;
+    }
 }

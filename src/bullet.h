@@ -26,8 +26,8 @@ void freeBullets();
 //=====================================================
 
 void initBullet(bullet *b){
-    b->x_pos = s->X-14;
-    b->y_pos = s->Y-50;
+    b->x_pos = s->X+17;
+    b->y_pos = s->Y-30;
     b->width= 30;
     b->height = 30;
     b->texture = NULL;

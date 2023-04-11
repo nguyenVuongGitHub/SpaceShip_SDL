@@ -39,14 +39,15 @@ int initMenu()
     // Tải tài nguyên
     IMG_Init(IMG_INIT_PNG);
     // tạo mảng heart hằng NULL
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < 5; i++)
     {
         heart[i] = NULL;
     }
-    for(int i = 0; i < 3; i ++)
+    for(int i = 0; i < 5; i ++)
     {
         heart[i] = IMG_LoadTexture(renderer,"image\\heart.png");
     }
+    buff = IMG_LoadTexture(renderer,"image\\heart.png");
 
     initText(&textRank);
     setText("RANK",&textRank);
@@ -271,30 +272,32 @@ void handleMenu(SDL_Event event, bool *quit)
     if(event.type == SDL_MOUSEBUTTONDOWN)
     {
         
-        // case SDL_MOUSEBUTTONDOWN:
-            // Kiểm tra xem người dùng có nhấp vào nút bắt đầu không
-            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 300 && event.button.y <= 350)
-            {
-                gameLoop();
-            }
+    // case SDL_MOUSEBUTTONDOWN:
+        // Kiểm tra xem người dùng có nhấp vào nút bắt đầu không
+        if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 300 && event.button.y <= 350)
+        {
+            gameLoop();
+        }
 
-            // Kiểm tra xem người dùng có nhấp vào ginút help không
-            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 400 && event.button.y <= 450)
-            {
-                showHelp();
-                
-            }
-            if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 490 && event.button.y <= 540)
-            {
-                showRank();
-            }
-            // Kiểm tra xem người dùng có nhấp vào nút thoát không
-            if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 600 && event.button.y <= 650)
-            {
-                saveFile(fileOut,*lpr);
-                exit(0);
-            }
-            // break;
+        // Kiểm tra xem người dùng có nhấp vào ginút help không
+        if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 400 && event.button.y <= 450)
+        {
+            showHelp();
+            
+        }
+        if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 490 && event.button.y <= 540)
+        {
+            showRank();
+        }
+        // Kiểm tra xem người dùng có nhấp vào nút thoát không
+        if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 600 && event.button.y <= 650)
+        {
+            printList(*lpr);
+            saveFile(fileOut,*lpr);
+            // exit(0);
+            *quit = false;
+        }
+        // break;
     }
     
 }
@@ -335,7 +338,7 @@ void showMenu()
     drawMenu();
     drawMouse();
     SDL_ShowCursor(SDL_DISABLE);
-    while (gameOver == false)
+    while (gameOver)
     {
         //nhạc nền menu
         if(!Mix_Playing(1))

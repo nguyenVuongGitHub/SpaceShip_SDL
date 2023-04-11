@@ -5,8 +5,8 @@
 
 int main(int argc, char *argv[])
 {
-    init();
     system("cls");
+    init();
     
     showMenu();
     freeAll();

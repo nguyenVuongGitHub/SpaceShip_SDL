@@ -33,6 +33,7 @@ void init()
     
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
+    
     int index_window = 0;
     
     SDL_GetCurrentDisplayMode(index_window,&displayMode);
@@ -49,8 +50,8 @@ void init()
     playerer.hp = 3; // khởi tạo mặc định :)) quên làm initPlayer
 
     loadFile(fileIn,lpr);
-    sortList(lpr);
-
+    // sortList(lpr);
+    printf("load thanh cong!!!");
     initMonsterList(lm);
 
     loadAudio();
@@ -66,6 +67,7 @@ void init()
     {
         printf("loi!! %s\n",SDL_GetError());
     }
+    
 }
 
 void moveBackground()
@@ -176,12 +178,12 @@ void drawMouse()
 // cần viết thêm
 void freeAll()
 {
-    freeBullets();
-    freeList(lm);
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(s->texture);
-    SDL_DestroyTexture(background);
+    freeBullets(); //giải phóng danh sách đạn người chơi
+    freeList(lm); // giải phóng list quái vật
+    SDL_DestroyWindow(window); // giải phóng window
+    SDL_DestroyRenderer(renderer); // giải phóng renderer
+    SDL_DestroyTexture(s->texture); // giải phóng texture tàu
+    SDL_DestroyTexture(background); // giải phóng texture background
     Mix_FreeChunk(Menu);
     Mix_FreeChunk(BGM);
     Mix_FreeChunk(Boss);
@@ -189,6 +191,7 @@ void freeAll()
     Mix_FreeChunk(dead);
     Mix_FreeChunk(shot);
     Mix_CloseAudio();
+    SDL_Quit();
 }
 
 void loadAudio(){

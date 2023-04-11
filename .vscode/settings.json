@@ -15,6 +15,9 @@
         "type_traits": "c",
         "linkedlistformonster.h": "c",
         "sdl_mixer.h": "c",
-        "*.rh": "c"
+        "*.rh": "c",
+        "cmath": "c",
+        "cstdlib": "c",
+        "bulletmonster.h": "c"
     }
 }
