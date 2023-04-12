@@ -433,7 +433,7 @@ void collision(monsterList *l)
             // không phải boss thì k xóa
             if(i->data.type != 10)
                 removeNode(lm,i);
-            
+            Mix_PlayChannel(6, dead, 0);
             s->status = DIE;
             playerer.hp--;
             loadShip();
@@ -451,6 +451,7 @@ void collision(monsterList *l)
             
             if(checkCollision(rectShip,bulletMonster) && s->status == LIVE)
             {
+                Mix_PlayChannel(6, dead, 0);
                 listBulletMonster[i]->active = false;
                 s->status = DIE;
                 loadShip();
@@ -504,7 +505,9 @@ void generateBuff()
 
         //kiểm tra va chạm tàu với quái
         if(checkCollision(heart_rect,rectShip))
-        {
+        {   
+            Mix_PlayChannel(-1, eatHp, 0);
+
             // tức là hp người chơi mà >= 5 sẽ không tăng lên nữa
             if(playerer.hp < 5)
             {

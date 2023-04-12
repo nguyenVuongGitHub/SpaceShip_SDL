@@ -2,7 +2,5 @@ con cet 30 cm;7430
 con cet 30 cm;4030
 con cet 30 cm;3900
 con cet 30 cm;3380
-con cet 30 cm;2890
-con cet 30 cm;1850
-con cet 30 cm;1540
-con cet 30 cm;1450
+con cet 30 cm;4090
+con cet 30 cm;3480

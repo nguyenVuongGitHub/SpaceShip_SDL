@@ -189,6 +189,7 @@ void freeAll()
     Mix_FreeChunk(hit);
     Mix_FreeChunk(dead);
     Mix_FreeChunk(shot);
+    Mix_FreeChunk(eatHp);
     Mix_CloseAudio();
     SDL_Quit();
 }
@@ -204,8 +205,9 @@ void loadAudio(){
     hit = Mix_LoadWAV("audio/SE_enemy_vanish.wav");
     dead = Mix_LoadWAV("audio/SE_dead.wav");
     shot = Mix_LoadWAV("audio/SE_shot.wav");
+    eatHp = Mix_LoadWAV("audio/SE_powerup.wav");
 
-    if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL){
+    if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL || eatHp == NULL){
         printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
     }
 }
