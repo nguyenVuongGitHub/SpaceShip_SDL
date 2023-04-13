@@ -26,7 +26,9 @@ int y_buff2;
 void generateBuff2();
 void generateBuff();
 void gameLoop(); // vòng lặp chính
-void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
+// void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
+void handlePause2();
+int checkText(text object1);
 bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2); // kiểm tra va chạm giữa hai object
 void collision(monsterList *l); // kiểm tra tất cả các trường hợp va chạm
 //================================
@@ -77,12 +79,14 @@ void gameLoop()
                 Mix_PlayChannel(3, Boss, -1); //phát kênh số 3 (nhạc boss)
             }
             Mix_HaltChannel(2); //dừng kênh số 2 (nhạc nền game)
+            Mix_HaltChannel(7);
         }
         else{
             if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
                 Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
             }
             Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
+            Mix_HaltChannel(7);
         }
         
         while(SDL_PollEvent(&event)){
@@ -105,7 +109,7 @@ void gameLoop()
                 SDL_GetMouseState(&mouseX, &mouseY);
                 int curX = mouseX;
                 int curY = mouseY;
-                handlePause();
+                handlePause2();
                 SDL_WarpMouseInWindow(window,curX,curY);
                 s->status = PROTECT;
             } 
@@ -224,180 +228,180 @@ void gameLoop()
     } 
     
 }
-void handlePause()
-{
-    int last_mouse = 0; // biến thể hiện chuột lần cuối đang ở đâu
+// void handlePause()
+// {
+//     int last_mouse = 0; // biến thể hiện chuột lần cuối đang ở đâu
 
-    SDL_RenderClear(renderer);
-    while(gameOver)
-    {
-        SDL_Event event;
-        SDL_RenderClear(renderer);
-        SDL_GetMouseState(&mouseX,&mouseY);
+//     SDL_RenderClear(renderer);
+//     while(gameOver)
+//     {
+//         SDL_Event event;
+//         SDL_RenderClear(renderer);
+//         SDL_GetMouseState(&mouseX,&mouseY);
 
-        while(SDL_PollEvent(&event))
-        {
+//         while(SDL_PollEvent(&event))
+//         {
             
-            // help khi có sound
-            if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && sound)
-            {
-                drawPause_11();
-                if(event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    bool check = true;
-                    while(check)
-                    {
-                        SDL_RenderCopy(renderer,background_help,NULL,NULL);
-                        SDL_RenderPresent(renderer);
-                        while(SDL_PollEvent(&event))
-                            if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
-                        SDL_Delay(10);
-                    }
-                }
-                last_mouse = 1;
-            }
-            // tiếp tục - khi có sound
-            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 425 && mouseY <= 450 && sound)
-            {
-                drawPause_21();
-                if(event.type == SDL_MOUSEBUTTONDOWN) return;
-                last_mouse = 2;
-            }
-            // thoát - khi có sound
-            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 490 && mouseY <= 515 && sound)
-            {
-                drawPause_31();
-                if(event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    // tạo node mới để thêm vào danh sách người chơi
-                    node_pr *nodepr = createNode(playerer);
-                    addNode(nodepr,lpr);
-                    // freeBullets(); // giải phóng đạn 
-                    // freeList(lm); // giải phóng danh sách quái vật
-                    // freeBulletMonster();
-                    // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-                    // initMonsterList(lm);
-                    playerer.hp = 3;
-                    wave = 0;
-                    playerer.score = 0;
-                    // showMenu(); // về lại menu
-                    gameOver = false;
-                    // if(gameOver == false) return;
-                }
-                last_mouse = 3;
-            }
-            // tắt sound
-            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 555 && mouseY <= 580 && sound)
-            {
-                drawPause_41();
-                if(event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    sound = false;
-                    Mix_Pause(-1);  // dừng phát nhạc tạm thời, -1 tức là tắt tất cả kênh âm thanh
-                }
-                // drawPause_40();
-                last_mouse = 4;
-            }
-            //help - tắt sound
-            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && !sound)
-            {
-                drawPause_10();
-                if(event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    bool check = true;
-                    while(check)
-                    {
-                        SDL_RenderCopy(renderer,background_help,NULL,NULL);
-                        SDL_RenderPresent(renderer);
-                        while(SDL_PollEvent(&event))
-                            if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
-                        SDL_Delay(10);
-                    }
-                }
-                last_mouse = 5;
-            }
-            //như trên
-            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 425 && mouseY <= 450 && !sound)
-            {
-                drawPause_20();
-                if(event.type == SDL_MOUSEBUTTONDOWN) return;
-                last_mouse = 6;
-            }
-            //như trên
-            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 490 && mouseY <= 515 && !sound)
-            {
-                drawPause_30();
-                if(event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    // tạo node mới để thêm vào danh sách người chơi
-                    node_pr *nodepr = createNode(playerer);
-                    addNode(nodepr,lpr);
-                    // freeBullets(); // giải phóng đạn 
-                    // freeList(lm); // giải phóng danh sách quái vật
-                    // freeBulletMonster();
-                    // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
-                    // initMonsterList(lm);
-                    playerer.hp = 3;
-                    wave = 0;
-                    playerer.score = 0;
-                    // showMenu(); // về lại menu
-                    gameOver = false;
-                    return;
-                }
-                last_mouse = 7;
-            }
-            // bật sound
-            else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 555 && mouseY <= 580 && !sound)
-            {
-                drawPause_40();
-                if(event.type == SDL_MOUSEBUTTONDOWN)
-                {
-                    sound = true;
-                    Mix_Resume(-1);  // Bật lại nhạc đã tạm dừng trước đó, -1 tức là bật tất cả các kênh âm thanh
-                }
-                // drawPause_41();
-                last_mouse = 8;
-            }
-        }
+//             // help khi có sound
+//             if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && sound)
+//             {
+//                 drawPause_11();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN)
+//                 {
+//                     bool check = true;
+//                     while(check)
+//                     {
+//                         SDL_RenderCopy(renderer,background_help,NULL,NULL);
+//                         SDL_RenderPresent(renderer);
+//                         while(SDL_PollEvent(&event))
+//                             if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+//                         SDL_Delay(10);
+//                     }
+//                 }
+//                 last_mouse = 1;
+//             }
+//             // tiếp tục - khi có sound
+//             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 425 && mouseY <= 450 && sound)
+//             {
+//                 drawPause_21();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN) return;
+//                 last_mouse = 2;
+//             }
+//             // thoát - khi có sound
+//             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 490 && mouseY <= 515 && sound)
+//             {
+//                 drawPause_31();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN)
+//                 {
+//                     // tạo node mới để thêm vào danh sách người chơi
+//                     node_pr *nodepr = createNode(playerer);
+//                     addNode(nodepr,lpr);
+//                     // freeBullets(); // giải phóng đạn 
+//                     // freeList(lm); // giải phóng danh sách quái vật
+//                     // freeBulletMonster();
+//                     // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+//                     // initMonsterList(lm);
+//                     playerer.hp = 3;
+//                     wave = 0;
+//                     playerer.score = 0;
+//                     // showMenu(); // về lại menu
+//                     gameOver = false;
+//                     // if(gameOver == false) return;
+//                 }
+//                 last_mouse = 3;
+//             }
+//             // tắt sound
+//             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 555 && mouseY <= 580 && sound)
+//             {
+//                 drawPause_41();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN)
+//                 {
+//                     sound = false;
+//                     Mix_Pause(-1);  // dừng phát nhạc tạm thời, -1 tức là tắt tất cả kênh âm thanh
+//                 }
+//                 // drawPause_40();
+//                 last_mouse = 4;
+//             }
+//             //help - tắt sound
+//             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 360 && mouseY <= 385 && !sound)
+//             {
+//                 drawPause_10();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN)
+//                 {
+//                     bool check = true;
+//                     while(check)
+//                     {
+//                         SDL_RenderCopy(renderer,background_help,NULL,NULL);
+//                         SDL_RenderPresent(renderer);
+//                         while(SDL_PollEvent(&event))
+//                             if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+//                         SDL_Delay(10);
+//                     }
+//                 }
+//                 last_mouse = 5;
+//             }
+//             //như trên
+//             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 425 && mouseY <= 450 && !sound)
+//             {
+//                 drawPause_20();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN) return;
+//                 last_mouse = 6;
+//             }
+//             //như trên
+//             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 490 && mouseY <= 515 && !sound)
+//             {
+//                 drawPause_30();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN)
+//                 {
+//                     // tạo node mới để thêm vào danh sách người chơi
+//                     node_pr *nodepr = createNode(playerer);
+//                     addNode(nodepr,lpr);
+//                     // freeBullets(); // giải phóng đạn 
+//                     // freeList(lm); // giải phóng danh sách quái vật
+//                     // freeBulletMonster();
+//                     // lm = (monsterList*)malloc(sizeof(monsterList)); // cấp phát nếu bấm vào chơi game tiếp
+//                     // initMonsterList(lm);
+//                     playerer.hp = 3;
+//                     wave = 0;
+//                     playerer.score = 0;
+//                     // showMenu(); // về lại menu
+//                     gameOver = false;
+//                     return;
+//                 }
+//                 last_mouse = 7;
+//             }
+//             // bật sound
+//             else if(mouseX >= 660 && mouseX <= 885 && mouseY >= 555 && mouseY <= 580 && !sound)
+//             {
+//                 drawPause_40();
+//                 if(event.type == SDL_MOUSEBUTTONDOWN)
+//                 {
+//                     sound = true;
+//                     Mix_Resume(-1);  // Bật lại nhạc đã tạm dừng trước đó, -1 tức là bật tất cả các kênh âm thanh
+//                 }
+//                 // drawPause_41();
+//                 last_mouse = 8;
+//             }
+//         }
 
-        // hiện ảnh ra màn hình khi con chuột thoát khỏi mục ngắm
-        switch (last_mouse)
-        {   
-        case 0:
-            if(sound)
-                drawPause_01();
-            else drawPause_00(); 
-            break;
-        case 1:
-            drawPause_11();
-            break;
-        case 2:
-            drawPause_21();
-            break;
-        case 3:
-            drawPause_31();
-            break;
-        case 4:
-            drawPause_41();
-            break;
-        case 5:
-            drawPause_10();
-            break;
-        case 6:
-            drawPause_20();
-            break;
-        case 7:
-            drawPause_30();
-            break;
-        case 8:
-            drawPause_40();
-            break;
-        }
-        drawMouse();
-        SDL_Delay(10);
-        SDL_RenderPresent(renderer);
-    }
-}
+//         // hiện ảnh ra màn hình khi con chuột thoát khỏi mục ngắm
+//         switch (last_mouse)
+//         {   
+//         case 0:
+//             if(sound)
+//                 drawPause_01();
+//             else drawPause_00(); 
+//             break;
+//         case 1:
+//             drawPause_11();
+//             break;
+//         case 2:
+//             drawPause_21();
+//             break;
+//         case 3:
+//             drawPause_31();
+//             break;
+//         case 4:
+//             drawPause_41();
+//             break;
+//         case 5:
+//             drawPause_10();
+//             break;
+//         case 6:
+//             drawPause_20();
+//             break;
+//         case 7:
+//             drawPause_30();
+//             break;
+//         case 8:
+//             drawPause_40();
+//             break;
+//         }
+//         drawMouse();
+//         SDL_Delay(10);
+//         SDL_RenderPresent(renderer);
+//     }
+// }
 
 void collision(monsterList *l)
 {
@@ -501,6 +505,12 @@ void collision(monsterList *l)
     // kiểm tra máu người chơi, nếu hp == 0 thì về lại menu 
     if(playerer.hp <= 0)
     {
+        Mix_HaltChannel(1);
+        Mix_HaltChannel(2);
+        Mix_HaltChannel(3);
+        if(!Mix_Playing(7)){
+            Mix_PlayChannel(7, gameOverSong, -1);
+        }
         // tạo node mới để thêm vào danh sách người chơi
         node_pr *nodepr = createNode(playerer);
         addNode(nodepr,lpr);
@@ -600,4 +610,118 @@ void generateBuff2()
         }
         random = 100;
     }
+}
+
+void handlePause2()
+{
+    while(gameOver)
+    {
+        SDL_Event event;
+        SDL_RenderClear(renderer);
+        SDL_GetMouseState(&mouseX,&mouseY);
+
+        while(SDL_PollEvent(&event)){
+            switch(event.type){
+                case SDL_MOUSEMOTION:
+                    if(checkText(helpPause)){
+                        loadText(50,&helpPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
+                    }
+                    else{
+                        loadText(50,&helpPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+                    }
+
+                    if(checkText(continuePause)){
+                        loadText(50,&continuePause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
+                    }
+                    else{
+                        loadText(50,&continuePause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+                    }
+
+                    if(checkText(exitPause)){
+                        loadText(50,&exitPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
+                    }
+                    else{
+                        loadText(50,&exitPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+                    }
+
+                    if(checkText(soundOn)){
+                        loadText(50,&soundOn,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
+                    }
+                    else{
+                        loadText(50,&soundOn,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+                    }
+
+                    if(checkText(soundOff)){
+                        loadText(50,&soundOff,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
+                    }
+                    else{
+                        loadText(50,&soundOff,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+                    }
+                    break;
+                    
+                case SDL_MOUSEBUTTONDOWN:
+                    if(checkText(helpPause)){
+                        bool check = true;
+                        while(check)
+                        {
+                            SDL_RenderCopy(renderer,background_help,NULL,NULL);
+                            SDL_RenderPresent(renderer);
+                            while(SDL_PollEvent(&event))
+                                if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+                            SDL_Delay(10);
+                        }
+                    }
+                    
+                    if(checkText(continuePause)){
+                        return;
+                    }
+
+                    if(checkText(exitPause)){
+                        // tạo node mới để thêm vào danh sách người chơi
+                        node_pr *nodepr = createNode(playerer);
+                        addNode(nodepr,lpr);
+                        playerer.hp = 3;
+                        wave = 0;
+                        playerer.score = 0;
+                        gameOver = false;
+                    }
+
+                    if(checkText(soundOn) && sound){
+                        sound = false;
+                        Mix_Pause(-1);  // dừng phát nhạc tạm thời, -1 tức là tắt tất cả kênh âm thanh
+                        // drawText(&soundOff);
+                    }
+
+                    else if(checkText(soundOff) && !sound){
+                        sound = true;
+                        Mix_Resume(-1);  // Bật lại nhạc đã tạm dừng trước đó, -1 tức là bật tất cả các kênh âm thanh
+                    }                    
+                break;
+            }
+        }
+    
+        moveBackground();
+        drawMouse();
+
+
+        drawText(&pauseGame);
+        drawText(&helpPause);
+        drawText(&continuePause);
+        drawText(&exitPause);
+        if(sound){
+            drawText(&soundOn);
+        }
+        else drawText(&soundOff);
+        
+        SDL_Delay(10);
+        SDL_RenderPresent(renderer);
+    }
+}
+
+int checkText(text object1){
+    if(mouseX >= object1.x && mouseX <= object1.x + object1.w
+    && mouseY >= object1.y && mouseY <= object1.y + object1.h){
+        return true;
+    }
+    return false;
 }

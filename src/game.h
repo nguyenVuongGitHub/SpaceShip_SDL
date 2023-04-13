@@ -199,13 +199,14 @@ void loadAudio(){
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
     // Load và phát nhạc nền
-    Menu = Mix_LoadWAV("audio/FunnySong.wav");
+    Menu = Mix_LoadWAV("audio/Menu.wav");
     BGM = Mix_LoadWAV("audio/bgm.wav");
     Boss = Mix_LoadWAV("audio/BossMusic2.wav");
     hit = Mix_LoadWAV("audio/SE_enemy_vanish.wav");
     dead = Mix_LoadWAV("audio/SE_dead.wav");
     shot = Mix_LoadWAV("audio/SE_shot.wav");
     eatHp = Mix_LoadWAV("audio/SE_powerup.wav");
+    gameOverSong = Mix_LoadWAV("audio/FunnySong.wav");
 
     if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL || eatHp == NULL){
         printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());

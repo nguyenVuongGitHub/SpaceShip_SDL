@@ -64,3 +64,4 @@ Mix_Chunk* hit = NULL;
 Mix_Chunk* dead = NULL;
 Mix_Chunk* shot = NULL;
 Mix_Chunk* eatHp = NULL;
+Mix_Chunk* gameOverSong = NULL;
