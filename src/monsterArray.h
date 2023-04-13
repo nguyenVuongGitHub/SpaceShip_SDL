@@ -118,8 +118,8 @@ void monsterType_4()
         monster_->type = 4;
         monster_->x_pos = (displayMode.w/2-monster_->Width/2-10+i*3)+10;
         monster_->y_pos = -85;
-        monster_->Width = 90;
-        monster_->height = 90;
+        monster_->Width = 91;
+        monster_->height = 116;
         monster_->y_limit = 100;
         monster_->speed = 7;
         monster_->score = 300;

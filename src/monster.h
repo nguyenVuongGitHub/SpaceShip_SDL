@@ -175,8 +175,8 @@ void makeBullet(monster *m)
         loadBulletMonster(b,m->type);
         b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
         b->y = m->y_pos + m->height; // yMonster + hMonster
-        b->w = 15;
-        b->h = 15;
+        b->w = 20;
+        b->h = 24;
         b->speed = 5;
         b->active = true;
         
@@ -203,8 +203,8 @@ void makeBullet(monster *m)
             loadBulletMonster(b,m->type);
             b->x = m->x_pos + m->Width/2; 
             b->y = m->y_pos + m->height/2; 
-            b->w = 15;
-            b->h = 15;
+            b->w = 19;
+            b->h = 19;
             b->speed = 2;
             b->active = true;
             b->angle = (i*120); //nhân 120 để bè ra
@@ -231,8 +231,8 @@ void makeBullet(monster *m)
             loadBulletMonster(b,m->type);
             b->x = m->x_pos + m->Width/2; 
             b->y = m->y_pos + m->height/2; 
-            b->w = 15;
-            b->h = 15;
+            b->w = 19;
+            b->h = 19;
             b->speed = 2;
             b->active = true;
             b->angle = (i*120); 
@@ -254,8 +254,8 @@ void makeBullet(monster *m)
         loadBulletMonster(b,m->type);
         b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
         b->y = m->y_pos + m->height; // yMonster + hMonster
-        b->w = 15;
-        b->h = 15;
+        b->w = 20;
+        b->h = 24;
         b->speed = 10;
         b->active = true;       
     }
@@ -275,8 +275,8 @@ void makeBullet(monster *m)
         loadBulletMonster(b,m->type);
         b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
         b->y = m->y_pos + m->height; // yMonster + hMonster
-        b->w = 15;
-        b->h = 15;
+        b->w = 30;
+        b->h = 30;
         b->speed = 8;
         b->active = true;
     }
@@ -296,8 +296,8 @@ void makeBullet(monster *m)
         loadBulletMonster(b,m->type);
         b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
         b->y = m->y_pos + m->height; // yMonster + hMonster
-        b->w = 15;
-        b->h = 15;
+        b->w = 20;
+        b->h = 24;
         b->speed = 12;
         b->active = true;
         
@@ -324,8 +324,8 @@ void makeBullet(monster *m)
             loadBulletMonster(b,m->type);
             b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
             b->y = m->y_pos + m->height; // yMonster + hMonster
-            b->w = 15;
-            b->h = 15;
+            b->w = 20;
+            b->h = 20;
             b->speed = i*2;
             b->active = true;
             srand(time(0));

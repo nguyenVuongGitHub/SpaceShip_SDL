@@ -20,3 +20,7 @@ con cet 30 cm;0
 con cet 30 cm;0
 con cet 30 cm;0
 con cet 30 cm;0
+con cet 30 cm;3690
+con cet 30 cm;3480
+con cet 30 cm;3380
+con cet 30 cm;1650

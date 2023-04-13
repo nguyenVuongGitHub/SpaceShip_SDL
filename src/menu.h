@@ -8,6 +8,12 @@ text play;
 text help;
 text textRank;
 text exitMenu;
+text pauseGame;
+text helpPause;
+text continuePause;
+text exitPause;
+text soundOn;
+text soundOff;
 
 short angleObj2 = 0;
 short angleObj1 = 30;
@@ -35,16 +41,16 @@ void showMenu();
 void showHelp();
 void handleMenu(SDL_Event event, bool *quit);
 void drawMeteorite();
-void drawPause_00();
-void drawPause_01();
-void drawPause_10();
-void drawPause_11();
-void drawPause_20();
-void drawPause_21();
-void drawPause_30();
-void drawPause_31();
-void drawPause_40();
-void drawPause_41();
+// void drawPause_00();
+// void drawPause_01();
+// void drawPause_10();
+// void drawPause_11();
+// void drawPause_20();
+// void drawPause_21();
+// void drawPause_30();
+// void drawPause_31();
+// void drawPause_40();
+// void drawPause_41();
 void drawShipMenu(int cur);
 void showGameOver();
 #include"handle.h"
@@ -99,24 +105,54 @@ int initMenu()
     loadText(75,&exitMenu,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     setPosText(662,580,&exitMenu);
 
+    initText(&pauseGame);
+    setText("PAUSE",&pauseGame);
+    loadText(80,&pauseGame,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(662,200,&pauseGame);
+
+    initText(&helpPause);
+    setText("HELP",&helpPause);
+    loadText(50,&helpPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,300,&helpPause);
+
+    initText(&continuePause);
+    setText("CONTINUE",&continuePause);
+    loadText(50,&continuePause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,400,&continuePause);
+
+    initText(&exitPause);
+    setText("EXIT",&exitPause);
+    loadText(50,&exitPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,500,&exitPause);
+
+    initText(&soundOn);
+    setText("SOUND: ON",&soundOn);
+    loadText(50,&soundOn,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,600,&soundOn);
+
+    initText(&soundOff);
+    setText("SOUND: OFF",&soundOff);
+    loadText(50,&soundOff,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,600,&soundOff);
+
     menuObj1 = IMG_LoadTexture(renderer,"image\\SpaceThreat4.png");
     menuObj2 = IMG_LoadTexture(renderer,"image\\meteorite.png");
 
 
-    pause_01 = IMG_LoadTexture(renderer, "image\\0-1.png"); // ảnh khi k có âm thanh
-    pause_00 = IMG_LoadTexture(renderer, "image\\0-0.png"); // ảnh khi có âm thanh
+    // pause_01 = IMG_LoadTexture(renderer, "image\\0-1.png"); // ảnh khi k có âm thanh
+    // pause_00 = IMG_LoadTexture(renderer, "image\\0-0.png"); // ảnh khi có âm thanh
 
-    pause_10 = IMG_LoadTexture(renderer, "image\\1-0.png");
-    pause_11 = IMG_LoadTexture(renderer, "image\\1-1.png");
+    // pause_10 = IMG_LoadTexture(renderer, "image\\1-0.png");
+    // pause_11 = IMG_LoadTexture(renderer, "image\\1-1.png");
 
-    pause_21 = IMG_LoadTexture(renderer, "image\\2-1.png");
-    pause_20 = IMG_LoadTexture(renderer, "image\\2-0.png");
+    // pause_21 = IMG_LoadTexture(renderer, "image\\2-1.png");
+    // pause_20 = IMG_LoadTexture(renderer, "image\\2-0.png");
 
-    pause_31 = IMG_LoadTexture(renderer, "image\\3-1.png");
-    pause_30 = IMG_LoadTexture(renderer, "image\\3-0.png");
+    // pause_31 = IMG_LoadTexture(renderer, "image\\3-1.png");
+    // pause_30 = IMG_LoadTexture(renderer, "image\\3-0.png");
 
-    pause_41 = IMG_LoadTexture(renderer, "image\\4-1.png");
-    pause_40 = IMG_LoadTexture(renderer, "image\\4-0.png");
+    // pause_41 = IMG_LoadTexture(renderer, "image\\4-1.png");
+    // pause_40 = IMG_LoadTexture(renderer, "image\\4-0.png");
     backButton = IMG_LoadTexture(renderer,"image\\BackButton.png");
     backButton2 = IMG_LoadTexture(renderer,"image\\BackButton2.png");
     startButton = IMG_LoadTexture(renderer,"image\\PlayButton.png");
@@ -308,6 +344,7 @@ void showMenu()
         // Vẽ menu game
         Mix_HaltChannel(2);  //dunnưgf nhạc ở kênh 2
         Mix_HaltChannel(3);  //dừng nhạc ở kênh 3
+        Mix_HaltChannel(7);
         if(!Mix_Playing(1))
         {
             Mix_PlayChannel(1,Menu,-1);
@@ -539,8 +576,7 @@ void showGameOver(){
             switch(event.type){
                 case SDL_MOUSEMOTION:
 
-                    if(mouseX >= restartGame.x && mouseX <= restartGame.x + restartGame.w
-                    && mouseY >= restartGame.y && mouseY <= restartGame.y + restartGame.h){
+                    if(checkText(restartGame)){
 
                         loadText(50, &restartGame, pathFont, getColor(RED));
                     }
@@ -549,8 +585,7 @@ void showGameOver(){
 
                     }
 
-                    if(mouseX >= exitGame.x && mouseX <= exitGame.x + exitGame.w
-                    && mouseY >= exitGame.y && mouseY <= exitGame.y + exitGame.h){
+                    if(checkText(exitGame)){
                         loadText(50, &exitGame, pathFont, getColor(RED));
                     }
                     else{
@@ -560,8 +595,7 @@ void showGameOver(){
                     break;
                 case SDL_MOUSEBUTTONDOWN:
 
-                    if(mouseX >= restartGame.x && mouseX <= restartGame.x + restartGame.w
-                    && mouseY >= restartGame.y && mouseY <= restartGame.y + restartGame.h){
+                    if(checkText(restartGame)){
                         freeBullets(); // giải phóng đạn 
                         freeList(lm); // giải phóng danh sách quái vật
                         freeBulletMonster(); // giải phóng đạn quái vật
@@ -569,8 +603,7 @@ void showGameOver(){
                         gameLoop();
                     }
                     
-                    if(mouseX >= exitGame.x && mouseX <= exitGame.x + exitGame.w
-                    && mouseY >= exitGame.y && mouseY <= exitGame.y + exitGame.h){
+                    if(checkText(exitGame)){
                         // tạo node mới để thêm vào danh sách người chơi
                         // freeBullets(); // giải phóng đạn 
                         // freeList(lm); // giải phóng danh sách quái vật
