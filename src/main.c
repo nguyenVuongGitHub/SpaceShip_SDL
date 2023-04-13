@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 {
     system("cls");
     init();
+    printf("%d\n",displayMode.w);
     showMenu();
     printf("\nhello");
     saveFile(lpr);

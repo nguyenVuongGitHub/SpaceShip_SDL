@@ -187,7 +187,7 @@ void boss()
     monster *boss_ = (monster*)malloc(sizeof(monster));
     initMonster(boss_);
     boss_->type = 10;
-    boss_->hp = 300;
+    boss_->hp = 500;
     boss_->height = 300;
     boss_->Width = 300;
     boss_->y_pos = - boss_->Width;
