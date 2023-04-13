@@ -74,7 +74,7 @@ void moveBackground()
 
     SDL_Rect renderquad2={background_clip.x,background_clip.y-displayMode.h,background_clip.w,background_clip.h};
     SDL_RenderCopy(renderer,background,NULL,&renderquad2);
-    background_clip.y+=1;
+    background_clip.y+=2;
     if(background_clip.y>=displayMode.h)
     {
         background_clip.y=0;
@@ -206,6 +206,7 @@ void loadAudio(){
     dead = Mix_LoadWAV("audio/SE_dead.wav");
     shot = Mix_LoadWAV("audio/SE_shot.wav");
     eatHp = Mix_LoadWAV("audio/SE_powerup.wav");
+    gameOverSong = Mix_LoadWAV("audio/FunnySong.wav");
 
     if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL || eatHp == NULL){
         printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());

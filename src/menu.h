@@ -8,7 +8,29 @@ text play;
 text help;
 text textRank;
 text exitMenu;
+text pauseGame;
+text helpPause;
+text continuePause;
+text exitPause;
+text soundOn;
+text soundOff;
 
+short angleObj2 = 0;
+short angleObj1 = 30;
+// các tham số x y mặc định
+short xObj1_1 = 123;
+short xObj1_2 = 263;
+short xObj1_3 = 800;
+short xObj1_4 = 569;
+short yObj1_1 = 150;
+short yObj1_2 = 150;
+short yObj1_3 = 175;
+short yObj1_4 = 165;
+
+short xShip = 888;
+short yShip = 666;
+short angleShip = 30;
+bool isMoveShip = false;
 int initMenu();
 void cleanUp();
 void showRank();
@@ -18,17 +40,18 @@ void drawHeart();
 void showMenu();
 void showHelp();
 void handleMenu(SDL_Event event, bool *quit);
-void drawPause_00();
-void drawPause_01();
-void drawPause_10();
-void drawPause_11();
-void drawPause_20();
-void drawPause_21();
-void drawPause_30();
-void drawPause_31();
-void drawPause_40();
-void drawPause_41();
-
+void drawMeteorite();
+// void drawPause_00();
+// void drawPause_01();
+// void drawPause_10();
+// void drawPause_11();
+// void drawPause_20();
+// void drawPause_21();
+// void drawPause_30();
+// void drawPause_31();
+// void drawPause_40();
+// void drawPause_41();
+void drawShipMenu(int cur);
 void showGameOver();
 #include"handle.h"
 
@@ -54,6 +77,9 @@ int initMenu()
         heart[i] = IMG_LoadTexture(renderer,"image\\heart.png");
     }
     buff = IMG_LoadTexture(renderer,"image\\heart.png");
+    buff2 = IMG_LoadTexture(renderer,"image\\shield.png");
+    shield = IMG_LoadTexture(renderer,"image\\bubble.png");
+
     initText(&battleSky);
     setText("BATTLE SKY",&battleSky);
     loadText(100,&battleSky,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
@@ -79,143 +105,58 @@ int initMenu()
     loadText(75,&exitMenu,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     setPosText(662,580,&exitMenu);
 
-    background_menu = IMG_LoadTexture(renderer, "image\\background_menu.png");
-    if (!background_menu)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    // IMG_Init(IMG_INIT_PNG);
-    startButton = IMG_LoadTexture(renderer, "image\\PlayButton.png");
-    if (!startButton)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    // IMG_Init(IMG_INIT_PNG);
-    helpButton = IMG_LoadTexture(renderer, "image\\HelpButton.png");
-    if (!helpButton)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(startButton);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    // IMG_Init(IMG_INIT_PNG);
-    quitButton = IMG_LoadTexture(renderer, "image\\ExitButton.png");
-    if (!quitButton)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(startButton);
-        SDL_DestroyTexture(helpButton);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    backButton = IMG_LoadTexture(renderer, "image\\backButton.png");
-    if (!backButton)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(startButton);
-        SDL_DestroyTexture(helpButton);
-        SDL_DestroyTexture(quitButton);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    // IMG_Init(IMG_INIT_PNG);
-    startButton2 = IMG_LoadTexture(renderer, "image\\PlayButton2.png");
-    if (!startButton2)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(startButton);
-        SDL_DestroyTexture(helpButton);
-        SDL_DestroyTexture(quitButton);
-        SDL_DestroyTexture(backButton);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    // IMG_Init(IMG_INIT_PNG);
-    helpButton2 = IMG_LoadTexture(renderer, "image\\HelpButton2.png");
-    if (!helpButton2)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(startButton);
-        SDL_DestroyTexture(helpButton);
-        SDL_DestroyTexture(quitButton);
-        SDL_DestroyTexture(backButton);
-        SDL_DestroyTexture(startButton2);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    // IMG_Init(IMG_INIT_PNG);
-    quitButton2 = IMG_LoadTexture(renderer, "image\\ExitButton2.png");
-    if (!quitButton2)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(startButton);
-        SDL_DestroyTexture(helpButton);
-        SDL_DestroyTexture(quitButton);
-        SDL_DestroyTexture(backButton);
-        SDL_DestroyTexture(startButton2);
-        SDL_DestroyTexture(helpButton2);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    backButton2 = IMG_LoadTexture(renderer, "image\\backButton2.png");
-    if (!backButton2)
-    {
-        printf("IMG_LoadTexture failed: %s\n", IMG_GetError());
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(startButton);
-        SDL_DestroyTexture(helpButton);
-        SDL_DestroyTexture(quitButton);
-        SDL_DestroyTexture(backButton);
-        SDL_DestroyTexture(startButton2);
-        SDL_DestroyTexture(helpButton2);
-        SDL_DestroyTexture(quitButton2);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    pause_01 = IMG_LoadTexture(renderer, "image\\0-1.png"); // ảnh khi k có âm thanh
-    pause_00 = IMG_LoadTexture(renderer, "image\\0-0.png"); // ảnh khi có âm thanh
+    initText(&pauseGame);
+    setText("PAUSE",&pauseGame);
+    loadText(80,&pauseGame,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(662,200,&pauseGame);
 
-    pause_10 = IMG_LoadTexture(renderer, "image\\1-0.png");
-    pause_11 = IMG_LoadTexture(renderer, "image\\1-1.png");
+    initText(&helpPause);
+    setText("HELP",&helpPause);
+    loadText(50,&helpPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,300,&helpPause);
 
-    pause_21 = IMG_LoadTexture(renderer, "image\\2-1.png");
-    pause_20 = IMG_LoadTexture(renderer, "image\\2-0.png");
+    initText(&continuePause);
+    setText("CONTINUE",&continuePause);
+    loadText(50,&continuePause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,400,&continuePause);
 
-    pause_31 = IMG_LoadTexture(renderer, "image\\3-1.png");
-    pause_30 = IMG_LoadTexture(renderer, "image\\3-0.png");
+    initText(&exitPause);
+    setText("EXIT",&exitPause);
+    loadText(50,&exitPause,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,500,&exitPause);
 
-    pause_41 = IMG_LoadTexture(renderer, "image\\4-1.png");
-    pause_40 = IMG_LoadTexture(renderer, "image\\4-0.png");
+    initText(&soundOn);
+    setText("SOUND: ON",&soundOn);
+    loadText(50,&soundOn,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,600,&soundOn);
+
+    initText(&soundOff);
+    setText("SOUND: OFF",&soundOff);
+    loadText(50,&soundOff,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
+    setPosText(670,600,&soundOff);
+
+    menuObj1 = IMG_LoadTexture(renderer,"image\\SpaceThreat4.png");
+    menuObj2 = IMG_LoadTexture(renderer,"image\\meteorite.png");
+
+
+    // pause_01 = IMG_LoadTexture(renderer, "image\\0-1.png"); // ảnh khi k có âm thanh
+    // pause_00 = IMG_LoadTexture(renderer, "image\\0-0.png"); // ảnh khi có âm thanh
+
+    // pause_10 = IMG_LoadTexture(renderer, "image\\1-0.png");
+    // pause_11 = IMG_LoadTexture(renderer, "image\\1-1.png");
+
+    // pause_21 = IMG_LoadTexture(renderer, "image\\2-1.png");
+    // pause_20 = IMG_LoadTexture(renderer, "image\\2-0.png");
+
+    // pause_31 = IMG_LoadTexture(renderer, "image\\3-1.png");
+    // pause_30 = IMG_LoadTexture(renderer, "image\\3-0.png");
+
+    // pause_41 = IMG_LoadTexture(renderer, "image\\4-1.png");
+    // pause_40 = IMG_LoadTexture(renderer, "image\\4-0.png");
+    backButton = IMG_LoadTexture(renderer,"image\\BackButton.png");
+    backButton2 = IMG_LoadTexture(renderer,"image\\BackButton2.png");
+    startButton = IMG_LoadTexture(renderer,"image\\PlayButton.png");
+    startButton2 = IMG_LoadTexture(renderer,"image\\PlayButton2.png");
     return 0;
 }
 
@@ -241,40 +182,21 @@ void drawMenu()
     // SDL_RenderCopy(renderer, background_menu, NULL, NULL);
     moveBackground();
 
-
-    // Vẽ nút bắt đầu
-    // SDL_Rect startRect = { 650, 300, 200, 50 };
-    // SDL_RenderCopy(renderer, startButton, NULL, &startRect);
-
-    // // Vẽ nút help
-    // SDL_Rect helpRect = { 650, 400, 200, 50 };
-    // SDL_RenderCopy(renderer, helpButton, NULL, &helpRect);
     drawText(&battleSky);
     drawText(&play);
     drawText(&help);
     drawText(&textRank);
     drawText(&exitMenu);
-    // Vẽ nút thoát
-    // SDL_Rect quitRect = { 650, 600, 200, 50 };
-    // SDL_RenderCopy(renderer, quitButton, NULL, &quitRect);
 
+        
+    SDL_Rect obj1Rect = {100,500,100,100};
+    SDL_RenderCopyEx(renderer,menuObj1,NULL,&obj1Rect,angleObj1,NULL,SDL_FLIP_NONE);
+    SDL_Rect obj1Rect2 = {100,350,100,100};
+    SDL_RenderCopyEx(renderer,menuObj1,NULL,&obj1Rect2,angleObj1,NULL,SDL_FLIP_NONE);
+
+    
     SDL_GetMouseState(&mouseX,&mouseY);
-    // if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 300 && mouseY <= 350)
-    // {
-    //     // Vẽ nút bắt đầu
-    //     SDL_Rect startRect = { 650, 300, 200, 50 };
-    //     SDL_RenderCopy(renderer, startButton2, NULL, &startRect);
-    //     // SDL_RenderPresent(renderer);
-    // }
 
-    // // Kiểm tra xem người dùng có nhấp vào nút help không
-    // if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 400 && mouseY <= 450)
-    // {
-    //     // Vẽ nút help
-    //     SDL_Rect helpRect = { 650, 400, 200, 50 };
-    //     SDL_RenderCopy(renderer, helpButton2, NULL, &helpRect);
-    //     // SDL_RenderPresent(renderer);
-    // }
     if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 310 && mouseY <= 360)
     {
         // Vẽ nút play
@@ -312,15 +234,12 @@ void drawMenu()
     else{
         loadText(75,&exitMenu,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     }
+    if((mouseX >= 100 && mouseX <= 200 && mouseY >= 500 && mouseY <=600) || (mouseX >= 100 && mouseX <= 200 && mouseY >= 350 && mouseY <=450) )
+    {
+        angleObj1 = 60;
+    }else angleObj1 = 30;
 
-    // // Kiểm tra xem người dùng có nhấp vào nút thoát không
-    // if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 600 && mouseY <= 650)
-    // {
-    //     // Vẽ nút thoát
-    //     SDL_Rect quitRect = { 650, 600, 200, 50 };
-    //     SDL_RenderCopy(renderer, quitButton2, NULL, &quitRect);
-    //     // SDL_RenderPresent(renderer);
-    // }
+
 }
 
 // Hàm xử lý sự kiện
@@ -334,13 +253,14 @@ void handleMenu(SDL_Event event)
         if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 300 && event.button.y <= 350)
         {
             gameLoop();
+            gameOver = true;
         }
 
         // Kiểm tra xem người dùng có nhấp vào ginút help không
         if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 400 && event.button.y <= 450)
         {
             showHelp();
-            
+            gameOver = true;
         }
         if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 490 && event.button.y <= 540)
         {
@@ -351,13 +271,22 @@ void handleMenu(SDL_Event event)
         {
             gameOver = false;
         }
-        // break;
+        /*
+        xShip,
+            yShip,
+            150,
+            150
+        */
+        if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= xShip && event.button.x <= xShip+150 && event.button.y >= yShip && event.button.y <= yShip+150)
+        {
+            isMoveShip = true;
+        }
     }
     
 }
 void showHelp()
 {
-    while(true)
+    while(gameOver)
     {
         SDL_RenderClear(renderer);
         SDL_Event event2;
@@ -372,6 +301,7 @@ void showHelp()
                 if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
                 {
                     gameLoop();
+                    gameOver = false;
                 }
                 // back
                 if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
@@ -385,13 +315,17 @@ void showHelp()
         SDL_Delay(10);
     }
 }
+
 void showMenu()
 {
+    int cur = 0;
     SDL_RenderClear(renderer);
     drawMenu();
     drawMouse();
     while (gameOver)
     {
+        s->status = LIVE;
+        loadShip();
         //nhạc nền menu
         if(!Mix_Playing(1))
         {
@@ -410,11 +344,28 @@ void showMenu()
         // Vẽ menu game
         Mix_HaltChannel(2);  //dunnưgf nhạc ở kênh 2
         Mix_HaltChannel(3);  //dừng nhạc ở kênh 3
+        Mix_HaltChannel(7);
         if(!Mix_Playing(1))
         {
             Mix_PlayChannel(1,Menu,-1);
         }
+        
         drawMenu();
+        drawMeteorite(); // vẽ thiên thạch
+        drawShipMenu(cur);
+        
+        cur++;
+        if (cur == 8) cur = 0;
+        if(isMoveShip)
+        {
+            xShip += cos(angleShip+15)*15;
+            yShip += sin(angleShip+30)*15;
+        }
+        if(yShip < -10)
+        {
+            xShip = 720;
+            yShip = 836;
+        }
         drawMouse();
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
@@ -625,8 +576,7 @@ void showGameOver(){
             switch(event.type){
                 case SDL_MOUSEMOTION:
 
-                    if(mouseX >= restartGame.x && mouseX <= restartGame.x + restartGame.w
-                    && mouseY >= restartGame.y && mouseY <= restartGame.y + restartGame.h){
+                    if(checkText(restartGame)){
 
                         loadText(50, &restartGame, pathFont, getColor(RED));
                     }
@@ -635,8 +585,7 @@ void showGameOver(){
 
                     }
 
-                    if(mouseX >= exitGame.x && mouseX <= exitGame.x + exitGame.w
-                    && mouseY >= exitGame.y && mouseY <= exitGame.y + exitGame.h){
+                    if(checkText(exitGame)){
                         loadText(50, &exitGame, pathFont, getColor(RED));
                     }
                     else{
@@ -646,16 +595,15 @@ void showGameOver(){
                     break;
                 case SDL_MOUSEBUTTONDOWN:
 
-                    if(mouseX >= restartGame.x && mouseX <= restartGame.x + restartGame.w
-                    && mouseY >= restartGame.y && mouseY <= restartGame.y + restartGame.h){
+                    if(checkText(restartGame)){
                         freeBullets(); // giải phóng đạn 
                         freeList(lm); // giải phóng danh sách quái vật
                         freeBulletMonster(); // giải phóng đạn quái vật
+                        s->status = LIVE;
                         gameLoop();
                     }
                     
-                    if(mouseX >= exitGame.x && mouseX <= exitGame.x + exitGame.w
-                    && mouseY >= exitGame.y && mouseY <= exitGame.y + exitGame.h){
+                    if(checkText(exitGame)){
                         // tạo node mới để thêm vào danh sách người chơi
                         // freeBullets(); // giải phóng đạn 
                         // freeList(lm); // giải phóng danh sách quái vật
@@ -684,4 +632,52 @@ void showGameOver(){
         SDL_RenderPresent(renderer);
 
     }
+}
+void drawMeteorite()
+{
+    
+    SDL_Rect obj2Rect1 = {xObj1_1, yObj1_1,100,100};
+    SDL_RenderCopyEx(renderer,menuObj2,NULL,&obj2Rect1,angleObj2,NULL,SDL_FLIP_NONE);
+    SDL_Rect obj2Rect2 = {xObj1_2, yObj1_2,100,100};
+    SDL_RenderCopyEx(renderer,menuObj2,NULL,&obj2Rect2,angleObj2,NULL,SDL_FLIP_NONE);
+    SDL_Rect obj2Rect3 = {xObj1_3, yObj1_3,100,100};
+    SDL_RenderCopyEx(renderer,menuObj2,NULL,&obj2Rect3,angleObj2,NULL,SDL_FLIP_NONE);
+    SDL_Rect obj2Rect4 = {xObj1_4, yObj1_4,100,100};
+    SDL_RenderCopyEx(renderer,menuObj2,NULL,&obj2Rect4,angleObj2,NULL,SDL_FLIP_NONE);
+    angleObj2+=15;
+    yObj1_1+=4;
+    yObj1_2+=2;
+    yObj1_3+=3;
+    yObj1_4+=5;
+
+    if(angleObj2 >= 360) angleObj2 = 0;
+    if(yObj1_1 >= displayMode.h)
+    {
+        xObj1_1 = rand()% 1200 + 10;
+        yObj1_1 = -50;
+    }
+    if(yObj1_2 >= displayMode.h)
+    {
+        xObj1_2 = rand()% 1200 + 10;
+        yObj1_2 = -50;
+    }
+    if(yObj1_3 >= displayMode.h)
+    {
+        xObj1_3 = rand()% 1200 + 10;
+        yObj1_3 = -50;
+    } 
+    if(yObj1_4 >= displayMode.h)
+    {
+        xObj1_4 = rand()% 1200 + 10;
+        yObj1_4 = -50;
+    } 
+}
+void drawShipMenu(int cur){
+    SDL_Rect rectShip = {
+            xShip,
+            yShip,
+            150,
+            150
+    };
+    SDL_RenderCopyEx(renderer,s->texture,&s->frame_clip[cur],&rectShip,angleShip,NULL,SDL_FLIP_HORIZONTAL);
 }

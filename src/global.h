@@ -26,6 +26,12 @@ SDL_Texture *background_help = NULL;
 SDL_Texture* mouse = NULL;
 SDL_Texture* heart[5];
 SDL_Texture* buff = NULL;
+SDL_Texture* buff2 = NULL;
+SDL_Texture* shield = NULL;
+
+SDL_Texture* menuObj1 = NULL; // tàu quái màu xanh
+SDL_Texture* menuObj2 = NULL; // thiên thạch
+
 SDL_Texture* startButton = NULL;
 SDL_Texture* helpButton = NULL;
 SDL_Texture* quitButton = NULL;
@@ -58,3 +64,4 @@ Mix_Chunk* hit = NULL;
 Mix_Chunk* dead = NULL;
 Mix_Chunk* shot = NULL;
 Mix_Chunk* eatHp = NULL;
+Mix_Chunk* gameOverSong = NULL;

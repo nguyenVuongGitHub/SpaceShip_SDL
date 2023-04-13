@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
 {
     system("cls");
     init();
+    printf("%d\n",displayMode.w);
     showMenu();
-    printList(*lpr);
     printf("\nhello");
     saveFile(lpr);
     freeAll();

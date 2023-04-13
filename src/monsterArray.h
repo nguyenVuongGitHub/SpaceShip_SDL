@@ -114,12 +114,14 @@ void monsterType_4()
     {
         monster *monster_ = (monster*)malloc(sizeof(monster));
         initMonster(monster_);
-        monster_->hp = 10;
+        monster_->hp = 30;
         monster_->type = 4;
         monster_->x_pos = (displayMode.w/2-monster_->Width/2-10+i*3)+10;
         monster_->y_pos = -85;
+        monster_->Width = 91;
+        monster_->height = 116;
         monster_->y_limit = 100;
-        monster_->speed = 4;
+        monster_->speed = 7;
         monster_->score = 300;
         loadMonster(monster_);
         node_M* newNode = createNode(*monster_);
@@ -185,7 +187,7 @@ void boss()
     monster *boss_ = (monster*)malloc(sizeof(monster));
     initMonster(boss_);
     boss_->type = 10;
-    boss_->hp = 300;
+    boss_->hp = 500;
     boss_->height = 300;
     boss_->Width = 300;
     boss_->y_pos = - boss_->Width;
@@ -203,20 +205,18 @@ void GenerateMonster(monsterList *l)
     if(l->size <= 0)
     {
         
-        wave+=1;
+        wave+=10;
         if(wave%10!=0)
         {
             srand(time(0));
-            int random=rand() % 8 +1;
-            // int random = 1;
+            short random=rand() % 9 +1;
             if(random==1)
             {
-                monsterType_1();
                 monsterType_2();
             }
             else if(random==2)
             {
-                monsterType_2();
+                monsterType_6();
             }
             else if(random==3)
             {
@@ -226,8 +226,6 @@ void GenerateMonster(monsterList *l)
             else if(random==4)
             {
                 monsterType_4();
-                monsterType_6();
-                monsterType_2();
             }
             else if(random==5)
             {
@@ -237,17 +235,20 @@ void GenerateMonster(monsterList *l)
             else if(random==6)
             {
                 monsterType_2();
-                monsterType_1();
                 monsterType_5();
             }
             else if(random==7)
             {
-                monsterType_6();
+                monsterType_1();
             }
             else if(random==8)
             {
                 monsterType_1();
                 monsterType_6();
+            }else if(random == 9)
+            {
+                monsterType_3();
+                monsterType_1();
             }
         }
         else
