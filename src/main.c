@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
     system("cls");
     init();
     showMenu();
-    printList(*lpr);
     printf("\nhello");
     saveFile(lpr);
     freeAll();

@@ -277,7 +277,7 @@ void makeBullet(monster *m)
         b->y = m->y_pos + m->height; // yMonster + hMonster
         b->w = 15;
         b->h = 15;
-        b->speed = 13;
+        b->speed = 8;
         b->active = true;
     }
     else if(m->type == 6)
@@ -494,27 +494,31 @@ void makeBullet(monster *m)
 }
 void monsterDie(monster *m)
 {
-    for(int i = 0; i < 12; i++)
+    if(m->type != 4 && m->type != 10)
     {
-        bullet_monster *b = NULL;
-        // tận dụng lại bộ nhớ
-        for(int j = 0; j < MAX_BULLET_MONSTER; j++)
+        for(int i = 0; i < 12; i++)
         {
-            if(listBulletMonster[j]->active == false)
+            bullet_monster *b = NULL;
+            // tận dụng lại bộ nhớ
+            for(int j = 0; j < MAX_BULLET_MONSTER; j++)
             {
-                b = listBulletMonster[j];
-                break;
+                if(listBulletMonster[j]->active == false)
+                {
+                    b = listBulletMonster[j];
+                    break;
+                }
             }
-        }
-        initBulletMonster(b);
-        loadBulletMonster(b,m->type);
-        b->x = m->x_pos + m->Width/2;
-        b->y = m->y_pos + m->height/2;
+            initBulletMonster(b);
+            loadBulletMonster(b,m->type);
+            b->x = m->x_pos + m->Width/2;
+            b->y = m->y_pos + m->height/2;
 
-        b->w = 15;
-        b->h = 15;
-        b->angle = (0+i*30);
-        b->speed = 4;
-        b->active = true;
+            b->w = 15;
+            b->h = 15;
+            b->angle = (0+i*30);
+            b->speed = 4;
+            b->active = true;
+        }
     }
+    
 }

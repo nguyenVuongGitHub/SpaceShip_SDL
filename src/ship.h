@@ -4,8 +4,9 @@
 // trạng thái của tàu 
 // live là còn sống
 // die là đã chết -> bất tử
+// protect là được bảo vệ
 enum Status {
-        LIVE,DIE
+        LIVE,DIE,PROTECT
 };
 
 struct ship{
@@ -39,7 +40,7 @@ void loadShip()
     IMG_Init(IMG_INIT_PNG);
     const char * pathAlive = "image/spaceship.png";
     const char * pathDie = "image/spaceshipDIE.png";
-
+    
     if(s->status == LIVE)
     {
         surface = IMG_Load(pathAlive);
@@ -48,7 +49,15 @@ void loadShip()
         if(s->texture == NULL)
             printf("Khong tao duoc texture tu surface: %s", SDL_GetError());
         
-    }else{
+    }else if(s->status == PROTECT)
+    {
+        surface = IMG_Load(pathAlive);
+        s->texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface); // giải phóng surface khi không dùng nữa.
+        if(s->texture == NULL)
+            printf("Khong tao duoc texture tu surface: %s", SDL_GetError());
+    }
+    else{
         surface = IMG_Load(pathDie);
         s->texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface); // giải phóng surface khi không dùng nữa.
@@ -88,4 +97,17 @@ void drawShip(int cur){
             s->H
     };
     SDL_RenderCopy(renderer,s->texture,&s->frame_clip[cur],&rectShip);
+}
+void drawShipPROTECT(){
+    SDL_GetMouseState(&mouseX,&mouseY);
+    s->X = mouseX-32;
+    s->Y = mouseY;
+    SDL_Rect rectShield = {
+            s->X-5,
+            s->Y-5,
+            s->W+10,
+            s->H+10
+    };
+    SDL_SetTextureAlphaMod(shield,100);
+    SDL_RenderCopy(renderer,shield,NULL,&rectShield);
 }

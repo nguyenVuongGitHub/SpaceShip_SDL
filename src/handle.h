@@ -19,7 +19,11 @@ short random = 100; // random_buff
 bool buff_is_run = false;
 int x_buff;
 int y_buff;
+bool buff_is_run2 = false;
+int x_buff2;
+int y_buff2;
 
+void generateBuff2();
 void generateBuff();
 void gameLoop(); // vòng lặp chính
 void handlePause(); // biến i biểu thị viên đạn thứ i trong danh sách 
@@ -48,7 +52,8 @@ void gameLoop()
     // Khai báo một biến đếm thời gian cho bắn đạn tiếp theo
     Uint32 last_shot_time = 0;
     short countLoop = 0;
-    short timeShip = 0; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử
+    short countBuff1 = 1; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử và thời gian đc bảo vệ
+    short countBuff2 = 1; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử và thời gian đc bảo vệ
     short cur_ship = 0; // frame tàu hiện tại
     bool holdMouse = false; // kiểm tra giữ chuột
 
@@ -97,11 +102,12 @@ void gameLoop()
             ///esc để tạm dừng
             if(event.key.keysym.sym == SDLK_ESCAPE)
             {
+                SDL_GetMouseState(&mouseX, &mouseY);
+                int curX = mouseX;
+                int curY = mouseY;
                 handlePause();
-                
-                s->status = DIE;
-                timeShip = 1;
-                loadShip();
+                SDL_WarpMouseInWindow(window,curX,curY);
+                s->status = PROTECT;
             } 
             
         }
@@ -140,11 +146,14 @@ void gameLoop()
         
         // tạo ra buff
         generateBuff();
-        
+        generateBuff2();
+
+
         //quái tạo đạn
         for(node_M *k = lm->head; k != NULL; k= k->next)
         {
-            if(k->data.hp > 0 && countLoop % 50 == 0)
+            // coundLoop để giới hạn thời gian quái sinh ra đạn
+            if(k->data.hp > 0 && countLoop % 100 == 0)
             {
                 makeBullet(&(k->data));
             }
@@ -177,14 +186,32 @@ void gameLoop()
 
         countLoop++;
         if(countLoop == 100) countLoop = 0;
+
         // kiểm tra nếu vòng lặp chạy đc 300 lần thì chuyển trạng thái
-        if(timeShip % 300 == 0 && s->status == DIE)
+        if(countBuff1 % 300 == 0 && s->status == DIE)
         {
             s->status = LIVE;
             loadShip();
-            timeShip = 0;
+            countBuff1 = 1;
         }
-        timeShip++;
+        if(countBuff2 % 500 == 0 && s->status == PROTECT)
+        {
+            s->status = LIVE;
+            loadShip();
+            countBuff2 = 1;
+        }
+        // kiểm tra lúc bắt đầu chuyển trạng thái thì mới bắt đầu đếm vòng lặp
+        if(s->status == DIE) countBuff1++;
+        if(s->status == PROTECT) countBuff2++;
+        /*
+            nếu đang đc bảo vệ thì vẽ khiên, còn nếu không thì xóa độ trong suốt về 0
+        */
+        if(s->status == PROTECT)
+        {
+            drawShipPROTECT();
+        }else{
+            SDL_SetTextureAlphaMod(shield,0);
+        }
 
         drawHeart();
         drawText(&textHeart);
@@ -195,7 +222,7 @@ void gameLoop()
         SDL_Delay(10); 
         
     } 
-    gameOver = true;
+    
 }
 void handlePause()
 {
@@ -401,6 +428,17 @@ void collision(monsterList *l)
                     k->data.hp --;
                     if(k->data.hp == 0)
                     {   
+                        // xóa hết đạn di của quái vật 4
+                        if(k->data.type == 4) 
+                        {
+                            for(int i = 0; i < MAX_BULLET_MONSTER; i++)
+                            { 
+                                if(listBulletMonster[i]->active = true)
+                                {
+                                    listBulletMonster[i]->active = false;
+                                }
+                            }
+                        }
                         monsterDie(&(k->data));
                         playerer.score += k->data.score;
                         Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
@@ -431,13 +469,12 @@ void collision(monsterList *l)
         if(checkCollision(r_ship,rectMonster) && s->status == LIVE)
         {
             // không phải boss thì k xóa
-            if(i->data.type != 10)
+            if(i->data.type != 10 || i->data.type != 4)
                 removeNode(lm,i);
             Mix_PlayChannel(6, dead, 0);
             s->status = DIE;
             playerer.hp--;
             loadShip();
-            // set_clip();
         }
     }
 
@@ -453,6 +490,7 @@ void collision(monsterList *l)
             {
                 Mix_PlayChannel(6, dead, 0);
                 listBulletMonster[i]->active = false;
+                printf("change\n");
                 s->status = DIE;
                 loadShip();
                 playerer.hp--;
@@ -488,7 +526,7 @@ void generateBuff()
     if(!buff_is_run)
         random = rand()%15 - 0;
     
-    if(random == 0 || random == 15 || random == 7) // nếu biến random từ 0 đến 15 random ra 0 thì sẽ tạo ra x và y 
+    if(random == 0) // nếu biến random từ 0 đến 15 random ra 0 thì sẽ tạo ra x và y 
     {
         x_buff = rand() % (displayMode.w - 10 + 1) + 10;
         y_buff = -30;
@@ -520,6 +558,45 @@ void generateBuff()
         if (y_buff >= 1000) {
             
             buff_is_run = false;
+        }
+        random = 100;
+    }
+}
+void generateBuff2()
+{
+    srand(time(0));
+
+    // nếu nó không chạy thì mới random mới
+    if(!buff_is_run2)
+        random = rand()%15 - 0;
+    
+    if(random == 1) // nếu biến random từ 0 đến 15 random ra 1 thì sẽ tạo ra x và y 
+    {
+        x_buff2 = rand() % (displayMode.w - 10 + 1) + 10;
+        y_buff2 = -30;
+        buff_is_run2 = true; // đổi biến run thành true để bắt đầu di chuyển
+    }
+    if(buff_is_run2 == true) // di chuyển
+    {
+        SDL_Rect shield = { x_buff2, y_buff2, 50, 50};
+        SDL_RenderCopy(renderer, buff2, NULL, &shield);
+
+        // Cap nhat vi tri cua trai tim
+        y_buff2 += 3;
+        SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
+
+        //kiểm tra va chạm tàu với quái
+        if(checkCollision(shield,rectShip))
+        {
+            s->status = PROTECT;
+            loadShip();
+            y_buff2 = -100; // reset buff
+            buff_is_run2 = false;
+        }
+        // Khoi tao lai trai tim neu het
+        if (y_buff2 >= 1000) {
+            
+            buff_is_run2 = false;
         }
         random = 100;
     }

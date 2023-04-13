@@ -116,7 +116,15 @@ void moveBulletMonster(bullet_monster *bullet)
     }
     else if(bullet->type == 4)
     {
-        bullet->y += bullet->speed;
+        SDL_GetMouseState(&mouseX,&mouseY);
+        s->X = mouseX;
+        s->Y = mouseY;
+        
+        bullet->angle = atan2(s->Y - bullet->y, s->X - bullet->x); // tính góc giữa tàu và đạn
+        bullet->x += cos(bullet->angle)*bullet->speed;
+        bullet->y += sin(bullet->angle)*bullet->speed;
+        // if(bullet->y > s->X) bullet->y += 10;
+        // bullet->y += bullet->speed*4;
     }
     if(bullet->x >= displayMode.w-1 || bullet->x <= 1 || bullet->y <= 0 || bullet->y >= displayMode.h-1)
     {
