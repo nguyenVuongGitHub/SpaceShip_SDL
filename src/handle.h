@@ -469,8 +469,11 @@ void collision(monsterList *l)
         if(checkCollision(r_ship,rectMonster) && s->status == LIVE)
         {
             // không phải boss thì k xóa
-            if(i->data.type != 10 || i->data.type != 4)
+            if(i->data.type != 10 && i->data.type != 4)
+            {
                 removeNode(lm,i);
+            }
+            
             Mix_PlayChannel(6, dead, 0);
             s->status = DIE;
             playerer.hp--;
@@ -490,7 +493,6 @@ void collision(monsterList *l)
             {
                 Mix_PlayChannel(6, dead, 0);
                 listBulletMonster[i]->active = false;
-                printf("change\n");
                 s->status = DIE;
                 loadShip();
                 playerer.hp--;
@@ -524,9 +526,9 @@ void generateBuff()
 
     // nếu nó không chạy thì mới random mới
     if(!buff_is_run)
-        random = rand()%15 - 0;
+        random = rand()%20 - 0;
     
-    if(random == 0) // nếu biến random từ 0 đến 15 random ra 0 thì sẽ tạo ra x và y 
+    if(random == 0) // nếu biến random từ 0 đến 20 random ra 0 thì sẽ tạo ra x và y 
     {
         x_buff = rand() % (displayMode.w - 10 + 1) + 10;
         y_buff = -30;
@@ -568,9 +570,9 @@ void generateBuff2()
 
     // nếu nó không chạy thì mới random mới
     if(!buff_is_run2)
-        random = rand()%15 - 0;
+        random = rand()%20 - 0;
     
-    if(random == 1) // nếu biến random từ 0 đến 15 random ra 1 thì sẽ tạo ra x và y 
+    if(random == 1 && s->status != PROTECT) // nếu biến random từ 0 đến 20 random ra 1 thì sẽ tạo ra x và y 
     {
         x_buff2 = rand() % (displayMode.w - 10 + 1) + 10;
         y_buff2 = -30;
@@ -589,6 +591,7 @@ void generateBuff2()
         if(checkCollision(shield,rectShip))
         {
             s->status = PROTECT;
+            Mix_PlayChannel(-1, eatHp, 0);
             loadShip();
             y_buff2 = -100; // reset buff
             buff_is_run2 = false;

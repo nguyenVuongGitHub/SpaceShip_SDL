@@ -82,10 +82,39 @@ void loadBulletMonster(bullet_monster *bullet, int type_bullet)
         bullet_file_path = "image/BulletThreat5.png";
         bullet->type = type_bullet;
     }
-    // else if(type_bullet == 10)
-    // {
-        
-    // }
+    else if(type_bullet == 10)
+    {
+        short ran = rand()%7 + 1;
+        if(ran == 1)
+        {
+            bullet_file_path = "image/BulletThreat.png";
+            bullet->type = type_bullet;
+        }else if(ran == 2)
+        {
+            bullet_file_path = "image/BulletThreat6.png";
+            bullet->type = type_bullet;
+        }else if(ran == 3)
+        {
+            bullet_file_path = "image/BulletThreat.png";
+            bullet->type = type_bullet;
+        }else if(ran == 4)
+        {
+            bullet_file_path = "image/BulletThreat2.png";
+            bullet->type = type_bullet;
+        }else if(ran == 5)
+        {
+            bullet_file_path = "image/BulletThreat5.png";
+            bullet->type = type_bullet;
+        }else if(ran == 6)
+        {
+            bullet_file_path = "image/BulletThreat.png";
+            bullet->type = type_bullet;
+        }else if(ran == 7)
+        {
+            bullet_file_path = "image/BulletThreat6.png";
+            bullet->type = type_bullet;
+        }
+    }
     SDL_Surface* bullet_surface = IMG_Load(bullet_file_path); 
     if (bullet_surface != NULL)
     {
@@ -125,6 +154,11 @@ void moveBulletMonster(bullet_monster *bullet)
         bullet->y += sin(bullet->angle)*bullet->speed;
         // if(bullet->y > s->X) bullet->y += 10;
         // bullet->y += bullet->speed*4;
+    }
+    else if(bullet->type == 10)
+    {
+        bullet->x += cos(bullet->angle)*bullet->speed;
+        bullet->y += sin(bullet->angle)*bullet->speed;
     }
     if(bullet->x >= displayMode.w-1 || bullet->x <= 1 || bullet->y <= 0 || bullet->y >= displayMode.h-1)
     {
