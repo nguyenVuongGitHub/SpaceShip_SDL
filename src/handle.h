@@ -57,8 +57,8 @@ void gameLoop()
     short countBuff1 = 1; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử và thời gian đc bảo vệ
     short countBuff2 = 1; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử và thời gian đc bảo vệ
     short cur_ship = 0; // frame tàu hiện tại
-    bool holdMouse = false; // kiểm tra giữ chuột
-
+    bool holdMouseLeft = false; // kiểm tra giữ chuột
+    bool holdMouseRight = false;
     /**
      * cấp phát và khởi tạo các thống số cần thiết cho game
     */
@@ -97,11 +97,11 @@ void gameLoop()
             //bắt sự kiện giữ chuột
             if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LMASK)
             {
-                holdMouse = true;
+                holdMouseLeft = true;
             }
             if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LMASK)
             {
-                holdMouse = false;
+                holdMouseLeft = false;
             }
             ///esc để tạm dừng
             if(event.key.keysym.sym == SDLK_ESCAPE)
@@ -120,7 +120,7 @@ void gameLoop()
         drawShip(cur_ship);
         
         // kiểm tra bắn đạn
-        if(holdMouse)
+        if(holdMouseLeft)
         {
             Mix_PlayChannel(5, shot, 0);
             Uint32 current_time = SDL_GetTicks();  
@@ -216,7 +216,7 @@ void gameLoop()
         }else{
             SDL_SetTextureAlphaMod(shield,0);
         }
-
+        
         drawHeart();
         drawText(&textHeart);
         drawText(&textScore);

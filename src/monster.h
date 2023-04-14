@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include "bulletMonster.h"
+#include "ship.h"
 #include <math.h>
 
 short wave = 0; // đợt quái 
@@ -357,29 +358,6 @@ void makeBullet(monster *m)
                 b->y = m->y_pos + m->height; // yMonster + hMonster
                 b->w = 15;
                 b->h = 15;
-                b->angle = (0+15*i);
-                b->speed = 4;
-                b->active = true;
-            }
-            // bắn hình vuông
-            for(int i=0;i<30;i++)
-            {
-                bullet_monster *b = NULL;
-                // tận dụng lại bộ nhớ
-                for(int j = 0; j < MAX_BULLET_MONSTER; j++)
-                {
-                    if(listBulletMonster[j]->active == false)
-                    {
-                        b = listBulletMonster[j];
-                        break;
-                    }
-                }
-                initBulletMonster(b);
-                loadBulletMonster(b,m->type);
-                b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
-                b->y = m->y_pos + m->height; // yMonster + hMonster
-                b->w = 15;
-                b->h = 15;
                 b->speed = 4;
                 b->angle = (0+15*i);
                 b->active = true;
@@ -402,7 +380,7 @@ void makeBullet(monster *m)
                 b->y = m->y_pos + m->height; // yMonster + hMonster
                 b->w = 15;
                 b->h = 15;
-                b->speed = 7;
+                b->speed = 10;
                 SDL_GetMouseState(&mouseX,&mouseY);
                 s->X = mouseX;
                 s->Y = mouseY;
@@ -431,35 +409,10 @@ void makeBullet(monster *m)
                 b->y = m->y_pos + m->height; // yMonster + hMonster
                 b->w = 15;
                 b->h = 15;
-                b->angle = (0+15*i);
-                b->speed = 4;
-                b->active = true;
-            }
-            // bắn hình vuông
-            for(int i=0;i<30;i++)
-            {
-                bullet_monster *b = NULL;
-                // tận dụng lại bộ nhớ
-                for(int j = 0; j < MAX_BULLET_MONSTER; j++)
-                {
-                    if(listBulletMonster[j]->active == false)
-                    {
-                        b = listBulletMonster[j];
-                        break;
-                    }
-                }
-                initBulletMonster(b);
-                loadBulletMonster(b,m->type);
-                b->x = m->x_pos + m->Width/2; // xMonster + wMonster/2
-                b->y = m->y_pos + m->height; // yMonster + hMonster
-                b->w = 15;
-                b->h = 15;
                 b->speed = 4;
                 b->angle = (0+15*i);
                 b->active = true;
             }
-
-
 
             // 3 for dưới đây bắn hình sin từ trên xuống
             for(int i=0;i<=10;i++)
@@ -476,7 +429,7 @@ void makeBullet(monster *m)
                 }
                 initBulletMonster(b);
                 loadBulletMonster(b,3);
-                b->x = 0+i*50 + 10; // xMonster + wMonster/2
+                b->x = 0+i*50 + 100; // xMonster + wMonster/2
                 b->y = 0; // yMonster + hMonster
                 b->w = 15;
                 b->h = 15;
@@ -520,7 +473,7 @@ void makeBullet(monster *m)
                 }
                 initBulletMonster(b);
                 loadBulletMonster(b,3);
-                b->x = 1100 +i*50 - 10; // xMonster + wMonster/2
+                b->x = 1100 +i*50 - 100; // xMonster + wMonster/2
                 b->y = 0; // yMonster + hMonster
                 b->w = 15;
                 b->h = 15;
@@ -555,7 +508,7 @@ void makeBullet(monster *m)
                 b->active = true;
             }  
             // bắn đạn dí 
-            for(int i = 0; i <= 10; i++)
+            for(int i = 0; i <= 3; i++)
             {
                 bullet_monster *b = NULL;
                 // tận dụng lại bộ nhớ
@@ -569,7 +522,7 @@ void makeBullet(monster *m)
                 }
                 initBulletMonster(b);
                 loadBulletMonster(b,1);
-                b->x = m->x_pos + m->Width/2 + i*5; // xMonster + wMonster/2
+                b->x = m->x_pos + m->Width/2 + i*50; // xMonster + wMonster/2
                 b->y = m->y_pos + m->height; // yMonster + hMonster
                 b->w = 15;
                 b->h = 15;
@@ -582,7 +535,7 @@ void makeBullet(monster *m)
             }
         }else{
             // bắn đạn dí
-            for(int i = 0; i <= 2; i++)
+            for(int i = 0; i <= 50; i++)
             {
                 bullet_monster *b = NULL;
                 // tận dụng lại bộ nhớ

@@ -9,6 +9,7 @@ struct bullet{
     int height;
     float speed;
     bool active; // trạng thái của đạn, true -> đang di chuyển
+    int type;//1 chuột trái, 2 chuột phải
     SDL_Texture* texture;
 };
 typedef struct bullet bullet;
@@ -21,7 +22,6 @@ void initBullet(bullet *b);
 void moveBullet(bullet *b);
 void drawBullet(bullet *b);
 void addNewBulletToList();
-void freeBulletY_posLessZero(bullet *bullets[MAX_BULLET]);
 void freeBullets();
 //=====================================================
 

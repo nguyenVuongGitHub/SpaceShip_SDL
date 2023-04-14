@@ -252,6 +252,7 @@ void handleMenu(SDL_Event event)
         // Kiểm tra xem người dùng có nhấp vào nút bắt đầu không
         if (event.button.button == SDL_BUTTON_LEFT && event.button.x >= 650 && event.button.x <= 850 && event.button.y >= 300 && event.button.y <= 350)
         {
+            inputPlayer(&playerer);
             gameLoop();
             gameOver = true;
         }
@@ -300,6 +301,7 @@ void showHelp()
                 SDL_GetMouseState(&mouseX,&mouseY);
                 if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
                 {
+                    inputPlayer(&playerer);
                     gameLoop();
                     gameOver = false;
                 }
@@ -569,6 +571,7 @@ void showGameOver(){
 
     playerer.hp = 3; // reset hp
     playerer.score = 0;
+ 
     wave = 0;
     while(gameOver){
         SDL_Event event;
@@ -609,6 +612,7 @@ void showGameOver(){
                         // freeList(lm); // giải phóng danh sách quái vật
                         // freeBulletMonster();// giải phóng đạn quái vật
                         // showMenu(); // về lại menu
+                        strcpy(playerer.name,"");
                         gameOver = false;
                         if(!gameOver) return; //thoát khỏi hàm tránh bị delay
                     }

@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL2/SDL_ttf.h>
+#include <stdbool.h>
+#include "text.h"
 struct player
 {
     long long score;
@@ -21,8 +24,10 @@ struct list{
 };
 typedef struct list list_pr;
 
+player playerer; // biến lưu thông tin người chơi
+list_pr *lpr = NULL; // danh sách người chơi để lấy xếp hạng
+
 void initPlayer(player p);
-void inputPlayer(player *p);
 void initListPr(list_pr *l); 
 node_pr *createNode(player data);
 void addNode(node_pr *node, list_pr *l);
@@ -31,6 +36,7 @@ void loadFile(list_pr *l);
 void saveFile(list_pr *l);
 void sortList(list_pr *l);
 void freeListPr(list_pr *l);
+void inputPlayer(player *p);
 //================================================================
 
 void initPlayer(player p)
@@ -38,14 +44,6 @@ void initPlayer(player p)
     p.hp = 3;
     strcpy(p.name,"");
     p.score = 0;
-}
-void inputPlayer(player *player)
-{
-    fflush(stdin);
-    printf("\nnhap ten : ");
-    gets(player->name);
-    printf("nhap diem :");
-    scanf("%d", &player->score);
 }
 void initListPr(list_pr *l){
     l->head = NULL;
@@ -96,7 +94,6 @@ void loadFile(list_pr *l)
     while (fgets(line, 100, fileIn) != NULL) {
         char *token = strtok(line, ";");
         player pl;
-        
         strcpy(pl.name, token);
         pl.score = atoi(strtok(NULL, ";"));
         
@@ -144,4 +141,59 @@ void freeListPr(list_pr *l)
         l->head = head;
         l->head = NULL;
     }
+}
+void inputPlayer(player *p)
+{
+    SDL_Event e;
+    bool quit = false;
+    SDL_Color textColor = { 255, 255, 255 };
+    int textLength = 0 ;
+    text info;
+    initText(&info);
+    setText("INPUT YOUR NAME: ",&info);
+    loadText(30,&info,pathFont,getColor(WHITE));
+    setPosText(displayMode.w/2 - info.w,displayMode.h/2,&info);
+    TTF_Font *font = TTF_OpenFont(pathFont,28);
+    
+    SDL_StartTextInput();
+
+    while (!quit) {
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            } else if (e.type == SDL_KEYDOWN) {
+                if (e.key.keysym.sym == SDLK_BACKSPACE && textLength > 0) {
+                    p->name[--textLength] = '\0';
+                } else if (e.key.keysym.sym == SDLK_RETURN) {
+                    quit = true;
+                }
+            } else if (e.type == SDL_TEXTINPUT) {
+                if ((textLength + strlen(e.text.text)) < 100) {
+                    strcat(p->name, e.text.text);
+                    textLength += strlen(e.text.text);
+                }
+            }
+        }
+
+        SDL_RenderClear(renderer);
+        drawText(&info);
+
+        SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, p->name, textColor);
+        SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+        int textWidth = 0;
+        int textHeight = 0;
+        SDL_QueryTexture(message, NULL, NULL, &textWidth, &textHeight);
+        SDL_Rect renderQuad = { displayMode.w/2 +2,displayMode.h/2, textWidth, textHeight };
+        SDL_RenderCopy(renderer, message, NULL, &renderQuad);
+
+        SDL_FreeSurface(surfaceMessage);
+        SDL_DestroyTexture(message);
+        // moveBackground();
+        SDL_RenderPresent(renderer);
+    }
+
+    SDL_StopTextInput();
+    p->hp = 3;
+    p->score = 0;
 }

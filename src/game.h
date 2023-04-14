@@ -7,8 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 
 
-player playerer; // biến lưu thông tin người chơi
-list_pr *lpr = NULL; // danh sách người chơi để lấy xếp hạng
+
 
 
 void loadBackGround();
@@ -24,6 +23,7 @@ void freeAll();
 void loadAudio();
 
 void moveBackground();
+
 SDL_Rect background_clip = {0,0,2360,1544};
 //==========================
 
@@ -43,27 +43,25 @@ void init()
     lpr = (list_pr*)malloc(sizeof(list_pr));
     
     initListPr(lpr);
-    //tên người chơi :
-    strcpy(playerer.name,"con cet 30 cm");
-    // playerer.name = "con cet 30 cm";
-    playerer.score = 0;
-    playerer.hp = 3; // khởi tạo mặc định :)) quên làm initPlayer
+ 
+
 
     loadFile(lpr);
-
     loadAudio();
     Mix_VolumeChunk(hit, MIX_MAX_VOLUME/2);  //chỉnh âm luọng của hit
     Mix_VolumeChunk(shot, MIX_MAX_VOLUME/3);  //chỉnh âm luọng của shot
-
+    
     initShip(s);
     set_clip();
     loadBackGround();  
     loadMouse();
     loadHelp();
+    
     if (initMenu() != 0)
     {
         printf("loi!! %s\n",SDL_GetError());
     }
+    
     
 }
 
