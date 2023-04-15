@@ -24,3 +24,4 @@ n;0
 love;2680
 vuong dep trai vcl;3900
 vuong;100
+vuong ;3030
