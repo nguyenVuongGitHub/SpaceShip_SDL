@@ -204,7 +204,7 @@ void GenerateMonster(monsterList *l)
     if(l->size <= 0)
     {
         
-        wave+=10;
+        wave+=1;
         if(wave%10!=0)
         {
             srand(time(0));
