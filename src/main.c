@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     showMenu();
     printf("\nhello");
     saveFile(lpr);
+    cleanUp();
     freeAll();
     return 0;
 }

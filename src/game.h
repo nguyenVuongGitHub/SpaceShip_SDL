@@ -188,6 +188,7 @@ void freeAll()
     Mix_FreeChunk(dead);
     Mix_FreeChunk(shot);
     Mix_FreeChunk(eatHp);
+    Mix_FreeChunk(gameOverSong);
     Mix_CloseAudio();
     SDL_Quit();
 }

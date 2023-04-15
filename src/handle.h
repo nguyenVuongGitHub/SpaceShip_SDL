@@ -446,7 +446,7 @@ void collision(monsterList *l)
                         monsterDie(&(k->data));
                         playerer.score += k->data.score;
                         Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
-                        node *mr = k;
+                        node_M *mr = k;
                         removeNode(l,mr); // xóa quái khỏi danh sách -> xóa khỏi màn hình
                         mr = NULL; 
                         sprintf(curentScore,"%d",playerer.score); // cập nhật lại điểm và chuyển thành kiểu char[]
