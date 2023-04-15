@@ -9,7 +9,6 @@
 #include "monsterArray.h"
 #include "text.h"
 
-
 text textScore;
 text textHeart;
 text textCurentScore;
@@ -57,8 +56,7 @@ void gameLoop()
     short countBuff1 = 1; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử và thời gian đc bảo vệ
     short countBuff2 = 1; // tạo biến này để đếm thời gian tàu, coi như là thời gian bất tử và thời gian đc bảo vệ
     short cur_ship = 0; // frame tàu hiện tại
-    bool holdMouseLeft = false; // kiểm tra giữ chuột
-    bool holdMouseRight = false;
+    bool holdMouse = false; // kiểm tra giữ chuột
     /**
      * cấp phát và khởi tạo các thống số cần thiết cho game
     */
@@ -66,7 +64,7 @@ void gameLoop()
     initMonsterList(lm);
     initListBulletMonster();
     initBullets(); 
-
+    s->status = LIVE;
 
     while(gameOver){
         SDL_Event event;
@@ -97,11 +95,11 @@ void gameLoop()
             //bắt sự kiện giữ chuột
             if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LMASK)
             {
-                holdMouseLeft = true;
+                holdMouse = true;
             }
             if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LMASK)
             {
-                holdMouseLeft = false;
+                holdMouse = false;
             }
             ///esc để tạm dừng
             if(event.key.keysym.sym == SDLK_ESCAPE)
@@ -111,7 +109,7 @@ void gameLoop()
                 int curY = mouseY;
                 handlePause2();
                 SDL_WarpMouseInWindow(window,curX,curY);
-                s->status = PROTECT;
+                // s->status = PROTECT;
             } 
             
         }
@@ -120,7 +118,7 @@ void gameLoop()
         drawShip(cur_ship);
         
         // kiểm tra bắn đạn
-        if(holdMouseLeft)
+        if(holdMouse)
         {
             Mix_PlayChannel(5, shot, 0);
             Uint32 current_time = SDL_GetTicks();  

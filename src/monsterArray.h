@@ -18,7 +18,7 @@ void monsterType_4();
 void monsterType_5();
 void monsterType_6();
 void boss();
-void GenerateMonster();
+void GenerateMonster(monsterList *l);
 //=========================================================================
 void monsterType_1()
 {

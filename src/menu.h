@@ -602,7 +602,6 @@ void showGameOver(){
                         freeBullets(); // giải phóng đạn 
                         freeList(lm); // giải phóng danh sách quái vật
                         freeBulletMonster(); // giải phóng đạn quái vật
-                        s->status = LIVE;
                         gameLoop();
                     }
                     
