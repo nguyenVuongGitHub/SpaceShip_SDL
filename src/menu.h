@@ -34,23 +34,13 @@ bool isMoveShip = false;
 int initMenu();
 void cleanUp();
 void showRank();
-void drawPause();
 void drawMenu();
 void drawHeart();
 void showMenu();
 void showHelp();
-void handleMenu(SDL_Event event, bool *quit);
+void handleMenu(SDL_Event event);
 void drawMeteorite();
-// void drawPause_00();
-// void drawPause_01();
-// void drawPause_10();
-// void drawPause_11();
-// void drawPause_20();
-// void drawPause_21();
-// void drawPause_30();
-// void drawPause_31();
-// void drawPause_40();
-// void drawPause_41();
+
 void drawShipMenu(int cur);
 void showGameOver();
 #include"handle.h"
@@ -138,21 +128,6 @@ int initMenu()
     menuObj1 = IMG_LoadTexture(renderer,"image\\SpaceThreat4.png");
     menuObj2 = IMG_LoadTexture(renderer,"image\\meteorite.png");
 
-
-    // pause_01 = IMG_LoadTexture(renderer, "image\\0-1.png"); // ảnh khi k có âm thanh
-    // pause_00 = IMG_LoadTexture(renderer, "image\\0-0.png"); // ảnh khi có âm thanh
-
-    // pause_10 = IMG_LoadTexture(renderer, "image\\1-0.png");
-    // pause_11 = IMG_LoadTexture(renderer, "image\\1-1.png");
-
-    // pause_21 = IMG_LoadTexture(renderer, "image\\2-1.png");
-    // pause_20 = IMG_LoadTexture(renderer, "image\\2-0.png");
-
-    // pause_31 = IMG_LoadTexture(renderer, "image\\3-1.png");
-    // pause_30 = IMG_LoadTexture(renderer, "image\\3-0.png");
-
-    // pause_41 = IMG_LoadTexture(renderer, "image\\4-1.png");
-    // pause_40 = IMG_LoadTexture(renderer, "image\\4-0.png");
     backButton = IMG_LoadTexture(renderer,"image\\BackButton.png");
     backButton2 = IMG_LoadTexture(renderer,"image\\BackButton2.png");
     startButton = IMG_LoadTexture(renderer,"image\\PlayButton.png");
@@ -374,46 +349,6 @@ void showMenu()
     }
 }
 
-void drawPause_00()
-{
-    SDL_RenderCopy(renderer,pause_00,NULL,NULL);
-}
-void drawPause_01()
-{
-    SDL_RenderCopy(renderer,pause_01,NULL,NULL);
-}
-void drawPause_10()
-{
-    SDL_RenderCopy(renderer,pause_10,NULL,NULL);
-}
-void drawPause_11()
-{
-    SDL_RenderCopy(renderer,pause_11,NULL,NULL);
-}
-void drawPause_20()
-{
-    SDL_RenderCopy(renderer,pause_20,NULL,NULL);
-}
-void drawPause_21()
-{
-    SDL_RenderCopy(renderer,pause_21,NULL,NULL);
-}
-void drawPause_30()
-{
-    SDL_RenderCopy(renderer,pause_30,NULL,NULL);
-}
-void drawPause_31()
-{
-    SDL_RenderCopy(renderer,pause_31,NULL,NULL);
-}
-void drawPause_40()
-{
-    SDL_RenderCopy(renderer,pause_40,NULL,NULL);
-}
-void drawPause_41()
-{
-    SDL_RenderCopy(renderer,pause_41,NULL,NULL);
-}
 void drawHeart()
 {
     for(int i = 0; i < playerer.hp; i++)
@@ -607,11 +542,6 @@ void showGameOver(){
                     }
                     
                     if(checkText(exitGame)){
-                        // tạo node mới để thêm vào danh sách người chơi
-                        // freeBullets(); // giải phóng đạn 
-                        // freeList(lm); // giải phóng danh sách quái vật
-                        // freeBulletMonster();// giải phóng đạn quái vật
-                        // showMenu(); // về lại menu
                         strcpy(playerer.name,"");
                         gameOver = false;
                         if(!gameOver) return; //thoát khỏi hàm tránh bị delay

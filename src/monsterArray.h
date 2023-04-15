@@ -10,7 +10,6 @@ const short Num_of_MonsterArray4=1;
 const short Num_of_MonsterArray5=3;
 const short Num_of_MonsterArray6=4;
 
-void initArrayMonster();
 void monsterType_1();
 void monsterType_2();
 void monsterType_3();
@@ -18,7 +17,7 @@ void monsterType_4();
 void monsterType_5();
 void monsterType_6();
 void boss();
-void GenerateMonster();
+void GenerateMonster(monsterList *l)
 //=========================================================================
 void monsterType_1()
 {
