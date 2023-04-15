@@ -23,7 +23,6 @@ void loadBulletMonster(bullet_monster *bullet, int type_bullet);
 void drawBulletMonster(bullet_monster *bullet);
 void moveBulletMonster(bullet_monster *bullet);
 void freeBulletMonster();
-// void addBulletToList(int num);
 #define MAX_BULLET_MONSTER 5000
 
 bullet_monster *listBulletMonster[MAX_BULLET_MONSTER]; // giới hạn đạn trên màn hình là 5000

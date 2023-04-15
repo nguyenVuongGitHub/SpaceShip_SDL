@@ -129,9 +129,9 @@ void monsterType_4()
 }
 void monsterType_5()
 {
-    for(double i=0;i<Num_of_MonsterArray5;i++)
+    for(short i=0;i<Num_of_MonsterArray5;i++)
     {
-        for(double j=0;j<Num_of_MonsterArray5-i;j++)
+        for(short j=0;j<Num_of_MonsterArray5-i;j++)
         {
             monster *monster_ = (monster*)malloc(sizeof(monster));
             initMonster(monster_);
@@ -204,7 +204,7 @@ void GenerateMonster(monsterList *l)
     if(l->size <= 0)
     {
         
-        wave+=1;
+        wave+=10;
         if(wave%10!=0)
         {
             srand(time(0));

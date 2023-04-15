@@ -9,7 +9,6 @@ struct bullet{
     int height;
     float speed;
     bool active; // trạng thái của đạn, true -> đang di chuyển
-    int type;//1 chuột trái, 2 chuột phải
     SDL_Texture* texture;
 };
 typedef struct bullet bullet;
