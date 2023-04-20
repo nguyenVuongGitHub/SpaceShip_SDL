@@ -1,1 +1,32 @@
+vuong ne;14960
+vuong dep trai vcl;3900
+vuong ne;3360
 vuong ;3030
+vuong ;3030
+vuong;2840
+love;2680
+b;1400
+vuong ne;1260
+v;800
+vuong;400
+v;300
+b;300
+vuong ne;200
+j;150
+vuong;150
+vuong;100
+v;0
+vuong;0
+thoa;0
+vuong;0
+f;0
+n;0
+thoa;0
+vuong dep trai;0
+vuong;0
+vuong;0
+v;0
+v;0
+vk;0
+vuong;0
+m;14360
