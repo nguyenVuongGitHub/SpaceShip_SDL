@@ -21,7 +21,7 @@ typedef struct MonsterList monsterList;
 monsterList *lm = NULL;
 
 void initMonsterList(monsterList *l);
-node_M *createNode(monster data);
+node_M *createNodeMonster(monster data);
 void push_back(monsterList *l, node_M *newNode);
 node_M *getNode(monsterList *l, int index); // lấy node tại index thứ bao nhiêu giống như a[i]
 void removeNode(monsterList *l,node_M *target);
@@ -35,7 +35,7 @@ void initMonsterList(monsterList *l) {
     l->size = 0;
 }
 
-node_M *createNode(monster data) {
+node_M *createNodeMonster(monster data) {
     node_M *newNode = (node_M*) malloc(sizeof(node_M));
     newNode->data = data;
     newNode->next = NULL;
