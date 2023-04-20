@@ -209,8 +209,8 @@ void GenerateMonster(monsterList *l)
         if(wave%10!=0)
         {
             srand(time(0));
-            // short random=rand() % 9 +1;
-            int random = 5;
+            short random=rand() % 9 +1;
+            // int random = 5;
             if(random==1)
             {
                 monsterType_2();
