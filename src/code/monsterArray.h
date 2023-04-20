@@ -2,6 +2,7 @@
 #include "monster.h"
 #include "global.h"
 #include "linkedListForMonster.h"
+#include <time.h>
 // #include <time.h>
 const short Num_of_MonsterArray1=5;
 const short Num_of_MonsterArray2=5;
@@ -129,9 +130,9 @@ void monsterType_4()
 }
 void monsterType_5()
 {
-    for(short i=0;i<Num_of_MonsterArray5;i++)
+    for(double i=0;i<Num_of_MonsterArray5;i++)
     {
-        for(short j=0;j<Num_of_MonsterArray5-i;j++)
+        for(double j=0;j<Num_of_MonsterArray5-i;j++)
         {
             monster *monster_ = (monster*)malloc(sizeof(monster));
             initMonster(monster_);
@@ -208,7 +209,8 @@ void GenerateMonster(monsterList *l)
         if(wave%10!=0)
         {
             srand(time(0));
-            short random=rand() % 9 +1;
+            // short random=rand() % 9 +1;
+            int random = 5;
             if(random==1)
             {
                 monsterType_2();
