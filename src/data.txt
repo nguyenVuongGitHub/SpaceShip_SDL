@@ -41,3 +41,7 @@ vuong;0
 v;0
 v;0
 v;0
+vun;6360
+vun;840
+vung tÃest sound;4960
+v;0

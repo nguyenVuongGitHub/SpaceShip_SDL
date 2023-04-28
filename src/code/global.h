@@ -11,7 +11,6 @@
 
 int mouseX = 0, mouseY = 0;
 bool gameOver = true;
-bool sound = true;
 const char *pathFont = "fonts/Minecraft.ttf";
 
 // chung
@@ -30,7 +29,7 @@ SDL_Texture* buff = NULL;
 SDL_Texture* buff2 = NULL;
 SDL_Texture* shield = NULL;
 
-
+bool hasAudio = true;
 
 
 // menu

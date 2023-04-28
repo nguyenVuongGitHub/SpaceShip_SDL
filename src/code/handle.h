@@ -68,23 +68,26 @@ void gameLoop()
     while(gameOver){
         SDL_Event event;
         SDL_RenderClear(renderer);
+        if(hasAudio)
+        {
+            //nhạc nền game
+            Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
+            if(wave % 10 == 0 && wave != 0 && hasAudio){
+                if(!Mix_Playing(3)){  //kiểm tra xem kênh số 3 có được phát chưa, nếu chưa thì ! sẽ trả về true
+                    Mix_PlayChannel(3, Boss, -1); //phát kênh số 3 (nhạc boss)
+                }
+                Mix_HaltChannel(2); //dừng kênh số 2 (nhạc nền game)
+                Mix_HaltChannel(7);
+            }
+            else{
+                if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
+                    Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
+                }
+                Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
+                Mix_HaltChannel(7);
+            }
+        }
         
-        //nhạc nền game
-        Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
-        if(wave % 10 == 0 && wave != 0 && sound){
-            if(!Mix_Playing(3)){  //kiểm tra xem kênh số 3 có được phát chưa, nếu chưa thì ! sẽ trả về true
-                Mix_PlayChannel(3, Boss, -1); //phát kênh số 3 (nhạc boss)
-            }
-            Mix_HaltChannel(2); //dừng kênh số 2 (nhạc nền game)
-            Mix_HaltChannel(7);
-        }
-        else{
-            if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
-                Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
-            }
-            Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
-            Mix_HaltChannel(7);
-        }
         
         while(SDL_PollEvent(&event)){
             
@@ -119,7 +122,8 @@ void gameLoop()
         // kiểm tra bắn đạn
         if(holdMouse)
         {
-            Mix_PlayChannel(5, shot, 0);
+            if(hasAudio)
+                Mix_PlayChannel(5, shot, 0);
             Uint32 current_time = SDL_GetTicks();  
             Uint32 time_since_last_shot = current_time - last_shot_time; 
 
@@ -268,7 +272,8 @@ void collision(monsterList *l)
                         }
                         monsterDie(&(k->data));
                         playerer.score += k->data.score;
-                        Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
+                        if(hasAudio)
+                            Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
                         node_M *mr = k;
                         removeNode(l,mr); // xóa quái khỏi danh sách -> xóa khỏi màn hình
                         mr = NULL; 
@@ -300,8 +305,8 @@ void collision(monsterList *l)
             {
                 removeNode(lm,i);
             }
-            
-            Mix_PlayChannel(6, dead, 0);
+            if(hasAudio)
+                Mix_PlayChannel(6, dead, 0);
             s->status = DIE;
             playerer.hp--;
             loadShip();
@@ -318,7 +323,8 @@ void collision(monsterList *l)
             
             if(checkCollision(&rectShip,&bulletMonster) && s->status == LIVE)
             {
-                Mix_PlayChannel(6, dead, 0);
+                if(hasAudio)
+                    Mix_PlayChannel(6, dead, 0);
                 listBulletMonster[i]->active = false;
                 s->status = DIE;
                 loadShip();
@@ -330,12 +336,16 @@ void collision(monsterList *l)
     // kiểm tra máu người chơi, nếu hp == 0 thì về lại menu 
     if(playerer.hp <= 0)
     {
-        Mix_HaltChannel(1);
-        Mix_HaltChannel(2);
-        Mix_HaltChannel(3);
-        if(!Mix_Playing(7)){
-            Mix_PlayChannel(7, gameOverSong, -1);
+        if(hasAudio)
+        {
+             Mix_HaltChannel(1);
+            Mix_HaltChannel(2);
+            Mix_HaltChannel(3);
+            if(!Mix_Playing(7)){
+                Mix_PlayChannel(7, gameOverSong, -1);
+            }
         }
+       
         // tạo node mới để thêm vào danh sách người chơi
         node_pr *nodepr = createNode(playerer);
         addNode(nodepr,lpr);
@@ -379,7 +389,8 @@ void generateBuff()
         //kiểm tra va chạm tàu với quái
         if(checkCollision(&heart_rect,&rectShip))
         {   
-            Mix_PlayChannel(-1, eatHp, 0);
+            if(hasAudio)
+                Mix_PlayChannel(-1, eatHp, 0);
 
             // tức là hp người chơi mà >= 5 sẽ không tăng lên nữa
             if(playerer.hp < 5)
@@ -537,14 +548,14 @@ void handlePause2()
                         gameOver = false;
                     }
 
-                    if(checkText(soundOn) && sound){
-                        sound = false;
+                    if(checkText(soundOn) && hasAudio){
+                        hasAudio = false;
                         Mix_Pause(-1);  // dừng phát nhạc tạm thời, -1 tức là tắt tất cả kênh âm thanh
                         // drawText(&soundOff);
                     }
 
-                    else if(checkText(soundOff) && !sound){
-                        sound = true;
+                    else if(checkText(soundOff) && !hasAudio){
+                        hasAudio = true;
                         Mix_Resume(-1);  // Bật lại nhạc đã tạm dừng trước đó, -1 tức là bật tất cả các kênh âm thanh
                     }                    
                 break;
@@ -559,7 +570,7 @@ void handlePause2()
         drawText(&helpPause);
         drawText(&continuePause);
         drawText(&exitPause);
-        if(sound){
+        if(hasAudio){
             drawText(&soundOn);
         }
         else drawText(&soundOff);

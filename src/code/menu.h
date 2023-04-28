@@ -311,11 +311,15 @@ void showMenu()
     {
         s->status = LIVE;
         loadShip();
-        //nhạc nền menu
-        if(!Mix_Playing(1))
+        if(hasAudio)
         {
-            Mix_PlayChannel(1,Menu,-1);
+            //nhạc nền menu
+            if(!Mix_Playing(1))
+            {
+                Mix_PlayChannel(1,Menu,-1);
+            }
         }
+        
         // Xóa màn hình
         SDL_RenderClear(renderer);
         SDL_Event event;
@@ -326,14 +330,18 @@ void showMenu()
              // xử lí menu
         }
         
-        // Vẽ menu game
-        Mix_HaltChannel(2);  //dunnưgf nhạc ở kênh 2
-        Mix_HaltChannel(3);  //dừng nhạc ở kênh 3
-        Mix_HaltChannel(7);
-        if(!Mix_Playing(1))
+        if(hasAudio)
         {
-            Mix_PlayChannel(1,Menu,-1);
+             Mix_HaltChannel(2);  //dunnưgf nhạc ở kênh 2
+            Mix_HaltChannel(3);  //dừng nhạc ở kênh 3
+            Mix_HaltChannel(7);
+            if(!Mix_Playing(1))
+            {
+                Mix_PlayChannel(1,Menu,-1);
+            }
         }
+        // Vẽ menu game
+       
         
         drawMenu();
         drawMeteorite(); // vẽ thiên thạch
