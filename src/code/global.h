@@ -30,8 +30,8 @@ SDL_Texture* buff2 = NULL;
 SDL_Texture* shield = NULL;
 
 bool hasAudio = true;
-
-
+SDL_Texture* soundOn_texture = NULL;
+SDL_Texture* soundOff_texture = NULL;
 // menu
 SDL_Texture* startButton = NULL;
 SDL_Texture* helpButton = NULL;

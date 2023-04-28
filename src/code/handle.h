@@ -386,7 +386,7 @@ void generateBuff()
         y_buff += 3;
         SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
 
-        //kiểm tra va chạm tàu với quái
+        //kiểm tra va chạm tàu với máu
         if(checkCollision(&heart_rect,&rectShip))
         {   
             if(hasAudio)
@@ -431,11 +431,12 @@ void generateBuff2()
         y_buff2 += 3;
         SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
 
-        //kiểm tra va chạm tàu với quái
+        //kiểm tra va chạm tàu với bảo vệ
         if(checkCollision(&shield,&rectShip))
         {
             s->status = PROTECT;
-            Mix_PlayChannel(-1, eatHp, 0);
+            if(hasAudio)
+                Mix_PlayChannel(-1, eatHp, 0);
             loadShip();
             y_buff2 = -100; // reset buff
             buff_is_run2 = false;
