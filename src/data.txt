@@ -1,3 +1,4 @@
+g;15040
 vuong ne;14960
 kim thoa xinn gai;8780
 vuong dep trai vcl;3900
@@ -11,14 +12,13 @@ b;1400
 vuong ne;1260
 v;800
 vuong;400
-n;300
 v;300
 b;300
+n;300
 vuong ne;200
-vuong;150
 j;150
+vuong;150
 vuong;100
-vuong;0
 f;0
 n;0
 thoa;0
@@ -37,4 +37,7 @@ b;0
 k;0
 m;0
 g;0
-g;15040
+vuong;0
+v;0
+v;0
+v;0

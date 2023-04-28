@@ -27,7 +27,7 @@ void generateBuff();
 void gameLoop(); // vòng lặp chính
 void handlePause2();
 int checkText(text object1);
-bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2); // kiểm tra va chạm giữa hai object
+bool checkCollision(SDL_Rect* object1, SDL_Rect* object2); // kiểm tra va chạm giữa hai object
 void collision(monsterList *l); // kiểm tra tất cả các trường hợp va chạm
 //================================
 
@@ -249,7 +249,7 @@ void collision(monsterList *l)
                         k->data.Width,
                         k->data.height
                 };
-                if(checkCollision(rectBullet,rectMonster))
+                if(checkCollision(&rectBullet,&rectMonster))
                 {
                     bullets[i]->active = false;
                     k->data.hp --;
@@ -293,7 +293,7 @@ void collision(monsterList *l)
             i->data.height
         };
 
-        if(checkCollision(r_ship,rectMonster) && s->status == LIVE)
+        if(checkCollision(&r_ship,&rectMonster) && s->status == LIVE)
         {
             // không phải boss thì k xóa
             if(i->data.type != 10 && i->data.type != 4)
@@ -316,7 +316,7 @@ void collision(monsterList *l)
             SDL_Rect rectShip = {s->X,s->Y,s->W,s->H};
             SDL_Rect bulletMonster = {listBulletMonster[i]->x,listBulletMonster[i]->y-2,listBulletMonster[i]->w-2,listBulletMonster[i]->h-2};
             
-            if(checkCollision(rectShip,bulletMonster) && s->status == LIVE)
+            if(checkCollision(&rectShip,&bulletMonster) && s->status == LIVE)
             {
                 Mix_PlayChannel(6, dead, 0);
                 listBulletMonster[i]->active = false;
@@ -343,11 +343,11 @@ void collision(monsterList *l)
         
     }
 }
-bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
+bool checkCollision(SDL_Rect* object1, SDL_Rect* object2)
 {
     
-    if(object1.x+object1.w>=object2.x && object2.x+object2.w>=object1.x
-        && object1.y+object1.h>=object2.y && object2.y+object2.h>=object1.y)
+    if(object1->x+object1->w>=object2->x && object2->x+object2->w>=object1->x
+        && object1->y+object1->h>=object2->y && object2->y+object2->h>=object1->y)
     {
         return true;
     }
@@ -377,7 +377,7 @@ void generateBuff()
         SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
 
         //kiểm tra va chạm tàu với quái
-        if(checkCollision(heart_rect,rectShip))
+        if(checkCollision(&heart_rect,&rectShip))
         {   
             Mix_PlayChannel(-1, eatHp, 0);
 
@@ -421,7 +421,7 @@ void generateBuff2()
         SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
 
         //kiểm tra va chạm tàu với quái
-        if(checkCollision(shield,rectShip))
+        if(checkCollision(&shield,&rectShip))
         {
             s->status = PROTECT;
             Mix_PlayChannel(-1, eatHp, 0);
@@ -490,10 +490,35 @@ void handlePause2()
                         bool check = true;
                         while(check)
                         {
-                            SDL_RenderCopy(renderer,background_help,NULL,NULL);
+                            // SDL_RenderCopy(renderer,background_help,NULL,NULL);
+                            // SDL_RenderPresent(renderer);
+                            // while(SDL_PollEvent(&event))
+                            //     if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+                            // SDL_Delay(10);
+                            SDL_RenderClear(renderer);
+                            SDL_Event event2;
+                            drawHelp();
+                            drawMouse();
+                            while (SDL_PollEvent(&event2))
+                            {
+                                if(event2.type == SDL_MOUSEBUTTONDOWN)
+                                {
+                                    // game
+                                    SDL_GetMouseState(&mouseX,&mouseY);
+                                    if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
+                                    {
+                                        return;
+                                    }
+                                    // back
+                                    if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
+                                    {
+                                        gameOver = false;
+                                        return;
+                                    }
+                                }
+                            }
+                            
                             SDL_RenderPresent(renderer);
-                            while(SDL_PollEvent(&event))
-                                if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
                             SDL_Delay(10);
                         }
                     }

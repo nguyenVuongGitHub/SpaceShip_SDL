@@ -32,6 +32,7 @@ short yShip = 666;
 short angleShip = 30;
 bool isMoveShip = false;
 int initMenu();
+void initHelp();
 void cleanUp();
 void showRank();
 void drawMenu();
@@ -134,7 +135,14 @@ int initMenu()
     startButton2 = IMG_LoadTexture(renderer,"image\\PlayButton2.png");
     return 0;
 }
+void initHelp()
+{
+    IMG_Init(IMG_INIT_PNG);
+    mouseMove = IMG_LoadTexture(renderer,"image\\mouseMove.png");
+    clickMouse = IMG_LoadTexture(renderer,"image\\clickMouse.png");
+    esc = IMG_LoadTexture(renderer,"image\\esc.png");
 
+}
 // Hàm giải phóng các tài nguyên
 void cleanUp()
 {
