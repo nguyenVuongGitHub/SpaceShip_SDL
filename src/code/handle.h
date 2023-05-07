@@ -27,7 +27,7 @@ void generateBuff();
 void gameLoop(); // vòng lặp chính
 void handlePause2();
 int checkText(text object1);
-bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2); // kiểm tra va chạm giữa hai object
+bool checkCollision(SDL_Rect* object1, SDL_Rect* object2); // kiểm tra va chạm giữa hai object
 void collision(monsterList *l); // kiểm tra tất cả các trường hợp va chạm
 //================================
 
@@ -68,23 +68,26 @@ void gameLoop()
     while(gameOver){
         SDL_Event event;
         SDL_RenderClear(renderer);
+        if(hasAudio)
+        {
+            //nhạc nền game
+            Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
+            if(wave % 10 == 0 && wave != 0 && hasAudio){
+                if(!Mix_Playing(3)){  //kiểm tra xem kênh số 3 có được phát chưa, nếu chưa thì ! sẽ trả về true
+                    Mix_PlayChannel(3, Boss, -1); //phát kênh số 3 (nhạc boss)
+                }
+                Mix_HaltChannel(2); //dừng kênh số 2 (nhạc nền game)
+                Mix_HaltChannel(7);
+            }
+            else{
+                if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
+                    Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
+                }
+                Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
+                Mix_HaltChannel(7);
+            }
+        }
         
-        //nhạc nền game
-        Mix_HaltChannel(1);  //dừng nhạc ở kênh số 1 (menu)
-        if(wave % 10 == 0 && wave != 0 && sound){
-            if(!Mix_Playing(3)){  //kiểm tra xem kênh số 3 có được phát chưa, nếu chưa thì ! sẽ trả về true
-                Mix_PlayChannel(3, Boss, -1); //phát kênh số 3 (nhạc boss)
-            }
-            Mix_HaltChannel(2); //dừng kênh số 2 (nhạc nền game)
-            Mix_HaltChannel(7);
-        }
-        else{
-            if(!Mix_Playing(2)){ //kiểm tra xem kênh số 2 có được phát chưa, nếu chưa thì ! sẽ trả về true
-                Mix_PlayChannel(2, BGM, -1); //phát kênh số 2 (nhạc nền game)
-            }
-            Mix_HaltChannel(3); //dừng kênh số 3 (nhạc nền boss)
-            Mix_HaltChannel(7);
-        }
         
         while(SDL_PollEvent(&event)){
             
@@ -119,7 +122,8 @@ void gameLoop()
         // kiểm tra bắn đạn
         if(holdMouse)
         {
-            Mix_PlayChannel(5, shot, 0);
+            if(hasAudio)
+                Mix_PlayChannel(5, shot, 0);
             Uint32 current_time = SDL_GetTicks();  
             Uint32 time_since_last_shot = current_time - last_shot_time; 
 
@@ -249,7 +253,7 @@ void collision(monsterList *l)
                         k->data.Width,
                         k->data.height
                 };
-                if(checkCollision(rectBullet,rectMonster))
+                if(checkCollision(&rectBullet,&rectMonster))
                 {
                     bullets[i]->active = false;
                     k->data.hp --;
@@ -268,7 +272,8 @@ void collision(monsterList *l)
                         }
                         monsterDie(&(k->data));
                         playerer.score += k->data.score;
-                        Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
+                        if(hasAudio)
+                            Mix_PlayChannel(4, hit, 0);  // nhạc khi quái trúng đạn
                         node_M *mr = k;
                         removeNode(l,mr); // xóa quái khỏi danh sách -> xóa khỏi màn hình
                         mr = NULL; 
@@ -293,15 +298,15 @@ void collision(monsterList *l)
             i->data.height
         };
 
-        if(checkCollision(r_ship,rectMonster) && s->status == LIVE)
+        if(checkCollision(&r_ship,&rectMonster) && s->status == LIVE)
         {
             // không phải boss thì k xóa
             if(i->data.type != 10 && i->data.type != 4)
             {
                 removeNode(lm,i);
             }
-            
-            Mix_PlayChannel(6, dead, 0);
+            if(hasAudio)
+                Mix_PlayChannel(6, dead, 0);
             s->status = DIE;
             playerer.hp--;
             loadShip();
@@ -316,9 +321,10 @@ void collision(monsterList *l)
             SDL_Rect rectShip = {s->X,s->Y,s->W,s->H};
             SDL_Rect bulletMonster = {listBulletMonster[i]->x,listBulletMonster[i]->y-2,listBulletMonster[i]->w-2,listBulletMonster[i]->h-2};
             
-            if(checkCollision(rectShip,bulletMonster) && s->status == LIVE)
+            if(checkCollision(&rectShip,&bulletMonster) && s->status == LIVE)
             {
-                Mix_PlayChannel(6, dead, 0);
+                if(hasAudio)
+                    Mix_PlayChannel(6, dead, 0);
                 listBulletMonster[i]->active = false;
                 s->status = DIE;
                 loadShip();
@@ -330,12 +336,16 @@ void collision(monsterList *l)
     // kiểm tra máu người chơi, nếu hp == 0 thì về lại menu 
     if(playerer.hp <= 0)
     {
-        Mix_HaltChannel(1);
-        Mix_HaltChannel(2);
-        Mix_HaltChannel(3);
-        if(!Mix_Playing(7)){
-            Mix_PlayChannel(7, gameOverSong, -1);
+        if(hasAudio)
+        {
+             Mix_HaltChannel(1);
+            Mix_HaltChannel(2);
+            Mix_HaltChannel(3);
+            if(!Mix_Playing(7)){
+                Mix_PlayChannel(7, gameOverSong, -1);
+            }
         }
+       
         // tạo node mới để thêm vào danh sách người chơi
         node_pr *nodepr = createNode(playerer);
         addNode(nodepr,lpr);
@@ -343,11 +353,11 @@ void collision(monsterList *l)
         
     }
 }
-bool checkCollision(const SDL_Rect& object1, const SDL_Rect& object2)
+bool checkCollision(SDL_Rect* object1, SDL_Rect* object2)
 {
     
-    if(object1.x+object1.w>=object2.x && object2.x+object2.w>=object1.x
-        && object1.y+object1.h>=object2.y && object2.y+object2.h>=object1.y)
+    if(object1->x+object1->w>=object2->x && object2->x+object2->w>=object1->x
+        && object1->y+object1->h>=object2->y && object2->y+object2->h>=object1->y)
     {
         return true;
     }
@@ -376,10 +386,11 @@ void generateBuff()
         y_buff += 3;
         SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
 
-        //kiểm tra va chạm tàu với quái
-        if(checkCollision(heart_rect,rectShip))
+        //kiểm tra va chạm tàu với máu
+        if(checkCollision(&heart_rect,&rectShip))
         {   
-            Mix_PlayChannel(-1, eatHp, 0);
+            if(hasAudio)
+                Mix_PlayChannel(-1, eatHp, 0);
 
             // tức là hp người chơi mà >= 5 sẽ không tăng lên nữa
             if(playerer.hp < 5)
@@ -420,11 +431,12 @@ void generateBuff2()
         y_buff2 += 3;
         SDL_Rect rectShip = {s->X,s->Y,s->W,s->H}; 
 
-        //kiểm tra va chạm tàu với quái
-        if(checkCollision(shield,rectShip))
+        //kiểm tra va chạm tàu với bảo vệ
+        if(checkCollision(&shield,&rectShip))
         {
             s->status = PROTECT;
-            Mix_PlayChannel(-1, eatHp, 0);
+            if(hasAudio)
+                Mix_PlayChannel(-1, eatHp, 0);
             loadShip();
             y_buff2 = -100; // reset buff
             buff_is_run2 = false;
@@ -490,10 +502,35 @@ void handlePause2()
                         bool check = true;
                         while(check)
                         {
-                            SDL_RenderCopy(renderer,background_help,NULL,NULL);
+                            // SDL_RenderCopy(renderer,background_help,NULL,NULL);
+                            // SDL_RenderPresent(renderer);
+                            // while(SDL_PollEvent(&event))
+                            //     if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
+                            // SDL_Delay(10);
+                            SDL_RenderClear(renderer);
+                            SDL_Event event2;
+                            drawHelp();
+                            drawMouse();
+                            while (SDL_PollEvent(&event2))
+                            {
+                                if(event2.type == SDL_MOUSEBUTTONDOWN)
+                                {
+                                    // game
+                                    SDL_GetMouseState(&mouseX,&mouseY);
+                                    if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
+                                    {
+                                        return;
+                                    }
+                                    // back
+                                    if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
+                                    {
+                                        gameOver = false;
+                                        return;
+                                    }
+                                }
+                            }
+                            
                             SDL_RenderPresent(renderer);
-                            while(SDL_PollEvent(&event))
-                                if(event.key.keysym.sym == SDLK_ESCAPE) check = false;
                             SDL_Delay(10);
                         }
                     }
@@ -512,14 +549,14 @@ void handlePause2()
                         gameOver = false;
                     }
 
-                    if(checkText(soundOn) && sound){
-                        sound = false;
+                    if(checkText(soundOn) && hasAudio){
+                        hasAudio = false;
                         Mix_Pause(-1);  // dừng phát nhạc tạm thời, -1 tức là tắt tất cả kênh âm thanh
                         // drawText(&soundOff);
                     }
 
-                    else if(checkText(soundOff) && !sound){
-                        sound = true;
+                    else if(checkText(soundOff) && !hasAudio){
+                        hasAudio = true;
                         Mix_Resume(-1);  // Bật lại nhạc đã tạm dừng trước đó, -1 tức là bật tất cả các kênh âm thanh
                     }                    
                 break;
@@ -534,7 +571,7 @@ void handlePause2()
         drawText(&helpPause);
         drawText(&continuePause);
         drawText(&exitPause);
-        if(sound){
+        if(hasAudio){
             drawText(&soundOn);
         }
         else drawText(&soundOff);

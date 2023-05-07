@@ -32,10 +32,12 @@ short yShip = 666;
 short angleShip = 30;
 bool isMoveShip = false;
 int initMenu();
+void initHelp();
 void cleanUp();
 void showRank();
 void drawMenu();
 void drawHeart();
+void drawSound();
 void showMenu();
 void showHelp();
 void handleMenu(SDL_Event event);
@@ -132,9 +134,20 @@ int initMenu()
     backButton2 = IMG_LoadTexture(renderer,"image\\BackButton2.png");
     startButton = IMG_LoadTexture(renderer,"image\\PlayButton.png");
     startButton2 = IMG_LoadTexture(renderer,"image\\PlayButton2.png");
+
+    soundOn_texture = IMG_LoadTexture(renderer,"image\\soundOn.png");
+    soundOff_texture = IMG_LoadTexture(renderer,"image\\soundOff.png");
+
     return 0;
 }
+void initHelp()
+{
+    IMG_Init(IMG_INIT_PNG);
+    mouseMove = IMG_LoadTexture(renderer,"image\\mouseMove.png");
+    clickMouse = IMG_LoadTexture(renderer,"image\\clickMouse.png");
+    esc = IMG_LoadTexture(renderer,"image\\esc.png");
 
+}
 // Hàm giải phóng các tài nguyên
 void cleanUp()
 {
@@ -162,8 +175,8 @@ void drawMenu()
     drawText(&help);
     drawText(&textRank);
     drawText(&exitMenu);
-
-        
+    drawSound();
+    
     SDL_Rect obj1Rect = {100,500,100,100};
     SDL_RenderCopyEx(renderer,menuObj1,NULL,&obj1Rect,angleObj1,NULL,SDL_FLIP_NONE);
     SDL_Rect obj1Rect2 = {100,350,100,100};
@@ -213,7 +226,8 @@ void drawMenu()
     {
         angleObj1 = 60;
     }else angleObj1 = 30;
-
+    //SDL_Rect rectSound = {displayMode.w - 200, displayMode.h - 200 , 100,100};
+    
 
 }
 
@@ -256,6 +270,16 @@ void handleMenu(SDL_Event event)
         if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= xShip && event.button.x <= xShip+150 && event.button.y >= yShip && event.button.y <= yShip+150)
         {
             isMoveShip = true;
+        }
+        //thay đổi audio
+        if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= displayMode.w - 200 && event.button.x <= displayMode.w - 100 && event.button.y >=  displayMode.h - 200 && event.button.y <=  displayMode.h - 100)
+        {
+            if(hasAudio){
+               hasAudio = false;
+            }
+            else{
+                hasAudio = true;
+            }
         }
     }
     
@@ -303,11 +327,17 @@ void showMenu()
     {
         s->status = LIVE;
         loadShip();
-        //nhạc nền menu
-        if(!Mix_Playing(1))
+        if(hasAudio)
         {
-            Mix_PlayChannel(1,Menu,-1);
+            //nhạc nền menu
+            if(!Mix_Playing(1))
+            {
+                Mix_PlayChannel(1,Menu,-1);
+            }
+        }else{
+            Mix_HaltChannel(-1);
         }
+        
         // Xóa màn hình
         SDL_RenderClear(renderer);
         SDL_Event event;
@@ -318,14 +348,21 @@ void showMenu()
              // xử lí menu
         }
         
-        // Vẽ menu game
-        Mix_HaltChannel(2);  //dunnưgf nhạc ở kênh 2
-        Mix_HaltChannel(3);  //dừng nhạc ở kênh 3
-        Mix_HaltChannel(7);
-        if(!Mix_Playing(1))
+        // printf("\n has audio : %d",hasAudio);
+        if(hasAudio)
         {
-            Mix_PlayChannel(1,Menu,-1);
+             Mix_HaltChannel(2);  //dunnưgf nhạc ở kênh 2
+            Mix_HaltChannel(3);  //dừng nhạc ở kênh 3
+            Mix_HaltChannel(7);
+            if(!Mix_Playing(1))
+            {
+                Mix_PlayChannel(1,Menu,-1);
+            }
+        }else{
+            Mix_HaltChannel(-1);
         }
+        // Vẽ menu game
+       
         
         drawMenu();
         drawMeteorite(); // vẽ thiên thạch
@@ -613,4 +650,16 @@ void drawShipMenu(int cur){
             150
     };
     SDL_RenderCopyEx(renderer,s->texture,&s->frame_clip[cur],&rectShip,angleShip,NULL,SDL_FLIP_HORIZONTAL);
+}
+void drawSound()
+{
+    SDL_Rect rectSound = {displayMode.w - 200, displayMode.h - 200 , 100,100};
+    if(hasAudio)
+    {
+        SDL_RenderCopy(renderer,soundOn_texture,NULL,&rectSound);
+    }
+    else{
+        SDL_RenderCopy(renderer,soundOff_texture,NULL,&rectSound);   
+    }
+
 }

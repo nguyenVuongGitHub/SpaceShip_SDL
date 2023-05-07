@@ -4,6 +4,7 @@
 #include "monster.h"
 #include "linkedListForMonster.h"
 #include "player.h"
+#include "text.h"
 #include <SDL2/SDL_ttf.h>
 
 
@@ -61,7 +62,7 @@ void init()
     {
         printf("loi!! %s\n",SDL_GetError());
     }
-    
+    initHelp();
     
 }
 
@@ -139,8 +140,48 @@ void loadHelp()
 // }
 void drawHelp()
 {
-    SDL_RenderCopy(renderer,background_help,NULL,NULL);
+    // SDL_RenderCopy(renderer,background_help,NULL,NULL);
+    moveBackground();
 
+
+    // vẽ chữ help 
+    text helpText;
+    initText(&helpText);
+    setText("<- HELP ->",&helpText);
+    loadText(72,&helpText,pathFont,getColor(WHITE));
+    setPosText(displayMode.w/2 - helpText.w/2,150,&helpText);
+    drawText(&helpText);
+    // vẽ hướng dẫn di chuyển
+
+    SDL_Rect moveMouseRect = {displayMode.w/2 - 350,250,150,150};
+    SDL_RenderCopy(renderer,mouseMove,NULL,&moveMouseRect);
+    text mouseMoveText;
+    initText(&mouseMoveText);
+    setText("MOVE SHIP",&mouseMoveText);
+    loadText(42,&mouseMoveText,pathFont,getColor(WHITE));
+    setPosText(moveMouseRect.w + moveMouseRect.x + 50,moveMouseRect.h+moveMouseRect.y / 2 + 30,&mouseMoveText);
+    drawText(&mouseMoveText);
+    // vẽ hướng dẫn bắn
+
+    SDL_Rect clickMouseRect = {displayMode.w/2 - 350,400,150,150};
+    SDL_RenderCopy(renderer,clickMouse,NULL,&clickMouseRect);
+    text clickMouseText;
+    initText(&clickMouseText);
+    setText("SHOT",&clickMouseText);
+    loadText(42,&clickMouseText,pathFont,getColor(WHITE));
+    setPosText(clickMouseRect.w + clickMouseRect.x + 50,clickMouseRect.h+clickMouseRect.y / 2 + 100,&clickMouseText);
+    drawText(&clickMouseText);
+    // vẽ phụ đề
+
+    SDL_Rect escRect = {displayMode.w/2 - 350,550,150,150};
+    SDL_RenderCopy(renderer,esc,NULL,&escRect);
+
+    text escText;
+    initText(&escText);
+    setText("RETURN",&escText);
+    loadText(42,&escText,pathFont,getColor(WHITE));
+    setPosText(escRect.w + escRect.x + 50,escRect.h+escRect.y / 2 + 180,&escText);
+    drawText(&escText);
     // Vẽ nút bắt đầu
     SDL_Rect startRect = { 1200, 750, 200, 50 };
     SDL_RenderCopy(renderer, startButton, NULL, &startRect);

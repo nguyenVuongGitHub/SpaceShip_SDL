@@ -11,9 +11,9 @@
 
 int mouseX = 0, mouseY = 0;
 bool gameOver = true;
-bool sound = true;
 const char *pathFont = "fonts/Minecraft.ttf";
 
+// chung
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_DisplayMode displayMode;
@@ -29,9 +29,10 @@ SDL_Texture* buff = NULL;
 SDL_Texture* buff2 = NULL;
 SDL_Texture* shield = NULL;
 
-SDL_Texture* menuObj1 = NULL; // tàu quái màu xanh
-SDL_Texture* menuObj2 = NULL; // thiên thạch
-
+bool hasAudio = true;
+SDL_Texture* soundOn_texture = NULL;
+SDL_Texture* soundOff_texture = NULL;
+// menu
 SDL_Texture* startButton = NULL;
 SDL_Texture* helpButton = NULL;
 SDL_Texture* quitButton = NULL;
@@ -40,7 +41,15 @@ SDL_Texture* backButton2 = NULL;
 SDL_Texture* startButton2 = NULL;
 SDL_Texture* helpButton2 = NULL;
 SDL_Texture* quitButton2 = NULL;
+SDL_Texture* menuObj1 = NULL; // tàu quái màu xanh
+SDL_Texture* menuObj2 = NULL; // thiên thạch
+// help
+SDL_Texture* mouseMove = NULL;
+SDL_Texture* clickMouse = NULL;
+SDL_Texture* esc = NULL;
 
+
+// audio
 Mix_Chunk* Menu = NULL;
 Mix_Chunk* BGM = NULL;
 Mix_Chunk* Boss = NULL;

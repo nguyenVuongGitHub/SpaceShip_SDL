@@ -2,6 +2,7 @@
 #include "monster.h"
 #include "global.h"
 #include "linkedListForMonster.h"
+#include <time.h>
 // #include <time.h>
 const short Num_of_MonsterArray1=5;
 const short Num_of_MonsterArray2=5;
@@ -33,7 +34,7 @@ void monsterType_1()
         monster1->speed = 5;
         monster1->score = 100;
         loadMonster(monster1);
-        node_M* newNode = createNode(*monster1);
+        node_M* newNode = createNodeMonster(*monster1);
         push_back(lm,newNode);
     }
     for(int i = 0; i < Num_of_MonsterArray1; i++)
@@ -48,7 +49,7 @@ void monsterType_1()
         monster2->speed = 4;
         monster2->score = 100;
         loadMonster(monster2);
-        node_M* newNode = createNode(*monster2);
+        node_M* newNode = createNodeMonster(*monster2);
         push_back(lm,newNode);
     }
 }
@@ -68,7 +69,7 @@ void monsterType_2()
         monster1->speed = 2;
         monster1->score = 150;
         loadMonster(monster1);
-        node_M* newNode = createNode(*monster1);
+        node_M* newNode = createNodeMonster(*monster1);
         push_back(lm,newNode);
     }
     for(int i = 0; i < Num_of_MonsterArray2; i++)
@@ -84,7 +85,7 @@ void monsterType_2()
         monster2->speed = 2;
         monster2->score = 150;
         loadMonster(monster2);
-        node_M* newNode = createNode(*monster2);
+        node_M* newNode = createNodeMonster(*monster2);
         push_back(lm,newNode);
     }
 }
@@ -103,7 +104,7 @@ void monsterType_3()
         monster1->y_limit = 150;
         monster1->score = 200;
         loadMonster(monster1);
-        node_M* newNode = createNode(*monster1);
+        node_M* newNode = createNodeMonster(*monster1);
         push_back(lm,newNode);
     }
 }
@@ -123,15 +124,15 @@ void monsterType_4()
         monster_->speed = 7;
         monster_->score = 300;
         loadMonster(monster_);
-        node_M* newNode = createNode(*monster_);
+        node_M* newNode = createNodeMonster(*monster_);
         push_back(lm,newNode);
     }
 }
 void monsterType_5()
 {
-    for(short i=0;i<Num_of_MonsterArray5;i++)
+    for(double i=0;i<Num_of_MonsterArray5;i++)
     {
-        for(short j=0;j<Num_of_MonsterArray5-i;j++)
+        for(double j=0;j<Num_of_MonsterArray5-i;j++)
         {
             monster *monster_ = (monster*)malloc(sizeof(monster));
             initMonster(monster_);
@@ -143,7 +144,7 @@ void monsterType_5()
             monster_->y_limit = (100+100*i);
             monster_->score = 280;
             loadMonster(monster_);
-            node_M* newNode = createNode(*monster_);
+            node_M* newNode = createNodeMonster(*monster_);
             push_back(lm,newNode);
         }
     }
@@ -175,7 +176,7 @@ void monsterType_6()
                 monster_->speed = 2;
             }
             loadMonster(monster_);
-            node_M* newNode = createNode(*monster_);
+            node_M* newNode = createNodeMonster(*monster_);
             push_back(lm,newNode);
         }
     }
@@ -195,7 +196,7 @@ void boss()
     boss_->speed = 2;
     boss_->score = 10000;
     loadMonster(boss_);
-    node_M* newNode = createNode(*boss_);
+    node_M* newNode = createNodeMonster(*boss_);
     push_back(lm,newNode); 
 }
 void GenerateMonster(monsterList *l)
@@ -209,6 +210,7 @@ void GenerateMonster(monsterList *l)
         {
             srand(time(0));
             short random=rand() % 9 +1;
+            // int random = 5;
             if(random==1)
             {
                 monsterType_2();
