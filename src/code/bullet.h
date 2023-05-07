@@ -1,5 +1,5 @@
 #pragma once
-#include "global.h"
+// #include "global.h"
 #include "math.h"
 #include "monster.h"
 struct bullet{

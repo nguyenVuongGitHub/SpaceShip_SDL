@@ -48,6 +48,19 @@ SDL_Texture* mouseMove = NULL;
 SDL_Texture* clickMouse = NULL;
 SDL_Texture* esc = NULL;
 
+#include "text.h"
+//pause
+text battleSky; 
+text play;
+text help;
+text textRank;
+text exitMenu;
+text pauseGame;
+text helpPause;
+text continuePause;
+text exitPause;
+text soundOn;
+text soundOff;
 
 // audio
 Mix_Chunk* Menu = NULL;

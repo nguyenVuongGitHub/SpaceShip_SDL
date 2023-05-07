@@ -1,12 +1,12 @@
 #pragma once
-#include "global.h"
-#include "menu.h"
+// #include "global.h"
+// #include "menu.h"
 #include "monster.h"
 #include "linkedListForMonster.h"
-#include "player.h"
-#include "text.h"
+// #include "player.h"
+// #include "text.h"
 #include <SDL2/SDL_ttf.h>
-
+#include "music.h"
 
 
 
@@ -20,8 +20,6 @@ void drawHelp();
 
 void init();
 void freeAll();
-
-void loadAudio();
 
 void moveBackground();
 
@@ -48,15 +46,14 @@ void init()
 
 
     loadFile(lpr);
-    loadAudio();
-    Mix_VolumeChunk(hit, MIX_MAX_VOLUME/2);  //chỉnh âm luọng của hit
-    Mix_VolumeChunk(shot, MIX_MAX_VOLUME/3);  //chỉnh âm luọng của shot
-    
+    initMusic();
+
     initShip(s);
     set_clip();
     loadBackGround();  
     loadMouse();
     loadHelp();
+    volume();
     
     if (initMenu() != 0)
     {
@@ -116,92 +113,13 @@ void loadBackGround()
     }
 }   
 
-void loadHelp()
-{
-    SDL_Surface *surface;
-    IMG_Init(IMG_INIT_PNG);
-    surface = IMG_Load("image\\help.png");
-    if(surface != NULL){
-        background_help = SDL_CreateTextureFromSurface(renderer,surface);
-        if(background_help == NULL){
-            printf("Khong tao duoc texture tu surface: %s", SDL_GetError());
-        }else{
-            SDL_RenderCopy(renderer,background_help,NULL,NULL);
-            SDL_FreeSurface(surface);
-        }   
-    }else{
-        printf("Khong load duoc anh: %s", IMG_GetError());
-    }
-}
+
 
 // void drawBackGround(int cur)
 // {
 //     SDL_RenderCopy(renderer,background,&background_clip[cur],NULL);
 // }
-void drawHelp()
-{
-    // SDL_RenderCopy(renderer,background_help,NULL,NULL);
-    moveBackground();
 
-
-    // vẽ chữ help 
-    text helpText;
-    initText(&helpText);
-    setText("<- HELP ->",&helpText);
-    loadText(72,&helpText,pathFont,getColor(WHITE));
-    setPosText(displayMode.w/2 - helpText.w/2,150,&helpText);
-    drawText(&helpText);
-    // vẽ hướng dẫn di chuyển
-
-    SDL_Rect moveMouseRect = {displayMode.w/2 - 350,250,150,150};
-    SDL_RenderCopy(renderer,mouseMove,NULL,&moveMouseRect);
-    text mouseMoveText;
-    initText(&mouseMoveText);
-    setText("MOVE SHIP",&mouseMoveText);
-    loadText(42,&mouseMoveText,pathFont,getColor(WHITE));
-    setPosText(moveMouseRect.w + moveMouseRect.x + 50,moveMouseRect.h+moveMouseRect.y / 2 + 30,&mouseMoveText);
-    drawText(&mouseMoveText);
-    // vẽ hướng dẫn bắn
-
-    SDL_Rect clickMouseRect = {displayMode.w/2 - 350,400,150,150};
-    SDL_RenderCopy(renderer,clickMouse,NULL,&clickMouseRect);
-    text clickMouseText;
-    initText(&clickMouseText);
-    setText("SHOT",&clickMouseText);
-    loadText(42,&clickMouseText,pathFont,getColor(WHITE));
-    setPosText(clickMouseRect.w + clickMouseRect.x + 50,clickMouseRect.h+clickMouseRect.y / 2 + 100,&clickMouseText);
-    drawText(&clickMouseText);
-    // vẽ phụ đề
-
-    SDL_Rect escRect = {displayMode.w/2 - 350,550,150,150};
-    SDL_RenderCopy(renderer,esc,NULL,&escRect);
-
-    text escText;
-    initText(&escText);
-    setText("RETURN",&escText);
-    loadText(42,&escText,pathFont,getColor(WHITE));
-    setPosText(escRect.w + escRect.x + 50,escRect.h+escRect.y / 2 + 180,&escText);
-    drawText(&escText);
-    // Vẽ nút bắt đầu
-    SDL_Rect startRect = { 1200, 750, 200, 50 };
-    SDL_RenderCopy(renderer, startButton, NULL, &startRect);
-
-    // Vẽ nút thoát
-    SDL_Rect backRect = { 200, 750, 200, 50 };
-    SDL_RenderCopy(renderer, backButton, NULL, &backRect);
-
-    SDL_GetMouseState(&mouseX,&mouseY);
-    if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
-    {
-        // Vẽ nút bắt đầu
-        SDL_RenderCopy(renderer, startButton2, NULL, &startRect);
-    }
-    if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
-    {
-        SDL_RenderCopy(renderer, backButton2, NULL, &backRect);
-    }
-
-}
 void drawMouse()
 {
     SDL_GetMouseState(&mouseX, &mouseY);
@@ -222,33 +140,6 @@ void freeAll()
     SDL_DestroyRenderer(renderer); // giải phóng renderer
     SDL_DestroyTexture(s->texture); // giải phóng texture tàu
     SDL_DestroyTexture(background); // giải phóng texture background
-    Mix_FreeChunk(Menu);
-    Mix_FreeChunk(BGM);
-    Mix_FreeChunk(Boss);
-    Mix_FreeChunk(hit);
-    Mix_FreeChunk(dead);
-    Mix_FreeChunk(shot);
-    Mix_FreeChunk(eatHp);
-    Mix_FreeChunk(gameOverSong);
-    Mix_CloseAudio();
+    desMusic();
     SDL_Quit();
-}
-
-void loadAudio(){
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-    }
-    // Load và phát nhạc nền
-    Menu = Mix_LoadWAV("audio/Menu.wav");
-    BGM = Mix_LoadWAV("audio/bgm.wav");
-    Boss = Mix_LoadWAV("audio/BossMusic2.wav");
-    hit = Mix_LoadWAV("audio/SE_enemy_vanish.wav");
-    dead = Mix_LoadWAV("audio/SE_dead.wav");
-    shot = Mix_LoadWAV("audio/SE_shot.wav");
-    eatHp = Mix_LoadWAV("audio/SE_powerup.wav");
-    gameOverSong = Mix_LoadWAV("audio/FunnySong.wav");
-
-    if (Menu == NULL || BGM == NULL || Boss == NULL || hit == NULL || dead == NULL || eatHp == NULL){
-        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
-    }
 }

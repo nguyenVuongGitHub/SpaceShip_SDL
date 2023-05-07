@@ -4,7 +4,7 @@
 #include <string.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
-#include "text.h"
+// #include "text.h"
 struct player
 {
     long long score;
@@ -149,7 +149,7 @@ void inputPlayer(player *p)
     SDL_Color textColor = { 255, 255, 255 };
     int textLength = 0 ;
     text info;
-    initText(&info);
+    initText(&info); 
     setText("INPUT YOUR NAME: ",&info);
     loadText(30,&info,pathFont,getColor(WHITE));
     setPosText(displayMode.w/2 - info.w,displayMode.h/2,&info);
@@ -196,4 +196,5 @@ void inputPlayer(player *p)
     SDL_StopTextInput();
     p->hp = 3;
     p->score = 0;
+    
 }
