@@ -1,34 +1,34 @@
-g;15040
+g;1316134910
 vuong ne;14960
+vuog;10210
 kim thoa xinn gai;8780
+vun;7040
+vun;6360
+vung test sound;4960
 vuong dep trai vcl;3900
 vuong ne;3360
+vun;3280
 Kim Thoa;3180
 vuong ;3030
 vuong ;3030
 vuong;2840
 love;2680
+v;2580
 b;1400
+vung;1300
 vuong ne;1260
+vun;840
 v;800
+v;400
 vuong;400
 v;300
 b;300
 n;300
 vuong ne;200
-j;150
 vuong;150
+j;150
 vuong;100
-f;0
-n;0
-thoa;0
-vuong dep trai;0
-vuong;0
-vuong;0
-v;0
-v;0
-vk;0
-vuong;0
+v;100
 v;0
 vuong;0
 thoa;0
@@ -41,11 +41,28 @@ vuong;0
 v;0
 v;0
 v;0
-vun;6360
-vun;840
-vung t√est sound;4960
+f;0
+n;0
+thoa;0
 v;0
 vuong;0
 vuongv;0
-vun;3280
-vun;7040
+vuong dep trai;0
+vuong;0
+vuong;0
+v;0
+v;0
+v;0
+v;0
+v;0
+v;0
+v;0
+vk;0
+vuong;0
+df;0
+ v;0
+dj;0
+djd;0
+djdf;0
+df;0
+kk;0

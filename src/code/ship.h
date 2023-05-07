@@ -14,7 +14,7 @@ struct ship{
     int Y ;
     int W ;
     int H ;
-    Status status;
+    enum Status status;
     SDL_Rect frame_clip[8];
     SDL_Texture *texture;
 };

@@ -3,17 +3,7 @@
 #include "text.h"
 #include "player.h"
 // Khai báo biến toàn cục
-text battleSky;
-text play;
-text help;
-text textRank;
-text exitMenu;
-text pauseGame;
-text helpPause;
-text continuePause;
-text exitPause;
-text soundOn;
-text soundOff;
+
 
 short angleObj2 = 0;
 short angleObj1 = 30;
@@ -39,14 +29,14 @@ void drawMenu();
 void drawHeart();
 void drawSound();
 void showMenu();
-void showHelp();
+// void showHelp();
 void handleMenu(SDL_Event event);
 void drawMeteorite();
 
 void drawShipMenu(int cur);
 void showGameOver();
 #include"handle.h"
-
+#include "help.h"
 // Hàm khởi tạo SDL và tải các tài nguyên
 int initMenu()
 {
@@ -185,8 +175,7 @@ void drawMenu()
     
     SDL_GetMouseState(&mouseX,&mouseY);
 
-    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 310 && mouseY <= 360)
-    {
+    if(checkText(play)){
         // Vẽ nút play
         loadText(75,&play,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
         // SDL_RenderPresent(renderer);
@@ -194,7 +183,8 @@ void drawMenu()
     else{
         loadText(75,&play,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     }
-    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 400 && mouseY <= 450)
+
+    if ( checkText(help))
     {
         // Vẽ nút help
         loadText(75,&help,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
@@ -203,17 +193,19 @@ void drawMenu()
     else{
         loadText(75,&help,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     }
-    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 490 && mouseY <= 540)
+
+    if (checkText(textRank))
     {
         // Vẽ nút rank
         loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
         // SDL_RenderPresent(renderer);
     }
+
     else{
         loadText(75,&textRank,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(WHITE));
     }
-    // kiểm tra có di vào rank không
-    if ( mouseX >= 650 && mouseX <= 850 && mouseY >= 580 && mouseY <= 630)
+    
+    if ( checkText(exitMenu))
     {
         // Vẽ nút thoát
         loadText(75,&exitMenu,"fonts/VCR_OSD_MONO_1.001.ttf",getColor(RED));
@@ -226,9 +218,6 @@ void drawMenu()
     {
         angleObj1 = 60;
     }else angleObj1 = 30;
-    //SDL_Rect rectSound = {displayMode.w - 200, displayMode.h - 200 , 100,100};
-    
-
 }
 
 // Hàm xử lý sự kiện
@@ -282,38 +271,7 @@ void handleMenu(SDL_Event event)
     }
     
 }
-void showHelp()
-{
-    while(gameOver)
-    {
-        SDL_RenderClear(renderer);
-        SDL_Event event2;
-        drawHelp();
-        drawMouse();
-        while (SDL_PollEvent(&event2))
-        {
-            if(event2.type == SDL_MOUSEBUTTONDOWN)
-            {
-                // game
-                SDL_GetMouseState(&mouseX,&mouseY);
-                if ( mouseX >= 1200 && mouseX <= 1400 && mouseY >= 750 && mouseY <= 800)
-                {
-                    inputPlayer(&playerer);
-                    gameLoop();
-                    gameOver = false;
-                }
-                // back
-                if( mouseX >= 200 && mouseX <= 400 && mouseY >= 750 && mouseY <= 800)
-                {
-                    return;
-                }
-            }
-        }
-        
-        SDL_RenderPresent(renderer);
-        SDL_Delay(10);
-    }
-}
+
 
 void showMenu()
 {
@@ -468,7 +426,7 @@ void showRank()
         drawText(&score);
         drawText(&name);
         drawText(&esc);
-        for(int i = 0; i < size; i++)
+        for(int i = 0; i < size && i < 15; i++)
         {
             drawText(&pl[i]);
             drawText(&pl2[i]);
@@ -541,7 +499,7 @@ void showGameOver(){
 
     playerer.hp = 3; // reset hp
     playerer.score = 0;
- 
+    strcpy(playerer.name,"");
     wave = 0;
     while(gameOver){
         SDL_Event event;
