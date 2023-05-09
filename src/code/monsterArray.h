@@ -1,6 +1,6 @@
 #pragma once
 #include "monster.h"
-#include "global.h"
+// #include "global.h"
 #include "linkedListForMonster.h"
 #include <time.h>
 // #include <time.h>

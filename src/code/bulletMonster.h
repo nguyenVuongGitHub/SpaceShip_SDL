@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "global.h"
+// #include "global.h"
 
 struct bullet_monster{
     int x;

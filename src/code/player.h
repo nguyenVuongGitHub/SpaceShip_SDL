@@ -4,7 +4,7 @@
 #include <string.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
-#include "text.h"
+// #include "text.h"
 struct player
 {
     long long score;

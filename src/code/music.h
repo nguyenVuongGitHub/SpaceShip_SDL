@@ -1,6 +1,6 @@
 #pragma once
 #include <stdio.h>
-#include "global.h"
+// #include "global.h"
 
 void initMusic();
 void volume();
@@ -8,13 +8,13 @@ void desMusic();
 //===========================
 void volume()
 {
-    Mix_VolumeChunk(hit, MIX_MAX_VOLUME/4);  //chỉnh âm luọng của hit
-    Mix_VolumeChunk(shot, MIX_MAX_VOLUME/4);  //chỉnh âm luọng của shot
+    Mix_VolumeChunk(hit, MIX_MAX_VOLUME/8);  //chỉnh âm luọng của hit
+    Mix_VolumeChunk(shot, MIX_MAX_VOLUME/6);  //chỉnh âm luọng của shot
     Mix_VolumeChunk(Menu, MIX_MAX_VOLUME/4);
     Mix_VolumeChunk(BGM, MIX_MAX_VOLUME/4);
     Mix_VolumeChunk(Boss, MIX_MAX_VOLUME/4);
-    Mix_VolumeChunk(Menu, MIX_MAX_VOLUME/4);
-    Mix_VolumeChunk(eatHp, MIX_MAX_VOLUME/4);
+    Mix_VolumeChunk(dead, MIX_MAX_VOLUME/6);
+    Mix_VolumeChunk(eatHp, MIX_MAX_VOLUME/6);
     Mix_VolumeChunk(gameOverSong, MIX_MAX_VOLUME/4);
 }
 void initMusic()

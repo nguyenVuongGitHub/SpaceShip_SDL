@@ -1,6 +1,7 @@
 #pragma once
 #include "global.h"
 #include "game.h"
+
 void drawHelp();
 void loadHelp();
 void showHelp();

@@ -1,8 +1,8 @@
 #pragma once
-#include "global.h"
+// #include "global.h"
 #include "stdio.h"
-#include "text.h"
-#include "game.h"
+// #include "text.h"
+// #include "game.h"
 
 void handlePause()
 {

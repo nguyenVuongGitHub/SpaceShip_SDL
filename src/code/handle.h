@@ -1,13 +1,13 @@
 #pragma once
 #include <time.h>
 #include <stdlib.h>
-#include "global.h"
+// #include "global.h"
 #include "ship.h"
 #include "bullet.h"
 #include "game.h"
 #include "monster.h"
 #include "monsterArray.h"
-#include "text.h"
+// #include "text.h"
 #include "pause.h"
 
 text textScore;

@@ -1,10 +1,10 @@
 #pragma once
-#include "global.h"
-#include "menu.h"
+// #include "global.h"
+// #include "menu.h"
 #include "monster.h"
 #include "linkedListForMonster.h"
-#include "player.h"
-#include "text.h"
+// #include "player.h"
+// #include "text.h"
 #include <SDL2/SDL_ttf.h>
 #include "music.h"
 

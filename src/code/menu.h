@@ -1,6 +1,6 @@
 #pragma once
-#include "global.h"
-#include "text.h"
+// #include "global.h"
+// #include "text.h"
 #include "player.h"
 // Khai báo biến toàn cục
 
@@ -263,10 +263,12 @@ void handleMenu(SDL_Event event)
         //thay đổi audio
         if(event.button.button == SDL_BUTTON_LEFT && event.button.x >= displayMode.w - 200 && event.button.x <= displayMode.w - 100 && event.button.y >=  displayMode.h - 200 && event.button.y <=  displayMode.h - 100)
         {
-            if(hasAudio)
-                hasAudio = false;
-            else
+            if(hasAudio){
+               hasAudio = false;
+            }
+            else{
                 hasAudio = true;
+            }
         }
     }
     
